@@ -16,11 +16,9 @@
 #include <GL/glut.h>
 
 #include "World.hpp"
+#include "Camera.hpp"
 
 GLint winWidth = 800, winHeight = 800;
-GLfloat xeye = 3.0, yeye = 3.0, zeye = 7.0;  //  Viewing-coordinate origin.
-GLfloat xref = 0.0, yref = 0.0, zref = 0.0;  //  Look-at point.   
-GLfloat Vx = 0.0, Vy = 1.0, Vz = 0.0;        //  View up vector.
 /*  Set coordinate limits for the clipping window:  */
 GLfloat xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
 
@@ -34,6 +32,7 @@ GLint moving = 0, xBegin = 0, coordinate = 1, type = 1, selected = 0;
 //Declare a world containing all objects to draw.
 World myWorld;
 Light Spot;
+Camera myCam;
 
 wcPt3D ctrlPts[10]; // to store control points,
 wcPt3D RBM[73][26], RBC_face_norm[73][26]; // to store the mesh points and norm at each points
