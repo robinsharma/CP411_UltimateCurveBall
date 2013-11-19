@@ -10,19 +10,35 @@
 #include "Shape.hpp"
 
 Shape::Shape() {
-	MC.mat[0][0] = 1.0; MC.mat[0][1] = 0.0; MC.mat[0][2] = 0.0; MC.mat[0][3] = 0.0;
-	MC.mat[1][0] = 0.0; MC.mat[1][1] = 1.0; MC.mat[1][2] = 0.0; MC.mat[1][3] = 0.0;
-	MC.mat[2][0] = 0.0;	MC.mat[2][1] = 0.0;	MC.mat[2][2] = 1.0;	MC.mat[2][3] = 0.0;
-	MC.mat[3][0] = 0.0;	MC.mat[3][1] = 0.0;	MC.mat[3][2] = 0.0;	MC.mat[3][3] = 1.0;
-	s = 1;
+	MC.mat[0][0] = 1.0;
+	MC.mat[0][1] = 0.0;
+	MC.mat[0][2] = 0.0;
+	MC.mat[0][3] = 0.0;
+	MC.mat[1][0] = 0.0;
+	MC.mat[1][1] = 1.0;
+	MC.mat[1][2] = 0.0;
+	MC.mat[1][3] = 0.0;
+	MC.mat[2][0] = 0.0;
+	MC.mat[2][1] = 0.0;
+	MC.mat[2][2] = 1.0;
+	MC.mat[2][3] = 0.0;
+	MC.mat[3][0] = 0.0;
+	MC.mat[3][1] = 0.0;
+	MC.mat[3][2] = 0.0;
+	MC.mat[3][3] = 1.0;
+	sx = 1;
+	sy = 1;
+	sz = 1;
 }
 
-
-Shape::~Shape() { };
+Shape::~Shape() {
+}
+;
 
 Matrix Shape::getMC() {
-	return  MC;
-};
+	return MC;
+}
+;
 
 void Shape::translate(GLfloat tx, GLfloat ty, GLfloat tz) {
 	MC.translate(tx, ty, tz);
@@ -65,28 +81,46 @@ void Shape::rotate_origin(GLfloat rx, GLfloat ry, GLfloat rz, GLfloat angle) {
 	MC.normalize();
 }
 
-void Shape::rotate_relative(GLfloat x0, GLfloat y0, GLfloat z0, GLfloat rx, GLfloat ry, GLfloat rz, GLfloat angle) {
+void Shape::rotate_relative(GLfloat x0, GLfloat y0, GLfloat z0, GLfloat rx,
+		GLfloat ry, GLfloat rz, GLfloat angle) {
 	Matrix* m = new Matrix();
 	m->rotate(rx, ry, rz, angle * 1);
 	GLfloat v[4];
-	v[0] = MC.mat[0][3]-x0;
-	v[1] = MC.mat[1][3]-y0;
-	v[2] = MC.mat[2][3]-z0;
-	v[3] = MC.mat[3][3]-1;
+	v[0] = MC.mat[0][3] - x0;
+	v[1] = MC.mat[1][3] - y0;
+	v[2] = MC.mat[2][3] - z0;
+	v[3] = MC.mat[3][3] - 1;
 
 	m->multiply_vector(v);
 	// MC.matrix_pre_multiply(m);
-	MC.mat[0][3] = v[0]+x0;
-	MC.mat[1][3] = v[1]+y0;
-	MC.mat[2][3] = v[2]+z0;
-	MC.mat[3][3] = v[3]+1;
+	MC.mat[0][3] = v[0] + x0;
+	MC.mat[1][3] = v[1] + y0;
+	MC.mat[2][3] = v[2] + z0;
+	MC.mat[3][3] = v[3] + 1;
 
 	delete m;
 
 }
 
 void Shape::scale_change(GLfloat x) {
-	s += x;
+	scaleX(x);
+	scaleY(x);
+	scaleZ(x);
+	MC.normalize();
+}
+
+void Shape::scaleX(GLfloat x) {
+	sx += x;
+	MC.normalize();
+}
+
+void Shape::scaleY(GLfloat x) {
+	sy += x;
+	MC.normalize();
+}
+
+void Shape::scaleZ(GLfloat x) {
+	sz += x;
 	MC.normalize();
 }
 
