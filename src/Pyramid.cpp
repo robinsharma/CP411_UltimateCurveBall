@@ -55,7 +55,7 @@ void Pyramid::draw()
 {
     glPushMatrix();
     this->ctm_multiply();
-	glScalef(s, s, s);
+	glScalef(sx, sy, sz);
     for (int i = 0; i < 4; i++) {
         draw_face(i);
     }

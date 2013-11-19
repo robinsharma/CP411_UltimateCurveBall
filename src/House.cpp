@@ -18,7 +18,7 @@ House::House() {
 void House::draw() {
 	glPushMatrix();
 	this->ctm_multiply();
-	glScalef(s, s, s);
+	glScalef(sx, sy, sz);
 	cube->draw();
 	pyramid->draw();
 	glPopMatrix();

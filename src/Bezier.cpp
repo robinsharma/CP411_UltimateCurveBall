@@ -280,7 +280,7 @@ void Bezier::drawRBC() {
 void Bezier::draw() {
 	glPushMatrix();
 	this->ctm_multiply();
-	glScalef(s * 0.01, s * 0.01, s * 0.01);
+	glScalef(sx * 0.01, sy * 0.01, sz * 0.01);
 	if (Ptgen == 1) {
 		displayBezCurve();
 	}
