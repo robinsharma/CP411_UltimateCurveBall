@@ -1,7 +1,7 @@
 /**
  * 	a4.cpp
  *	CP411 Assignment 3
- *	Robin Sharma
+ *	Robin Sharma & Gavin Kerr
  *	ID: 110142530
  *	Email: shar2530@mylaurier.ca
  *	Date: November 5, 2013
