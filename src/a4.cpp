@@ -249,9 +249,9 @@ void mouseMotion(GLint x, GLint y) {
 
 		else if (coordinate == 1 && type == 4) { // mc scale
 			if (myWorld.isBez) {
-				myWorld.myBezier->scale_change(theta * 0.02);
+				myWorld.myBezier->scaleX(theta * 0.02);
 			} else {
-				myWorld.list[selected]->scale_change(theta * 0.02);
+				myWorld.list[selected]->scaleX(theta * 0.02);
 			}
 		}
 
