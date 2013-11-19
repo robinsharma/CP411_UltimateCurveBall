@@ -9,11 +9,11 @@
 
 #include "Cube.hpp"
 #include "Light.hpp"
+#include "Camera.hpp"
 #include <stdio.h>
 using namespace std;
 
-extern GLfloat xeye, yeye, zeye;
-extern GLfloat xref, yref, zref;
+extern Camera myCam;
 
 extern Light Spot;
 Cube::Cube() {
@@ -195,9 +195,9 @@ void Cube::updateCube() {\
 }
 
 void Cube::backFace(GLint i) {
-	backFaceTest[i] = ((xref - xeye) * cube_face_norm_wc[i][0])
-			+ ((yref - yeye) * cube_face_norm_wc[i][1])
-			+ ((zref - zeye) * cube_face_norm_wc[i][2]);
+	backFaceTest[i] = ((myCam.xref - myCam.xeye) * cube_face_norm_wc[i][0])
+			+ ((myCam.yref - myCam.yeye) * cube_face_norm_wc[i][1])
+			+ ((myCam.zref - myCam.zeye) * cube_face_norm_wc[i][2]);
 }
 
 void Cube::getNormal(GLint i) {

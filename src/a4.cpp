@@ -23,7 +23,6 @@ GLint winWidth = 800, winHeight = 800;
 GLfloat xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
 
 /*  Set positions for near and far clipping planes:  */
-GLfloat vangle = 40.0, dnear = 2.0, dfar = 20.0;
 //GLfloat theta = 0.0, rx = 1.0, ry = 0.0, rz = 0.0, s=0.8;
 
 GLfloat red = 1.0, green = 1.0, blue = 1.0;  //color
@@ -91,7 +90,7 @@ void display(void) {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 
-		gluPerspective(vangle, 1.0, dnear, dfar);
+		gluPerspective(myCam.vangle, 1.0, myCam.dnear, myCam.dfar);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -145,7 +144,7 @@ void display(void) {
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		gluPerspective(vangle, 1.0, dnear, dfar);
+		gluPerspective(myCam.vangle, 1.0, myCam.dnear, myCam.dfar);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -322,7 +321,7 @@ void mouseMotion(GLint x, GLint y) {
 			ry = 0;
 			rz = 0;
 
-			rotateView(rx, ry, rz, theta);
+			myCam.rotate_view(rx, ry, rz, theta);
 		}
 
 		else if (coordinate == 3 && type == 2) { //VC Rotate y
@@ -331,7 +330,7 @@ void mouseMotion(GLint x, GLint y) {
 			ry = 1;
 			rz = 0;
 
-			rotateView(rx, ry, rz, theta);
+			myCam.rotate_view(rx, ry, rz, theta);
 
 		}
 
@@ -341,7 +340,7 @@ void mouseMotion(GLint x, GLint y) {
 			ry = 0;
 			rz = 1;
 
-			rotateView(rx, ry, rz, theta);
+			myCam.rotate_view(rx, ry, rz, theta);
 
 		}
 
@@ -359,16 +358,16 @@ void mouseMotion(GLint x, GLint y) {
 
 		else if (coordinate == 3 && type == 7) { //VC Clipping Near
 			theta = (xBegin - x < 0) ? 1 : -1;
-			dnear += 0.1 * theta;
+			myCam.dnear += 0.1 * theta;
 		}
 
 		else if (coordinate == 3 && type == 8) { //VC Clipping Far
-			dfar += 0.1 * theta;
+			myCam.dfar += 0.1 * theta;
 
 		}
 
 		else if (coordinate == 3 && type == 9) { //Angle
-			vangle += 0.1 * theta;
+			myCam.vangle += 0.1 * theta;
 		}
 
 		//LIGHT TRANSFORMATIONS
@@ -600,7 +599,7 @@ void ResetLightAll() {
 void init(void) {
 	glClearColor(0.0, 0.0, 0.0, 1.0);  // Set display-window color to black
 	glMatrixMode(GL_PROJECTION);
-	gluPerspective(vangle, 1.0, dnear, dfar);
+	gluPerspective(myCam.vangle, 1.0, myCam.dnear, myCam.dfar);
 	glMatrixMode(GL_MODELVIEW);
 	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye,myCam.xref, myCam.yref, myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
 	glEnable(GL_DEPTH_TEST);
@@ -628,8 +627,8 @@ void mainMenu(GLint option) {
 		myWorld.list[0] = new Cube();
 		myWorld.myBezier = new Bezier();
 		myWorld.isBez = true;
-		xeye = 3.0, yeye = 3.0, zeye = 7.0; //set view back to default!
-		vangle = 40.0, dnear = 2.0, dfar = 20.0;
+		myCam.xeye = 3.0, myCam.yeye = 3.0, myCam.zeye = 7.0; //set view back to default!
+		myCam.vangle = 40.0, myCam.dnear = 2.0, myCam.dfar = 20.0;
 		Spot.resetAll();
 		Spot.off();
 		glutIdleFunc(NULL);
@@ -786,11 +785,11 @@ void a4SubMenu(GLint A4Option) {
 	case 6: {
 		glClearColor(0.0, 0.0, 0.0, 1.0); // Set display-window color to black
 		glMatrixMode(GL_PROJECTION);
-		gluPerspective(vangle, 1.0, dnear, dfar);
+		gluPerspective(myCam.vangle, 1.0, myCam.dnear, myCam.dfar);
 
 		glMatrixMode(GL_MODELVIEW);
 
-		gluLookAt(xeye, yeye, zeye, xref, yref, zref, Vx, Vy, Vz);
+		gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref, myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
 
 		Ptgen = 0;
 		BCgen = 0;
