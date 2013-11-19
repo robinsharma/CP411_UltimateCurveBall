@@ -67,13 +67,14 @@ GLuint programObject;
 
 bool SolarStarted = false; //boolean prevents solar animation from getting faster upon repeated selection
 
+/*
 void rotateView(GLfloat rx, GLfloat ry, GLfloat rz, GLfloat angle) {
 	Matrix* m = new Matrix();
 	m->rotate(rx, ry, rz, angle);
 	GLfloat v[4];
-	v[0] = xeye;
-	v[1] = yeye;
-	v[2] = zeye;
+	v[0] = myCam.xeye;
+	v[1] = myCam.yeye;
+	v[2] = myCam.zeye;
 	v[3] = 1;
 	m->multiply_vector(v);
 	xeye = v[0];
@@ -81,6 +82,7 @@ void rotateView(GLfloat rx, GLfloat ry, GLfloat rz, GLfloat angle) {
 	zeye = v[2];
 	delete m;
 }
+*/
 
 void display(void) {
 
@@ -93,7 +95,7 @@ void display(void) {
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		gluLookAt(xeye, yeye, zeye, xref, yref, zref, Vx, Vy, Vz);
+		gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref, myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
 
 		if (Spot.getOn()) {
 			glDisable(GL_LIGHTING);
@@ -147,7 +149,7 @@ void display(void) {
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		gluLookAt(xeye, yeye, zeye, xref, yref, zref, Vx, Vy, Vz);
+		gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref, myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
 
 		glLineWidth(1.0);
 
@@ -345,14 +347,14 @@ void mouseMotion(GLint x, GLint y) {
 
 		else if (coordinate == 3 && type == 4) { //VC Translate x
 
-			xeye += 0.1 * theta;
+			myCam.xeye += 0.1 * theta;
 
 		} else if (coordinate == 3 && type == 5) { //VC Translate y
 
-			yeye += 0.1 * theta;
+			myCam.yeye += 0.1 * theta;
 
 		} else if (coordinate == 3 && type == 6) { //VC Translate z
-			zeye += 0.1 * theta;
+			myCam.zeye += 0.1 * theta;
 		}
 
 		else if (coordinate == 3 && type == 7) { //VC Clipping Near
@@ -600,7 +602,7 @@ void init(void) {
 	glMatrixMode(GL_PROJECTION);
 	gluPerspective(vangle, 1.0, dnear, dfar);
 	glMatrixMode(GL_MODELVIEW);
-	gluLookAt(xeye, yeye, zeye, xref, yref, zref, Vx, Vy, Vz);
+	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye,myCam.xref, myCam.yref, myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
 	glEnable(GL_DEPTH_TEST);
 	programObject = InitShader("vshader.glsl", "fshader.glsl");
 	glUseProgram(0);
