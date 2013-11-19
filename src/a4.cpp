@@ -1,6 +1,6 @@
 /**
  * 	a4.cpp
- *	CP411 Assignment 3
+ *	CP411 Final Project
  *	Robin Sharma & Gavin Kerr
  *	ID: 110142530
  *	Email: shar2530@mylaurier.ca
