@@ -27,6 +27,7 @@ class Shape {
 protected:
 	Matrix MC; //the Model coordinate system in (X, Y, Z, 0)
 	GLfloat s; // scale factor
+	GLfloat sx, sy, sz;
 
 public:
 	Shape();  // constructor
@@ -37,6 +38,9 @@ public:
 	// to change the scale factor
 	void scale_change(GLfloat x);
 	// to translate the MC origin
+	void scaleX(GLfloat x);
+	void scaleY(GLfloat x);
+	void scaleZ(GLfloat x);
 	void translate(GLfloat tx, GLfloat ty, GLfloat tz);
 	// to rotate the MC with respect to a local axis.
 	void rotate_mc(GLfloat rx, GLfloat ry, GLfloat rz, GLfloat angle);

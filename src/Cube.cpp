@@ -128,7 +128,7 @@ void Cube::draw() {
 	glPushMatrix();
 	this->ctm_multiply(); // update the CTM
 	updateCube(); // update the backFaceTest, etc
-	glScalef(s, s, s);
+	glScalef(sx, sy, sz);
 	for (int i = 0; i < 6; i++) {
 		if (backFaceTest[faceIndex[i]] < 0) {
 			glColor3f(faceColor[faceIndex[i]][0] * cubeShade[faceIndex[i]],
