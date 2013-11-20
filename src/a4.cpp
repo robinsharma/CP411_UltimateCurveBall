@@ -440,13 +440,20 @@ void create_court() {
 	myWorld.list[2]->translate(0, 2.5, 0);
 
 	myWorld.leftWall.translate(-1.0, 0, 0);
-	myWorld.leftWall.scaleX(-0.75);
+	myWorld.leftWall.scaleX(-0.9);
+	myWorld.leftWall.scaleZ(1.5);
+
 	myWorld.topWall.translate(0, 1.0, 0);
-	myWorld.topWall.scaleY(-0.75);
+	myWorld.topWall.scaleY(-0.9);
+	myWorld.topWall.scaleZ(1.5);
+
 	myWorld.rightWall.translate(1.0, 0, 0);
-	myWorld.rightWall.scaleX(-0.75);
+	myWorld.rightWall.scaleX(-0.9);
+	myWorld.rightWall.scaleZ(1.5);
+
 	myWorld.bottomWall.translate(0, -1.0, 0);
-	myWorld.bottomWall.scaleY(-0.75);
+	myWorld.bottomWall.scaleY(-0.9);
+	myWorld.bottomWall.scaleZ(1.5);
 }
 
 void init(void) {
@@ -635,8 +642,8 @@ void ObjMenu(GLint option) {
 void printMenu(GLint x) {
 	switch (x) {
 	case 1:
-		printf("Dnear: %f Dfar: %f vAngle: %f \n", myCam.dnear, myCam.dfar,
-				myCam.vangle);
+		printf("Dnear: %f Dfar: %f vAngle: %f xeye: %f, yeye: %f, zeye: %f, xref: %f, yref: %f, zref: %f\n", myCam.dnear, myCam.dfar,
+				myCam.vangle, myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref, myCam.zref);
 		break;
 	}
 }

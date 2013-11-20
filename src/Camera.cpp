@@ -2,7 +2,7 @@
 
 //This has all the information for the camera
 Camera::Camera() {
-	xeye = 3.0, yeye = 3.0, zeye = 7.0;  //  Viewing-coordinate origin.
+	xeye = -0.013437, yeye = 0.249881, zeye = 8.181573;  //  Viewing-coordinate origin.
 	xref = 0.0, yref = 0.0, zref = 0.0;  //  Look-at point.
 	Vx = 0.0, Vy = 1.0, Vz = 0.0;        //  View up vector.
 	stereo = 0; //0 for Mono, 1 for Stereo
@@ -10,7 +10,7 @@ Camera::Camera() {
 	xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
 
 	/*  Set positions for near and far clipping planes:  */
-	vangle = 40.0, dnear = 2.0, dfar = 15.0;
+	vangle = 25.900099, dnear = 2.0, dfar = 15.0;
 }
 
 
