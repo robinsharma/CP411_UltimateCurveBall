@@ -631,10 +631,17 @@ void ObjMenu(GLint option) {
 	glutPostRedisplay();
 }
 
+void printMenu(GLint x) {
+	switch(x) {
+	case 1:
+		printf("Dnear: %f Dfar: %f vAngle: %f \n", myCam.dnear, myCam.dfar, myCam.vangle);
+		break;
+	}
+}
 
 void menu() {
 	GLint WCTrans_Menu, VCTrans_Menu, MCTrans_Menu, A3_Menu, LightTrans_Menu,
-			 glsl_shad, Obj_Menu;
+			 glsl_shad, Obj_Menu, Print_Menu;
 	MCTrans_Menu = glutCreateMenu(MCTransMenu);
 	glutAddMenuEntry(" Rotate x ", 1);
 	glutAddMenuEntry(" Rotate y ", 2);
@@ -692,6 +699,9 @@ void menu() {
 	glutAddMenuEntry(" On ", 1);
 	glutAddMenuEntry(" Off ", 2);
 
+	Print_Menu = glutCreateMenu(printMenu);
+	glutAddMenuEntry(" Print View Variables ", 1);
+
 	Obj_Menu = glutCreateMenu(ObjMenu);
 	glutAddMenuEntry(" Cube ", 1);
 	glutAddMenuEntry(" Cube 2 ", 2);
@@ -701,13 +711,14 @@ void menu() {
 	glutAddMenuEntry(" Hide Point Light ", 5);
 
 	glutCreateMenu(mainMenu);      // Create main pop-up menu.
-	glutAddSubMenu("GLSL", glsl_shad);
+	glutAddSubMenu(" GLSL ", glsl_shad);
 	glutAddSubMenu(" Model Transformations ", MCTrans_Menu);
 	glutAddSubMenu(" WC Transformations ", WCTrans_Menu);
 	glutAddSubMenu(" View Transformations ", VCTrans_Menu);
 	glutAddSubMenu(" Light Transformations ", LightTrans_Menu);
 	glutAddSubMenu(" Object Display ", Obj_Menu);
 	glutAddSubMenu(" Miscellaneous ", A3_Menu);
+	glutAddSubMenu(" Print ", Print_Menu);
 	glutAddMenuEntry(" Reset ", 1);
 	glutAddMenuEntry(" Quit", 2);
 }
