@@ -9,7 +9,7 @@
 
 Light::Light() {
 	P = 1.0, B = 1.0, Ka = 1.0, Kd = 1.0;
-	lx = 1.8, ly = 1.8, lz = 1.5;
+	lx = 0, ly = 0, lz = 0;
 	pointOff();
 
 }

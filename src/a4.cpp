@@ -56,58 +56,63 @@ GLuint programObject;
 
 void display(void) {
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 
-		gluPerspective(myCam.vangle, 1.0, myCam.dnear, myCam.dfar);
+	gluPerspective(myCam.vangle, 1.0, myCam.dnear, myCam.dfar);
 
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref,
-				myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref,
+			myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
 
-		glLineWidth(3);
+	glLineWidth(3);
 
-		glBegin(GL_LINES);
-		//x-axis
-		glColor3f(1.0, 1.0, 1.0);
-		glVertex3f(2, 0, 0);
-		glVertex3f(0, 0, 0);
-		//y-axis
-		glColor3f(0.0, 1.0, 0.0);
-		glVertex3f(0, 2, 0);
-		glVertex3f(0, 0, 0);
-		//z-axis
-		glColor3f(1.0, 0.0, 0.0);
-		glVertex3f(0, 0, 2);
-		glVertex3f(0, 0, 0);
-		glEnd();
-		glLineWidth(1);
-		Spot.on();
-		if (Spot.getOn()) {
-			glEnable(GL_DEPTH_TEST); // enable OpenGL depth buffer algorithm for hidden surface removal
-			glEnable(GL_CULL_FACE);
-			glEnable(GL_LIGHTING);
-			glEnable( GL_NORMALIZE);
-			glEnable(GL_COLOR_MATERIAL);
-			glEnable(GL_LIGHT0);
-			glCullFace(GL_BACK);
-			glEnable(GL_LIGHTING);
-			glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-			glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-			glLightfv(GL_LIGHT0, GL_POSITION, position);
+	glBegin(GL_LINES);
+	//x-axis
+	glColor3f(1.0, 1.0, 1.0);
+	glVertex3f(2, 0, 0);
+	glVertex3f(0, 0, 0);
+	//y-axis
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(0, 2, 0);
+	glVertex3f(0, 0, 0);
+	//z-axis
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(0, 0, 2);
+	glVertex3f(0, 0, 0);
+	glEnd();
+	glLineWidth(1);
+	Spot.on();
+	if (Spot.getOn()) {
+		glEnable(GL_DEPTH_TEST); // enable OpenGL depth buffer algorithm for hidden surface removal
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_LIGHTING);
+		glEnable( GL_NORMALIZE);
+		glEnable(GL_COLOR_MATERIAL);
+		glEnable(GL_LIGHT0);
+		glCullFace(GL_BACK);
+		glEnable(GL_LIGHTING);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
 
-			glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-			glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-			glMaterialfv(GL_FRONT, GL_SPECULAR, mat_ambient);
-			glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
-			glMaterialfv(GL_FRONT, GL_EMISSION, no_mat);
-		} else
-			glDisable(GL_LIGHTING);
+		position[0] = Spot.lx;
+		position[1] = Spot.ly;
+		position[2] = Spot.lz;
 
-		myWorld.draw_world(); // draw all objects in the world
-		Spot.draw();
+		glLightfv(GL_LIGHT0, GL_POSITION, position);
+
+		glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, mat_ambient);
+		glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
+		glMaterialfv(GL_FRONT, GL_EMISSION, no_mat);
+	} else
+		glDisable(GL_LIGHTING);
+
+	myWorld.draw_world(); // draw all objects in the world
+	Spot.draw();
 
 	glFlush();
 	glutSwapBuffers();
@@ -285,49 +290,23 @@ void mouseMotion(GLint x, GLint y) {
 			ry = 0;
 			rz = 0;
 			Spot.rotateWC(rx, ry, rz, theta * 0.5);
-			position[0] = Spot.lx;
-			position[1] = Spot.ly;
-			position[2] = Spot.lz;
 		} else if (coordinate == 4 && type == 2) { //Light Rotate y
 			rx = 0;
 			ry = 1;
 			rz = 0;
 			Spot.rotateWC(rx, ry, rz, theta * 0.5);
 		} else if (coordinate == 4 && type == 3) { //Light Rotate z
-
 			rx = 0;
 			ry = 0;
 			rz = 1;
 			Spot.rotateWC(rx, ry, rz, theta * 0.5);
-			position[0] = Spot.lx;
-			position[1] = Spot.ly;
-			position[2] = Spot.lz;
-		}
-
-		else if (coordinate == 4 && type == 4) { //Light Translate x
+		} else if (coordinate == 4 && type == 4) { //Light Translate x
 			Spot.lx += theta * 0.02;
-			position[0] = Spot.lx;
-			position[1] = Spot.ly;
-			position[2] = Spot.lz;
-
-		}
-
-		else if (coordinate == 4 && type == 5) { //Light Translate y
+		} else if (coordinate == 4 && type == 5) { //Light Translate y
 			Spot.ly += theta * 0.02;
-			position[0] = Spot.lx;
-			position[1] = Spot.ly;
-			position[2] = Spot.lz;
-		}
-
-		else if (coordinate == 4 && type == 6) { //Light Translate z
+		} else if (coordinate == 4 && type == 6) { //Light Translate z
 			Spot.lz += theta * 0.02;
-			position[0] = Spot.lx;
-			position[1] = Spot.ly;
-			position[2] = Spot.lz;
-
-		}
-
-		else if (coordinate == 4 && type == 7) { // Ambient Ka
+		} else if (coordinate == 4 && type == 7) { // Ambient Ka
 			ambient[0] += theta * 0.01;
 			ambient[1] += theta * 0.01;
 			ambient[2] += theta * 0.01;
@@ -339,7 +318,6 @@ void mouseMotion(GLint x, GLint y) {
 				theta = (xBegin - x < 0) ? 1 : -1;
 				Spot.Ka += theta * 0.01;
 			}
-
 		}
 
 		else if (coordinate == 4 && type == 8) { // Ambient B
@@ -456,14 +434,18 @@ void ResetLightAll() {
 }
 
 /*-----------------------------------------------------------*/
-void create_court(){
-	myWorld.leftWall.translate(-2.0,0,0);
+void create_court() {
+	myWorld.list[0]->translate(0, 2.5, 0);
+	myWorld.list[1]->translate(0, 2.5, 0);
+	myWorld.list[2]->translate(0, 2.5, 0);
+
+	myWorld.leftWall.translate(-1.0, 0, 0);
 	myWorld.leftWall.scaleX(-0.75);
-	myWorld.topWall.translate(0,2.0,0);
+	myWorld.topWall.translate(0, 1.0, 0);
 	myWorld.topWall.scaleY(-0.75);
-	myWorld.rightWall.translate(2.0,0,0);
+	myWorld.rightWall.translate(1.0, 0, 0);
 	myWorld.rightWall.scaleX(-0.75);
-	myWorld.bottomWall.translate(0,-2.0,0);
+	myWorld.bottomWall.translate(0, -1.0, 0);
 	myWorld.bottomWall.scaleY(-0.75);
 }
 
@@ -651,26 +633,25 @@ void ObjMenu(GLint option) {
 }
 
 void printMenu(GLint x) {
-	switch(x) {
+	switch (x) {
 	case 1:
-		printf("Dnear: %f Dfar: %f vAngle: %f \n", myCam.dnear, myCam.dfar, myCam.vangle);
+		printf("Dnear: %f Dfar: %f vAngle: %f \n", myCam.dnear, myCam.dfar,
+				myCam.vangle);
 		break;
 	}
 }
 
 void menu() {
 	GLint WCTrans_Menu, VCTrans_Menu, MCTrans_Menu, A3_Menu, LightTrans_Menu,
-			 glsl_shad, Obj_Menu, Print_Menu;
+			glsl_shad, Obj_Menu, Print_Menu;
 	MCTrans_Menu = glutCreateMenu(MCTransMenu);
 	glutAddMenuEntry(" Rotate x ", 1);
 	glutAddMenuEntry(" Rotate y ", 2);
 	glutAddMenuEntry(" Rotate z ", 3);
 	glutAddMenuEntry(" ScaleX ", 4);
-	glutAddMenuEntry( " ScaleY ", 5);
-	glutAddMenuEntry( " ScaleZ ", 6);
-	glutAddMenuEntry( " Scale All ", 7);
-
-
+	glutAddMenuEntry(" ScaleY ", 5);
+	glutAddMenuEntry(" ScaleZ ", 6);
+	glutAddMenuEntry(" Scale All ", 7);
 
 	WCTrans_Menu = glutCreateMenu(WCTransMenu);
 	glutAddMenuEntry(" Rotate x ", 1);
@@ -711,8 +692,6 @@ void menu() {
 	glutAddMenuEntry("Ambient B", 8);
 	glutAddMenuEntry("Point Light Kd", 9);
 	glutAddMenuEntry("Point Intensity P", 10);
-
-
 
 	glsl_shad = glutCreateMenu(glslSubMenu);
 	glutAddMenuEntry(" On ", 1);
