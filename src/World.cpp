@@ -10,6 +10,7 @@
 #include "World.hpp"
 
 World::World() {
+
 	list[0] = new Cube();
 	list[1] = new Cube();
 	list[2] = new Sphere();
@@ -40,6 +41,10 @@ void World::draw_world() {
 	for(i = 0; i < length; i++) {
 		list[i]->draw();
 	}
+	leftWall.draw();
+	topWall.draw();
+	rightWall.draw();
+	bottomWall.draw();
 
 	/*
 	 for (std::list<Shape*>::const_iterator it = ObjectList.begin(); it!=ObjectList.end(); ++it) {

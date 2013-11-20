@@ -15,7 +15,7 @@
 #include "House.hpp"
 #include "Light.hpp"
 #include "SolarSystem.hpp"
-#include "Bezier.hpp"
+//#include "Bezier.hpp"
 #include "wcPt3D.hpp"
 //#include "Shape.hpp"
 #include <iostream>
@@ -29,6 +29,7 @@ public:
 
 	Shape* list[3];
 
+	Cube leftWall, topWall, rightWall, bottomWall;
 	GLint length;
 
 	// std::list<Shape*> ObjectList;

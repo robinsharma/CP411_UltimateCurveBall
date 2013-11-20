@@ -48,12 +48,12 @@ Cube::Cube() {
 	cube_face_norm_wc[5][1] = -1.0, cube_face_norm_wc[5][2] = 0.0, cube_face_norm_wc[0][3] =
 			1.0;
 
-	faceColor[0][0] = 1.0, faceColor[0][1] = 0.0, faceColor[0][2] = 0.0;
-	faceColor[1][0] = 0.0, faceColor[1][1] = 1.0, faceColor[1][2] = 0.0;
-	faceColor[2][0] = 0.0, faceColor[2][1] = 0.0, faceColor[2][2] = 1.0;
-	faceColor[3][0] = 1.0, faceColor[3][1] = 1.0, faceColor[3][2] = 0.0;
-	faceColor[4][0] = 1.0, faceColor[4][1] = 0.0, faceColor[4][2] = 1.0;
-	faceColor[5][0] = 0.0, faceColor[5][1] = 1.0, faceColor[5][2] = 1.0;
+	faceColor[0][0] = 1.0, faceColor[0][1] = 1.0, faceColor[0][2] = 1.0;
+	faceColor[1][0] = 1.0, faceColor[1][1] = 1.0, faceColor[1][2] = 1.0;
+	faceColor[2][0] = 1.0, faceColor[2][1] = 1.0, faceColor[2][2] = 1.0;
+	faceColor[3][0] = 1.0, faceColor[3][1] = 1.0, faceColor[3][2] = 1.0;
+	faceColor[4][0] = 1.0, faceColor[4][1] = 1.0, faceColor[4][2] = 1.0;
+	faceColor[5][0] = 1.0, faceColor[5][1] = 1.0, faceColor[5][2] = 1.0;
 
 	cubeWC[0][0] = -1, cubeWC[0][1] = -1, cubeWC[0][2] = -1, cubeWC[0][3] = 1;
 	cubeWC[1][0] = -1, cubeWC[1][1] = 1, cubeWC[1][2] = -1, cubeWC[1][3] = 1;

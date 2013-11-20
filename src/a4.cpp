@@ -449,6 +449,12 @@ void ResetLightAll() {
 }
 
 /*-----------------------------------------------------------*/
+void create_court(){
+	myWorld.leftWall(-2.0,0,0);
+	myWorld.topWall(0,2.0,0);
+	myWorld.rightWall(2.0,0,0);
+	myWorld.topWall(-2.0,0,0);
+}
 
 void init(void) {
 	glClearColor(0.0, 0.0, 0.0, 1.0);  // Set display-window color to black
@@ -460,6 +466,8 @@ void init(void) {
 	glEnable(GL_DEPTH_TEST);
 	programObject = InitShader("vshader.glsl", "fshader.glsl");
 	glUseProgram(0);
+
+	create_court();
 }
 
 /*-------MENUS------------------------------------------------------------*/
