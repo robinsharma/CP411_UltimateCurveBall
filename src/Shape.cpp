@@ -110,18 +110,24 @@ void Shape::scale_change(GLfloat x) {
 }
 
 void Shape::scaleX(GLfloat x) {
-	sx += x;
-	MC.normalize();
+	if (sx > 0) {
+		sx += x;
+		MC.normalize();
+	}
 }
 
-void Shape::scaleY(GLfloat x) {
-	sy += x;
-	MC.normalize();
+void Shape::scaleY(GLfloat y) {
+	if (sy > 0) {
+		sy += y;
+		MC.normalize();
+	}
 }
 
-void Shape::scaleZ(GLfloat x) {
-	sz += x;
-	MC.normalize();
+void Shape::scaleZ(GLfloat z) {
+	if (sz > 0) {
+		sz += z;
+		MC.normalize();
+	}
 }
 
 /**
