@@ -104,7 +104,7 @@ void display(void) {
 
 		glBegin(GL_LINES);
 		//x-axis
-		glColor3f(0.0, 0.0, 1.0);
+		glColor3f(1.0, 1.0, 1.0);
 		glVertex3f(2, 0, 0);
 		glVertex3f(0, 0, 0);
 		//y-axis
