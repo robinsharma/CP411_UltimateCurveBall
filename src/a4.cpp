@@ -158,7 +158,22 @@ void mouseMotion(GLint x, GLint y) {
 		}
 
 		else if (coordinate == 1 && type == 4) { // mc scale
+			myWorld.list[selected]->scaleX(theta * 0.02);
+
+		}
+
+		else if (coordinate == 1 && type == 5) { // mc scale
+			myWorld.list[selected]->scaleY(theta * 0.02);
+
+		}
+
+		else if (coordinate == 1 && type == 6) { // mc scale
 			myWorld.list[selected]->scaleZ(theta * 0.02);
+
+		}
+
+		else if (coordinate == 1 && type == 7) { // mc scale
+			myWorld.list[selected]->scale_change(theta * 0.02);
 
 		}
 
@@ -623,8 +638,13 @@ void menu() {
 	MCTrans_Menu = glutCreateMenu(MCTransMenu);
 	glutAddMenuEntry(" Rotate x ", 1);
 	glutAddMenuEntry(" Rotate y ", 2);
-	glutAddMenuEntry(" Rotate z", 3);
-	glutAddMenuEntry(" Scale", 4);
+	glutAddMenuEntry(" Rotate z ", 3);
+	glutAddMenuEntry(" ScaleX ", 4);
+	glutAddMenuEntry( " ScaleY ", 5);
+	glutAddMenuEntry( " ScaleZ ", 6);
+	glutAddMenuEntry( " Scale All ", 7);
+
+
 
 	WCTrans_Menu = glutCreateMenu(WCTransMenu);
 	glutAddMenuEntry(" Rotate x ", 1);
