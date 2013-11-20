@@ -84,8 +84,15 @@ void display(void) {
 		glVertex3f(0, 0, 0);
 		glEnd();
 		glLineWidth(1);
-
+		Spot.on();
 		if (Spot.getOn()) {
+			glEnable(GL_DEPTH_TEST); // enable OpenGL depth buffer algorithm for hidden surface removal
+			glEnable(GL_CULL_FACE);
+			glEnable(GL_LIGHTING);
+			glEnable( GL_NORMALIZE);
+			glEnable(GL_COLOR_MATERIAL);
+			glEnable(GL_LIGHT0);
+			glCullFace(GL_BACK);
 			glEnable(GL_LIGHTING);
 			glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 			glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
