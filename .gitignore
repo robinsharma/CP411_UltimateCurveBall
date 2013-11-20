@@ -16,6 +16,7 @@ local.properties
 .settings/
 .loadpath
 *.exe
+*.o
 
 # External tool builders
 .externalToolBuilders/
