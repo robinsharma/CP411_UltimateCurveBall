@@ -450,10 +450,14 @@ void ResetLightAll() {
 
 /*-----------------------------------------------------------*/
 void create_court(){
-	myWorld.leftWall.translate(-3.0,0,0);
-	myWorld.topWall.translate(0,3.0,0);
-	myWorld.rightWall.translate(3.0,0,0);
-	myWorld.bottomWall.translate(0,-3.0,0);
+	myWorld.leftWall.translate(-2.0,0,0);
+	myWorld.leftWall.scaleX(-0.75);
+	myWorld.topWall.translate(0,2.0,0);
+	myWorld.topWall.scaleY(-0.75);
+	myWorld.rightWall.translate(2.0,0,0);
+	myWorld.rightWall.scaleX(-0.75);
+	myWorld.bottomWall.translate(0,-2.0,0);
+	myWorld.bottomWall.scaleY(-0.75);
 }
 
 void init(void) {
