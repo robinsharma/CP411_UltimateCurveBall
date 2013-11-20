@@ -25,7 +25,8 @@ GLfloat xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
 /*  Set positions for near and far clipping planes:  */
 //GLfloat theta = 0.0, rx = 1.0, ry = 0.0, rz = 0.0, s=0.8;
 GLfloat red = 1.0, green = 1.0, blue = 1.0;  //color
-GLint moving = 0, xBegin = 0, coordinate = 1, type = 1, selected = 0;
+GLint moving = 0, start = 0, xBegin = 0, yBegin = 0, coordinate = 1, type = 1,
+		selected = 0;
 
 //Declare a world containing all objects to draw.
 World myWorld;
@@ -55,7 +56,6 @@ GLfloat mat_emission[] = { 1, 1, 1, 1 };
 GLuint programObject;
 
 GLdouble posX, posY, posZ;
-
 
 void display(void) {
 
@@ -137,7 +137,7 @@ void mouseAction(int button, int state, int x, int y) {
 		xBegin = x;
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-		moving = 0;
+
 	}
 
 	glutPostRedisplay();
@@ -146,7 +146,7 @@ void mouseAction(int button, int state, int x, int y) {
 
 void mouseMotion(GLint x, GLint y) {
 	GLfloat rx, ry, rz, theta;
-	if (moving) {
+	if (moving == 1){
 		theta = (xBegin - x > 0) ? 1 : -1;
 		if (coordinate == 1 && type == 1) { // mc rotate x
 
@@ -219,10 +219,9 @@ void mouseMotion(GLint x, GLint y) {
 		}
 
 		else if (coordinate == 2 && type == 4) { //wc translate x
-			//myWorld.list[selected]->translate(theta * 0.02, 0, 0);
+		//myWorld.list[selected]->translate(theta * 0.02, 0, 0);
 			getPos(x, y);
-			myWorld.list[selected]->translate((float)posX, 0, 0);
-
+			//myWorld.list[selected]->translate((float) posX, 0, 0);
 
 		}
 
@@ -379,24 +378,24 @@ void mouseMotion(GLint x, GLint y) {
 
 }
 
-void getPos(GLint x, GLint y)
-{
-    GLint viewport[4];
-    GLdouble modelview[16];
-    GLdouble projection[16];
-    GLfloat winX, winY, winZ;
+void getPos(GLint x, GLint y) {
+	GLint viewport[4];
+	GLdouble modelview[16];
+	GLdouble projection[16];
+	GLfloat winX, winY, winZ;
 
-    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-    glGetDoublev( GL_PROJECTION_MATRIX, projection );
-    glGetIntegerv( GL_VIEWPORT, viewport );
+	glGetDoublev( GL_MODELVIEW_MATRIX, modelview);
+	glGetDoublev( GL_PROJECTION_MATRIX, projection);
+	glGetIntegerv( GL_VIEWPORT, viewport);
 
-    winX = (float)x;
-    winY = (float)viewport[3] - (float)y;
-    glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+	winX = (float) x;
+	winY = (float) viewport[3] - (float) y;
+	glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 
-    gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
-    printf("%f %f posX: %f, posY: %f\n", x, y, posX, posZ);
- }
+	gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX,
+			&posY, &posZ);
+	printf("%f %f posX: %f, posY: %f\n", x, y, posX, posZ);
+}
 /*-------ANIMATION FUNCTION-------------------*/
 
 void move(void) {
@@ -668,8 +667,10 @@ void ObjMenu(GLint option) {
 void printMenu(GLint x) {
 	switch (x) {
 	case 1:
-		printf("Dnear: %f Dfar: %f vAngle: %f xeye: %f, yeye: %f, zeye: %f, xref: %f, yref: %f, zref: %f\n", myCam.dnear, myCam.dfar,
-				myCam.vangle, myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref, myCam.zref);
+		printf(
+				"Dnear: %f Dfar: %f vAngle: %f xeye: %f, yeye: %f, zeye: %f, xref: %f, yref: %f, zref: %f\n",
+				myCam.dnear, myCam.dfar, myCam.vangle, myCam.xeye, myCam.yeye,
+				myCam.zeye, myCam.xref, myCam.yref, myCam.zref);
 		break;
 	}
 }
