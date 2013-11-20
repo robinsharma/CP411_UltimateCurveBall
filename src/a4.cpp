@@ -17,7 +17,7 @@
 
 #include "World.hpp"
 #include "Camera.hpp"
-
+void getPos(GLint, GLint);
 GLint winWidth = 800, winHeight = 800;
 /*  Set coordinate limits for the clipping window:  */
 GLfloat xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
@@ -53,6 +53,9 @@ GLfloat high_shininess[] = { 100.0 };
 GLfloat mat_emission[] = { 1, 1, 1, 1 };
 
 GLuint programObject;
+
+GLdouble posX, posY, posZ;
+
 
 void display(void) {
 
@@ -136,6 +139,7 @@ void mouseAction(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
 		moving = 0;
 	}
+
 	glutPostRedisplay();
 
 }
@@ -215,7 +219,10 @@ void mouseMotion(GLint x, GLint y) {
 		}
 
 		else if (coordinate == 2 && type == 4) { //wc translate x
-			myWorld.list[selected]->translate(theta * 0.02, 0, 0);
+			//myWorld.list[selected]->translate(theta * 0.02, 0, 0);
+			getPos(x, y);
+			myWorld.list[selected]->translate((float)posX, 0, 0);
+
 
 		}
 
@@ -371,6 +378,25 @@ void mouseMotion(GLint x, GLint y) {
 	}
 
 }
+
+void getPos(GLint x, GLint y)
+{
+    GLint viewport[4];
+    GLdouble modelview[16];
+    GLdouble projection[16];
+    GLfloat winX, winY, winZ;
+
+    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+    glGetDoublev( GL_PROJECTION_MATRIX, projection );
+    glGetIntegerv( GL_VIEWPORT, viewport );
+
+    winX = (float)x;
+    winY = (float)viewport[3] - (float)y;
+    glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+
+    gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+    printf("%f %f posX: %f, posY: %f\n", x, y, posX, posZ);
+ }
 /*-------ANIMATION FUNCTION-------------------*/
 
 void move(void) {
