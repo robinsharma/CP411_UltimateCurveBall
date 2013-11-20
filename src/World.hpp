@@ -27,11 +27,9 @@ class World {
 
 public:
 
-	Shape* list[2];
+	Shape* list[3];
 
-	Bezier* myBezier;
-
-	SolarSystem* mySolar;
+	GLint length;
 
 	// std::list<Shape*> ObjectList;
 	// std::vector<Shape*>* ObjectVector;
@@ -42,8 +40,6 @@ public:
 
 	void draw_world(); // draw all objects in the world
 
-	bool solarAnimationOn;
-	bool isBez;
 };
 
 #endif

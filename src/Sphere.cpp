@@ -19,7 +19,15 @@ Sphere::Sphere() {
 	textureID = 0;
 }
 
-void Sphere::draw() {}
+void Sphere::draw() {
+	glPushMatrix();
+	this->ctm_multiply();
+	glScalef(sx, sy, sz);
+	glColor3f(1.0, 1.0, 0.0);
+	glutWireSphere(1.0, 30, 30);
+	glPopMatrix();
+
+}
 
 void Sphere::drawShape(GLuint texture) {
 	this->quad = gluNewQuadric();

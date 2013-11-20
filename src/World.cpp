@@ -11,11 +11,10 @@
 
 World::World() {
 	list[0] = new Cube();
-	mySolar = new SolarSystem();
-	myBezier = new Bezier();
-	solarAnimationOn = false;
-	isBez = true;
+	list[1] = new Cube();
+	list[2] = new Sphere();
 
+	length = 3;
 	/* object list
 	 ObjectList.push_back(list[0]);
 	 ObjectList.push_back(list[1]);
@@ -30,24 +29,17 @@ World::World() {
 }
 
 World::~World() {
-	delete list[0];
-	delete mySolar;
-	mySolar = NULL;
-	delete myBezier;
-	myBezier = NULL;
-	//delete list[3];
+	int i = 0;
+	for(i = 0; i < length; i++) {
+		delete list[i];
+	}
 }
 
 void World::draw_world() {
-	if (!solarAnimationOn && !isBez) {
-		list[0]->draw();
-	} else if (solarAnimationOn){
-		mySolar->draw_world();
-		//list[3]->draw();
-	} else if (isBez) {
-		myBezier->draw();
+	int i = 0;
+	for(i = 0; i < length; i++) {
+		list[i]->draw();
 	}
-
 
 	/*
 	 for (std::list<Shape*>::const_iterator it = ObjectList.begin(); it!=ObjectList.end(); ++it) {

@@ -24,7 +24,6 @@ GLfloat xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
 
 /*  Set positions for near and far clipping planes:  */
 //GLfloat theta = 0.0, rx = 1.0, ry = 0.0, rz = 0.0, s=0.8;
-
 GLfloat red = 1.0, green = 1.0, blue = 1.0;  //color
 GLint moving = 0, xBegin = 0, coordinate = 1, type = 1, selected = 0;
 
@@ -32,15 +31,6 @@ GLint moving = 0, xBegin = 0, coordinate = 1, type = 1, selected = 0;
 World myWorld;
 Light Spot;
 Camera myCam;
-
-wcPt3D ctrlPts[10]; // to store control points,
-wcPt3D RBM[73][26], RBC_face_norm[73][26]; // to store the mesh points and norm at each points
-
-GLint nCtrlPts = 0; // number control points selected
-GLint R = 45, S = 5, T = 5; // Rotation variables
-GLint Ptgen = 1, BCgen = 0, BCRotation = 1; // state variables for control point generation, Bezier curve generation, Bezier curve rotation
-
-GLint style = 1;
 
 //Lighting substitute lx, ly, lz
 GLfloat position[] = { 1.8, 1.8, 1.5, 1.0 };
@@ -64,28 +54,8 @@ GLfloat mat_emission[] = { 1, 1, 1, 1 };
 
 GLuint programObject;
 
-bool SolarStarted = false; //boolean prevents solar animation from getting faster upon repeated selection
-
-/*
-void rotateView(GLfloat rx, GLfloat ry, GLfloat rz, GLfloat angle) {
-	Matrix* m = new Matrix();
-	m->rotate(rx, ry, rz, angle);
-	GLfloat v[4];
-	v[0] = myCam.xeye;
-	v[1] = myCam.yeye;
-	v[2] = myCam.zeye;
-	v[3] = 1;
-	m->multiply_vector(v);
-	xeye = v[0];
-	yeye = v[1];
-	zeye = v[2];
-	delete m;
-}
-*/
-
 void display(void) {
 
-	if (BCRotation) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -94,11 +64,8 @@ void display(void) {
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref, myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
-
-		if (Spot.getOn()) {
-			glDisable(GL_LIGHTING);
-		}
+		gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref,
+				myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
 
 		glLineWidth(3);
 
@@ -120,10 +87,6 @@ void display(void) {
 
 		if (Spot.getOn()) {
 			glEnable(GL_LIGHTING);
-		} else
-			glDisable(GL_LIGHTING);
-
-		if (style == 2 && Spot.getOn()) {
 			glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 			glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
 			glLightfv(GL_LIGHT0, GL_POSITION, position);
@@ -133,30 +96,11 @@ void display(void) {
 			glMaterialfv(GL_FRONT, GL_SPECULAR, mat_ambient);
 			glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
 			glMaterialfv(GL_FRONT, GL_EMISSION, no_mat);
-		}
+		} else
+			glDisable(GL_LIGHTING);
 
 		myWorld.draw_world(); // draw all objects in the world
 		Spot.draw();
-	}
-
-	else {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluPerspective(myCam.vangle, 1.0, myCam.dnear, myCam.dfar);
-
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref, myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
-
-		glLineWidth(1.0);
-
-		glColor3f(red, green, blue);
-
-		myWorld.draw_world(); // draw all objects in the world
-		Spot.draw();
-	}
 
 	glFlush();
 	glutSwapBuffers();
@@ -180,26 +124,8 @@ void mouseAction(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
 		moving = 0;
 	}
+	glutPostRedisplay();
 
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && Ptgen == 1) {
-		if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-
-			myWorld.myBezier->ctrlPts[myWorld.myBezier->nCtrlPts].x = x
-					- winWidth / 2;
-			myWorld.myBezier->ctrlPts[myWorld.myBezier->nCtrlPts].y = winHeight
-					/ 2 - y;
-			myWorld.myBezier->ctrlPts[myWorld.myBezier->nCtrlPts].z = 0;
-
-			printf("Point %d set: %f %f \n", myWorld.myBezier->nCtrlPts,
-					myWorld.myBezier->ctrlPts[myWorld.myBezier->nCtrlPts].x,
-					myWorld.myBezier->ctrlPts[myWorld.myBezier->nCtrlPts].y);
-
-			if (myWorld.myBezier->nCtrlPts < 10) {
-				myWorld.myBezier->nCtrlPts++;
-			}
-		}
-		glutPostRedisplay();
-	}
 }
 
 void mouseMotion(GLint x, GLint y) {
@@ -207,52 +133,33 @@ void mouseMotion(GLint x, GLint y) {
 	if (moving) {
 		theta = (xBegin - x > 0) ? 1 : -1;
 		if (coordinate == 1 && type == 1) { // mc rotate x
-			if (myWorld.isBez) {
-				rx = myWorld.myBezier->getMC().mat[0][0];
-				ry = myWorld.myBezier->getMC().mat[1][0];
-				rz = myWorld.myBezier->getMC().mat[2][0];
-				myWorld.myBezier->rotate_mc(rx, ry, rz, theta * 0.5);
-			} else {
-				rx = myWorld.list[selected]->getMC().mat[0][0];
-				ry = myWorld.list[selected]->getMC().mat[1][0];
-				rz = myWorld.list[selected]->getMC().mat[2][0];
-				myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-			}
+
+			rx = myWorld.list[selected]->getMC().mat[0][0];
+			ry = myWorld.list[selected]->getMC().mat[1][0];
+			rz = myWorld.list[selected]->getMC().mat[2][0];
+			myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
+
 		}
 
 		else if (coordinate == 1 && type == 2) { // mc rotate y
-			if (myWorld.isBez) {
+			rx = myWorld.list[selected]->getMC().mat[0][1];
+			ry = myWorld.list[selected]->getMC().mat[1][1];
+			rz = myWorld.list[selected]->getMC().mat[2][1];
+			myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
 
-
-			} else {
-				rx = myWorld.list[selected]->getMC().mat[0][1];
-				ry = myWorld.list[selected]->getMC().mat[1][1];
-				rz = myWorld.list[selected]->getMC().mat[2][1];
-				myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-			}
 		}
 
 		else if (coordinate == 1 && type == 3) { // mc rotate z
-			if (myWorld.isBez) {
-				rx = myWorld.myBezier->getMC().mat[0][2];
-				ry = myWorld.myBezier->getMC().mat[1][2];
-				rz = myWorld.myBezier->getMC().mat[2][2];
-				myWorld.myBezier->rotate_mc(rx, ry, rz, theta * 0.5);
+			rx = myWorld.list[selected]->getMC().mat[0][2];
+			ry = myWorld.list[selected]->getMC().mat[1][2];
+			rz = myWorld.list[selected]->getMC().mat[2][2];
+			myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
 
-			} else {
-				rx = myWorld.list[selected]->getMC().mat[0][2];
-				ry = myWorld.list[selected]->getMC().mat[1][2];
-				rz = myWorld.list[selected]->getMC().mat[2][2];
-				myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-			}
 		}
 
 		else if (coordinate == 1 && type == 4) { // mc scale
-			if (myWorld.isBez) {
-				myWorld.myBezier->scaleX(theta * 0.02);
-			} else {
-				myWorld.list[selected]->scaleX(theta * 0.02);
-			}
+			myWorld.list[selected]->scaleZ(theta * 0.02);
+
 		}
 
 		else if (coordinate == 2 && type == 1) { // wc rotate x
@@ -260,59 +167,39 @@ void mouseMotion(GLint x, GLint y) {
 			rx = 1;
 			ry = 0;
 			rz = 0;
-			if (myWorld.isBez) {
-				myWorld.myBezier->rotate_origin(rx, ry, rz, theta * 0.5);
-			} else {
-				myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-			}
+			myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
+
 		}
 
 		else if (coordinate == 2 && type == 2) { // wc rotate y
 			rx = 0;
 			ry = 1;
 			rz = 0;
-			if (myWorld.isBez) {
-				myWorld.myBezier->rotate_origin(rx, ry, rz, theta * 0.5);
-			} else {
-				myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-			}
+			myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
+
 		}
 
 		else if (coordinate == 2 && type == 3) { //wc rotate z
 			rx = 0;
 			ry = 0;
 			rz = 1;
-			if (myWorld.isBez) {
-				myWorld.myBezier->rotate_origin(rx, ry, rz, theta * 0.5);
-			} else {
-				myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-			}
+			myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
+
 		}
 
 		else if (coordinate == 2 && type == 4) { //wc translate x
-			if (myWorld.isBez) {
-				myWorld.myBezier->translate(theta * 0.02, 0, 0);
-			} else {
-				myWorld.list[selected]->translate(theta * 0.02, 0, 0);
-			}
+			myWorld.list[selected]->translate(theta * 0.02, 0, 0);
+
 		}
 
 		else if (coordinate == 2 && type == 5) { //wc translate y
-			if (myWorld.isBez) {
-				myWorld.myBezier->translate(0, theta * 0.02, 0);
+			myWorld.list[selected]->translate(0, theta * 0.02, 0);
 
-			} else {
-				myWorld.list[selected]->translate(0, theta * 0.02, 0);
-			}
 		}
 
 		else if (coordinate == 2 && type == 6) { //wc translate z
-			if (myWorld.isBez) {
-				myWorld.myBezier->translate(0, 0, theta * 0.02);
+			myWorld.list[selected]->translate(0, 0, theta * 0.02);
 
-			} else {
-				myWorld.list[selected]->translate(0, 0, theta * 0.02);
-			}
 		}
 
 		else if (coordinate == 3 && type == 1) { //VC Rotate x
@@ -419,71 +306,63 @@ void mouseMotion(GLint x, GLint y) {
 		}
 
 		else if (coordinate == 4 && type == 7) { // Ambient Ka
-			if (myWorld.isBez) {
-				ambient[0] += theta * 0.01;
-				ambient[1] += theta * 0.01;
-				ambient[2] += theta * 0.01;
+			ambient[0] += theta * 0.01;
+			ambient[1] += theta * 0.01;
+			ambient[2] += theta * 0.01;
+			if (Spot.Ka > 1.0) {
+				Spot.Ka = 1.0;
+			} else if (Spot.Ka < 0) {
+				Spot.Ka = 0.0;
 			} else {
-				if (Spot.Ka > 1.0) {
-					Spot.Ka = 1.0;
-				} else if (Spot.Ka < 0) {
-					Spot.Ka = 0.0;
-				} else {
-					theta = (xBegin - x < 0) ? 1 : -1;
-					Spot.Ka += theta * 0.01;
-				}
+				theta = (xBegin - x < 0) ? 1 : -1;
+				Spot.Ka += theta * 0.01;
 			}
+
 		}
 
 		else if (coordinate == 4 && type == 8) { // Ambient B
-			if (myWorld.isBez) {
-				ambient[0] += theta * 0.01;
-				ambient[1] += theta * 0.01;
-				ambient[2] += theta * 0.01;
+			ambient[0] += theta * 0.01;
+			ambient[1] += theta * 0.01;
+			ambient[2] += theta * 0.01;
+
+			if (Spot.B > 1.0) {
+				Spot.B = 1.0;
+			} else if (Spot.B < 0) {
+				Spot.B = 0.0;
 			} else {
-				if (Spot.B > 1.0) {
-					Spot.B = 1.0;
-				} else if (Spot.B < 0) {
-					Spot.B = 0.0;
-				} else {
-					theta = (xBegin - x < 0) ? 1 : -1;
-					Spot.B += theta * 0.01;
-				}
+				theta = (xBegin - x < 0) ? 1 : -1;
+				Spot.B += theta * 0.01;
 			}
 
 		}
 
 		else if (coordinate == 4 && type == 9) { // Point Light Kd
-			if (myWorld.isBez) {
-				diffuse[0] += theta * 0.01;
-				diffuse[1] += theta * 0.01;
-				diffuse[2] += theta * 0.01;
+			diffuse[0] += theta * 0.01;
+			diffuse[1] += theta * 0.01;
+			diffuse[2] += theta * 0.01;
+
+			if (Spot.Kd > 1.0) {
+				Spot.Kd = 1.0;
+			} else if (Spot.Kd < 0) {
+				Spot.Kd = 0.0;
 			} else {
-				if (Spot.Kd > 1.0) {
-					Spot.Kd = 1.0;
-				} else if (Spot.Kd < 0) {
-					Spot.Kd = 0.0;
-				} else {
-					theta = (xBegin - x < 0) ? 1 : -1;
-					Spot.Kd += theta * 0.01;
-				}
+				theta = (xBegin - x < 0) ? 1 : -1;
+				Spot.Kd += theta * 0.01;
 			}
+
 		}
 
 		else if (coordinate == 4 && type == 10) { // Point Intensity P
-			if (myWorld.isBez) {
-				diffuse[0] += theta * 0.01;
-				diffuse[1] += theta * 0.01;
-				diffuse[2] += theta * 0.01;
+			diffuse[0] += theta * 0.01;
+			diffuse[1] += theta * 0.01;
+			diffuse[2] += theta * 0.01;
+			if (Spot.P > 1.0) {
+				Spot.P = 1.0;
+			} else if (Spot.P < 0) {
+				Spot.P = 0.0;
 			} else {
-				if (Spot.P > 1.0) {
-					Spot.P = 1.0;
-				} else if (Spot.P < 0) {
-					Spot.P = 0.0;
-				} else {
-					theta = (xBegin - x < 0) ? 1 : -1;
-					Spot.P += theta * 0.01;
-				}
+				theta = (xBegin - x < 0) ? 1 : -1;
+				Spot.P += theta * 0.01;
 			}
 
 		}
@@ -493,56 +372,16 @@ void mouseMotion(GLint x, GLint y) {
 
 }
 /*-------ANIMATION FUNCTION-------------------*/
-void solarMove(int x) {
-	GLfloat rx, ry, rz;
-
-	myWorld.mySolar->Sun->rotate(0, -1, 0, 5);
-
-	rx = myWorld.mySolar->Earth->getMC().mat[0][0];
-	ry = myWorld.mySolar->Earth->getMC().mat[1][0];
-	rz = myWorld.mySolar->Earth->getMC().mat[2][0];
-
-	myWorld.mySolar->Earth->rotate_mc(rx, ry, rz, 5);
-	myWorld.mySolar->Earth->rotate_origin(0, -1, 0, 5);
-
-	rx = myWorld.mySolar->Moon->getMC().mat[0][0];
-	ry = myWorld.mySolar->Moon->getMC().mat[1][0];
-	rz = myWorld.mySolar->Moon->getMC().mat[2][0];
-
-	myWorld.mySolar->Moon->rotate_mc(rx, ry, rz, 5);
-	myWorld.mySolar->Moon->rotate_origin(0, -1, 0, 5);
-
-	rx = myWorld.mySolar->Earth->getMC().mat[0][3];
-	ry = myWorld.mySolar->Earth->getMC().mat[1][3];
-	rz = myWorld.mySolar->Earth->getMC().mat[2][3];
-	myWorld.mySolar->Moon->rotate_relative(rx, ry, rz, 0, -1, 0, 2);
-	if (x == 1) {
-		glutTimerFunc(40, solarMove, 1);
-		SolarStarted = true;
-	}
-	glutPostRedisplay();
-
-}
 
 void move(void) {
 	GLfloat rx, ry, rz, theta;
 
 	theta = 0.05;
-
-	if(!myWorld.isBez) {
-		rx = myWorld.list[selected]->getMC().mat[0][1];
-		ry = myWorld.list[selected]->getMC().mat[1][1];
-		rz = myWorld.list[selected]->getMC().mat[2][1];
+	rx = myWorld.list[selected]->getMC().mat[0][1];
+	ry = myWorld.list[selected]->getMC().mat[1][1];
+	rz = myWorld.list[selected]->getMC().mat[2][1];
 	myWorld.list[selected]->rotate_mc(rx, ry, rz, theta);
-	}
 
-	else {
-		rx = myWorld.myBezier->getMC().mat[0][1];
-		ry = myWorld.myBezier->getMC().mat[1][1];
-		rz = myWorld.myBezier->getMC().mat[2][1];
-		myWorld.myBezier->rotate_mc(rx, ry, rz, theta);
-
-	}
 	glutPostRedisplay();
 }
 
@@ -601,7 +440,8 @@ void init(void) {
 	glMatrixMode(GL_PROJECTION);
 	gluPerspective(myCam.vangle, 1.0, myCam.dnear, myCam.dfar);
 	glMatrixMode(GL_MODELVIEW);
-	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye,myCam.xref, myCam.yref, myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
+	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref,
+			myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
 	glEnable(GL_DEPTH_TEST);
 	programObject = InitShader("vshader.glsl", "fshader.glsl");
 	glUseProgram(0);
@@ -625,14 +465,12 @@ void mainMenu(GLint option) {
 	switch (option) {
 	case 1: { //reset
 		myWorld.list[0] = new Cube();
-		myWorld.myBezier = new Bezier();
-		myWorld.isBez = true;
+
 		myCam.xeye = 3.0, myCam.yeye = 3.0, myCam.zeye = 7.0; //set view back to default!
 		myCam.vangle = 40.0, myCam.dnear = 2.0, myCam.dfar = 20.0;
 		Spot.resetAll();
 		Spot.off();
 		glutIdleFunc(NULL);
-		myWorld.solarAnimationOn = false;
 		ResetLightAll();
 		Disable();
 		glutPostRedisplay();
@@ -731,172 +569,10 @@ void LightTransMenu(GLint Option) {
 	type = Option;
 }
 
-void a4SubMenu(GLint A4Option) {
-	myWorld.isBez = true;
-	myWorld.solarAnimationOn = false;
-	switch (A4Option) {
-	case 1: {
-		Ptgen = 1;
-		BCgen = 0;
-		BCRotation = 0;
-
-		Disable();
-
-	}
-		break;
-	case 2: {
-		Ptgen = 0;
-		BCgen = 1;
-		BCRotation = 0;
-
-		Disable();
-	}
-		break;
-	case 3: {
-
-		Ptgen = 0;
-		BCgen = 0;
-		BCRotation = 1;
-		MCTransMenu(1);
-		Disable();
-
-	}
-		break;
-	case 4: {
-		style = 1;
-		Spot.off();
-		Ptgen = 0;
-		BCgen = 0;
-		BCRotation = 1;
-		Disable();
-
-	}
-		break;
-	case 5: {
-		Spot.on();
-		style = 2;
-		Ptgen = 0;
-		BCgen = 0;
-		BCRotation = 1;
-		Enable();
-
-	}
-		break;
-	case 6: {
-		glClearColor(0.0, 0.0, 0.0, 1.0); // Set display-window color to black
-		glMatrixMode(GL_PROJECTION);
-		gluPerspective(myCam.vangle, 1.0, myCam.dnear, myCam.dfar);
-
-		glMatrixMode(GL_MODELVIEW);
-
-		gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref, myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
-
-		Ptgen = 0;
-		BCgen = 0;
-		BCRotation = 0;
-
-		myWorld.solarAnimationOn = true;
-		Spot.pointOff();
-		if (!SolarStarted) {
-			solarMove(1);
-		}
-
-		glEnable(GL_DEPTH_TEST);
-
-		glEnable( GL_NORMALIZE);
-
-		glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, mat_ambient);
-		glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
-		glMaterialfv(GL_FRONT, GL_EMISSION, no_mat);
-
-		// Set up simple lighting model
-		glEnable( GL_LIGHTING);
-
-		glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-		glLightfv(GL_LIGHT0, GL_POSITION, positionSolar);
-		glEnable( GL_LIGHT0);
-
-		// Enable material properties for lighting
-		glEnable( GL_COLOR_MATERIAL);
-		glColorMaterial( GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-
-		glPixelStorei( GL_UNPACK_ALIGNMENT, 1);
-
-		glEnable( GL_CULL_FACE);
-		glEnable( GL_TEXTURE_2D);
-		break;
-	}
-	}
-
-	glutPostRedisplay();
-
-}
-
-void rotSubMenu(GLint rotOption) {
-	switch (rotOption) {
-	case 1:
-		R = 45;
-		break;
-	case 2:
-		R = 90;
-		break;
-	case 3:
-		R = 135;
-		break;
-	case 4:
-		R = 180;
-		break;
-	case 5:
-		R = 225;
-		break;
-	case 6:
-		R = 270;
-		break;
-	case 7:
-		R = 315;
-		break;
-	case 8:
-		R = 360;
-		break;
-	case 9:
-		S = 5;
-		break;
-	case 10:
-		S = 10;
-		break;
-	case 11:
-		S = 15;
-		break;
-	case 12:
-		T = 5;
-		break;
-	case 13:
-		T = 10;
-		break;
-	case 14:
-		T = 15;
-		break;
-	case 15:
-		T = 20;
-		break;
-	case 16:
-		T = 25;
-		break;
-	default:
-		break;
-	}
-	glutPostRedisplay();
-}
-
 void glslSubMenu(GLint glslOption) {
 	switch (glslOption) {
 	case 1:
-		if (Ptgen != 1 && BCgen != 1 && style !=1) {
-			glUseProgram(programObject);
-		}
+		glUseProgram(programObject);
 
 		break;
 	case 2:
@@ -913,23 +589,18 @@ void glslSubMenu(GLint glslOption) {
 void ObjMenu(GLint option) {
 	switch (option) {
 	case 1: { //Cube
-		myWorld.isBez = false;
-		myWorld.solarAnimationOn = false;
-		Ptgen = 0;
-		BCgen = 0;
 		Enable();
+		selected = 0;
 		break;
 	}
-	case 2: { //Bezier
-		myWorld.isBez = true;
-		myWorld.solarAnimationOn = false;
-		Disable();
-		Ptgen = 1;
-		BCgen = 0;
+
+	case 2: {
+		selected = 1;
 		break;
 	}
-	case 3: { //Solar System
-		a4SubMenu(6);
+
+	case 3: {
+		selected = 2;
 		break;
 	}
 	case 4: { //Show Point Light
@@ -945,14 +616,10 @@ void ObjMenu(GLint option) {
 	glutPostRedisplay();
 }
 
-void AxisMenu(GLint option) {
-	BCRotation = option;
-	glutPostRedisplay();
-}
 
 void menu() {
 	GLint WCTrans_Menu, VCTrans_Menu, MCTrans_Menu, A3_Menu, LightTrans_Menu,
-			Rot_Menu, glsl_shad, A4_Menu, Axis_Menu, Obj_Menu;
+			 glsl_shad, Obj_Menu;
 	MCTrans_Menu = glutCreateMenu(MCTransMenu);
 	glutAddMenuEntry(" Rotate x ", 1);
 	glutAddMenuEntry(" Rotate y ", 2);
@@ -999,56 +666,26 @@ void menu() {
 	glutAddMenuEntry("Point Light Kd", 9);
 	glutAddMenuEntry("Point Intensity P", 10);
 
-	Rot_Menu = glutCreateMenu(rotSubMenu);
-	glutAddMenuEntry(" R->45 ", 1);
-	glutAddMenuEntry(" R->90 ", 2);
-	glutAddMenuEntry(" R->135 ", 3);
-	glutAddMenuEntry(" R->180 ", 4);
-	glutAddMenuEntry(" R->225 ", 5);
-	glutAddMenuEntry(" R->270 ", 6);
-	glutAddMenuEntry(" R->315 ", 7);
-	glutAddMenuEntry(" R->360 ", 8);
-	glutAddMenuEntry(" S->5 ", 9);
-	glutAddMenuEntry(" S->10 ", 10);
-	glutAddMenuEntry(" S->15 ", 11);
-	glutAddMenuEntry(" T->5 ", 12);
-	glutAddMenuEntry(" T->10 ", 13);
-	glutAddMenuEntry(" T->15 ", 14);
-	glutAddMenuEntry(" T->20 ", 15);
-	glutAddMenuEntry(" T->25 ", 16);
+
 
 	glsl_shad = glutCreateMenu(glslSubMenu);
 	glutAddMenuEntry(" On ", 1);
 	glutAddMenuEntry(" Off ", 2);
 
-	A4_Menu = glutCreateMenu(a4SubMenu);
-	glutAddMenuEntry(" Control Point Selection ", 1);
-	glutAddMenuEntry(" Bezier Curve Generation ", 2);
-	glutAddMenuEntry(" X-axis rotate ", 3);
-	glutAddSubMenu(" Rotation Options ", Rot_Menu);
-	glutAddMenuEntry(" Mesh Without Lighting ", 4);
-	glutAddMenuEntry(" Solid With Lighting ", 5);
-	glutAddSubMenu(" GLSL Shading ", glsl_shad);
-	glutAddMenuEntry(" A4P2: Solar System ", 6);
-
-	Axis_Menu = glutCreateMenu(AxisMenu);
-	glutAddMenuEntry(" Axis on ", 1);
-	glutAddMenuEntry(" Axis off ", 0);
-
 	Obj_Menu = glutCreateMenu(ObjMenu);
 	glutAddMenuEntry(" Cube ", 1);
-	glutAddMenuEntry(" Bezier ", 2);
+	glutAddMenuEntry(" Cube 2 ", 2);
+	glutAddMenuEntry(" Sphere ", 3);
 	glutAddMenuEntry(" Solar System Animation ", 3);
 	glutAddMenuEntry(" Show Point Light ", 4);
 	glutAddMenuEntry(" Hide Point Light ", 5);
 
 	glutCreateMenu(mainMenu);      // Create main pop-up menu.
-	glutAddSubMenu(" A4 ", A4_Menu);
+	glutAddSubMenu("GLSL", glsl_shad);
 	glutAddSubMenu(" Model Transformations ", MCTrans_Menu);
 	glutAddSubMenu(" WC Transformations ", WCTrans_Menu);
 	glutAddSubMenu(" View Transformations ", VCTrans_Menu);
 	glutAddSubMenu(" Light Transformations ", LightTrans_Menu);
-	glutAddSubMenu(" Axis ", Axis_Menu);
 	glutAddSubMenu(" Object Display ", Obj_Menu);
 	glutAddSubMenu(" Miscellaneous ", A3_Menu);
 	glutAddMenuEntry(" Reset ", 1);
@@ -1067,7 +704,7 @@ int main(int argc, char** argv) {
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(winWidth, winHeight);
-	glutCreateWindow("CP411 Assignment 4 By Robin Sharma");
+	glutCreateWindow("CP411 Final Project: CurveBall 2.0");
 	glewInit();
 	init();
 	menu();
