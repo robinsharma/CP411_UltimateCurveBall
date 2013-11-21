@@ -135,9 +135,10 @@ void mouseAction(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		moving = 1;
 		xBegin = x;
+		yBegin = y;
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-
+		moving = 0;
 	}
 
 	glutPostRedisplay();
@@ -145,151 +146,111 @@ void mouseAction(int button, int state, int x, int y) {
 }
 
 void mouseMotion(GLint x, GLint y) {
-	GLfloat rx, ry, rz, theta;
-	if (moving == 1){
+	GLfloat rx, ry, rz, theta, thetaX,thetaY;
+	if(moving == 1){
+		thetaX = (x - xBegin > 0) ? 1 : -1;
+		thetaY = (yBegin - y > 0) ? 1 : -1;
+		myWorld.list[0]->translate(thetaX * 0.02, 0, 0);
+		myWorld.list[0]->translate(0, thetaY * 0.02, 0);
+		xBegin = x;
+		yBegin = y;
+	}
+	else if (moving == 2) {
 		theta = (xBegin - x > 0) ? 1 : -1;
 		if (coordinate == 1 && type == 1) { // mc rotate x
-
 			rx = myWorld.list[selected]->getMC().mat[0][0];
 			ry = myWorld.list[selected]->getMC().mat[1][0];
 			rz = myWorld.list[selected]->getMC().mat[2][0];
 			myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-
 		}
-
 		else if (coordinate == 1 && type == 2) { // mc rotate y
 			rx = myWorld.list[selected]->getMC().mat[0][1];
 			ry = myWorld.list[selected]->getMC().mat[1][1];
 			rz = myWorld.list[selected]->getMC().mat[2][1];
 			myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-
 		}
-
 		else if (coordinate == 1 && type == 3) { // mc rotate z
 			rx = myWorld.list[selected]->getMC().mat[0][2];
 			ry = myWorld.list[selected]->getMC().mat[1][2];
 			rz = myWorld.list[selected]->getMC().mat[2][2];
 			myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-
 		}
-
 		else if (coordinate == 1 && type == 4) { // mc scale
 			myWorld.list[selected]->scaleX(theta * 0.02);
-
 		}
-
 		else if (coordinate == 1 && type == 5) { // mc scale
 			myWorld.list[selected]->scaleY(theta * 0.02);
-
 		}
-
 		else if (coordinate == 1 && type == 6) { // mc scale
 			myWorld.list[selected]->scaleZ(theta * 0.02);
-
 		}
-
 		else if (coordinate == 1 && type == 7) { // mc scale
 			myWorld.list[selected]->scale_change(theta * 0.02);
-
 		}
-
 		else if (coordinate == 2 && type == 1) { // wc rotate x
-
 			rx = 1;
 			ry = 0;
 			rz = 0;
 			myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-
 		}
-
 		else if (coordinate == 2 && type == 2) { // wc rotate y
 			rx = 0;
 			ry = 1;
 			rz = 0;
 			myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-
 		}
-
 		else if (coordinate == 2 && type == 3) { //wc rotate z
 			rx = 0;
 			ry = 0;
 			rz = 1;
 			myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-
 		}
-
 		else if (coordinate == 2 && type == 4) { //wc translate x
 		//myWorld.list[selected]->translate(theta * 0.02, 0, 0);
 			getPos(x, y);
 			//myWorld.list[selected]->translate((float) posX, 0, 0);
-
 		}
-
 		else if (coordinate == 2 && type == 5) { //wc translate y
 			myWorld.list[selected]->translate(0, theta * 0.02, 0);
-
 		}
-
 		else if (coordinate == 2 && type == 6) { //wc translate z
 			myWorld.list[selected]->translate(0, 0, theta * 0.02);
-
 		}
-
 		else if (coordinate == 3 && type == 1) { //VC Rotate x
-
 			rx = 1;
 			ry = 0;
 			rz = 0;
-
 			myCam.rotate_view(rx, ry, rz, theta);
 		}
-
 		else if (coordinate == 3 && type == 2) { //VC Rotate y
-
 			rx = 0;
 			ry = 1;
 			rz = 0;
-
 			myCam.rotate_view(rx, ry, rz, theta);
-
 		}
-
 		else if (coordinate == 3 && type == 3) { //VC Rotate z
-
 			rx = 0;
 			ry = 0;
 			rz = 1;
-
 			myCam.rotate_view(rx, ry, rz, theta);
-
 		}
-
 		else if (coordinate == 3 && type == 4) { //VC Translate x
-
 			myCam.xeye += 0.1 * theta;
-
 		} else if (coordinate == 3 && type == 5) { //VC Translate y
-
 			myCam.yeye += 0.1 * theta;
-
 		} else if (coordinate == 3 && type == 6) { //VC Translate z
 			myCam.zeye += 0.1 * theta;
 		}
-
 		else if (coordinate == 3 && type == 7) { //VC Clipping Near
 			theta = (xBegin - x < 0) ? 1 : -1;
 			myCam.dnear += 0.1 * theta;
 		}
-
 		else if (coordinate == 3 && type == 8) { //VC Clipping Far
 			myCam.dfar += 0.1 * theta;
-
 		}
-
 		else if (coordinate == 3 && type == 9) { //Angle
 			myCam.vangle += 0.1 * theta;
 		}
-
 		//LIGHT TRANSFORMATIONS
 		else if (coordinate == 4 && type == 1) { //Light Rotate x
 			rx = 1;
@@ -373,9 +334,9 @@ void mouseMotion(GLint x, GLint y) {
 
 		}
 
-		glutPostRedisplay();
-	}
 
+	}
+	glutPostRedisplay();
 }
 
 void getPos(GLint x, GLint y) {
@@ -460,8 +421,15 @@ void ResetLightAll() {
 
 /*-----------------------------------------------------------*/
 void create_court() {
-	myWorld.list[0]->translate(0, 2.5, 0);
-	myWorld.list[1]->translate(0, 2.5, 0);
+	//This scales and positions the players paddle
+	myWorld.list[0]->scale_change(-0.75);
+	myWorld.list[0]->scaleZ(-0.24);
+	myWorld.list[0]->translate(0, 0, 2.5);
+
+	myWorld.list[1]->scale_change(-0.75);
+	myWorld.list[1]->scaleZ(-0.24);
+	myWorld.list[1]->translate(0, 0, -2.5);
+
 	myWorld.list[2]->translate(0, 2.5, 0);
 
 	myWorld.leftWall.translate(-1.0, 0, 0);
