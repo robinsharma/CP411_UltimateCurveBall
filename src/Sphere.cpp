@@ -5,9 +5,7 @@
  *      Author: Robin
  */
 
-
 #include "Sphere.hpp"
-
 
 Sphere::Sphere() {
 	radius = 1.0;
@@ -17,6 +15,17 @@ Sphere::Sphere() {
 	color[3] = 0.5;
 	quad = 0;
 	textureID = 0;
+
+	sphere_center_mc[0] = 0;
+	sphere_center_mc[1] = 0;
+	sphere_center_mc[2] = 0;
+	sphere_center_mc[3] = 1.0;
+
+	sphere_center_wc[0] = 0;
+	sphere_center_wc[1] = 0;
+	sphere_center_wc[2] = 0;
+	sphere_center_wc[3] = 1.0;
+
 }
 
 void Sphere::draw() {
@@ -48,7 +57,4 @@ void Sphere::drawShape(GLuint texture) {
 	glDisable(GL_TEXTURE_2D);
 	gluDeleteQuadric(this->quad);
 }
-
-
-
 

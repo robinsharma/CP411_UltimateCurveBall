@@ -17,7 +17,10 @@
 
 #include "World.hpp"
 #include "Camera.hpp"
+
 void getPos(GLint, GLint);
+void mouseMotion(GLint, GLint);
+
 GLint winWidth = 800, winHeight = 800;
 /*  Set coordinate limits for the clipping window:  */
 GLfloat xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
@@ -26,7 +29,7 @@ GLfloat xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
 //GLfloat theta = 0.0, rx = 1.0, ry = 0.0, rz = 0.0, s=0.8;
 GLfloat red = 1.0, green = 1.0, blue = 1.0;  //color
 GLint moving = 0, start = 0, xBegin = 0, yBegin = 0, coordinate = 1, type = 1,
-		selected = 0;
+		selected = 0, game_start = 0;
 
 //Declare a world containing all objects to draw.
 World myWorld;
@@ -138,7 +141,7 @@ void mouseAction(int button, int state, int x, int y) {
 		yBegin = y;
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-		moving = 0;
+		//moving = 0;
 	}
 
 	glutPostRedisplay();
@@ -146,195 +149,176 @@ void mouseAction(int button, int state, int x, int y) {
 }
 
 void mouseMotion(GLint x, GLint y) {
-	GLfloat rx, ry, rz, theta, thetaX,thetaY;
-	if(moving == 1){
-		thetaX = (x - xBegin > 0) ? 1 : -1;
-		thetaY = (yBegin - y > 0) ? 1 : -1;
-		myWorld.list[0]->translate(thetaX * 0.02, 0, 0);
-		myWorld.list[0]->translate(0, thetaY * 0.02, 0);
-		xBegin = x;
-		yBegin = y;
-	}
-	else if (moving == 2) {
-		theta = (xBegin - x > 0) ? 1 : -1;
-		if (coordinate == 1 && type == 1) { // mc rotate x
-			rx = myWorld.list[selected]->getMC().mat[0][0];
-			ry = myWorld.list[selected]->getMC().mat[1][0];
-			rz = myWorld.list[selected]->getMC().mat[2][0];
-			myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-		}
-		else if (coordinate == 1 && type == 2) { // mc rotate y
-			rx = myWorld.list[selected]->getMC().mat[0][1];
-			ry = myWorld.list[selected]->getMC().mat[1][1];
-			rz = myWorld.list[selected]->getMC().mat[2][1];
-			myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-		}
-		else if (coordinate == 1 && type == 3) { // mc rotate z
-			rx = myWorld.list[selected]->getMC().mat[0][2];
-			ry = myWorld.list[selected]->getMC().mat[1][2];
-			rz = myWorld.list[selected]->getMC().mat[2][2];
-			myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-		}
-		else if (coordinate == 1 && type == 4) { // mc scale
-			myWorld.list[selected]->scaleX(theta * 0.02);
-		}
-		else if (coordinate == 1 && type == 5) { // mc scale
-			myWorld.list[selected]->scaleY(theta * 0.02);
-		}
-		else if (coordinate == 1 && type == 6) { // mc scale
-			myWorld.list[selected]->scaleZ(theta * 0.02);
-		}
-		else if (coordinate == 1 && type == 7) { // mc scale
-			myWorld.list[selected]->scale_change(theta * 0.02);
-		}
-		else if (coordinate == 2 && type == 1) { // wc rotate x
-			rx = 1;
-			ry = 0;
-			rz = 0;
-			myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-		}
-		else if (coordinate == 2 && type == 2) { // wc rotate y
-			rx = 0;
-			ry = 1;
-			rz = 0;
-			myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-		}
-		else if (coordinate == 2 && type == 3) { //wc rotate z
-			rx = 0;
-			ry = 0;
-			rz = 1;
-			myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-		}
-		else if (coordinate == 2 && type == 4) { //wc translate x
-		//myWorld.list[selected]->translate(theta * 0.02, 0, 0);
-			getPos(x, y);
-			//myWorld.list[selected]->translate((float) posX, 0, 0);
-		}
-		else if (coordinate == 2 && type == 5) { //wc translate y
-			myWorld.list[selected]->translate(0, theta * 0.02, 0);
-		}
-		else if (coordinate == 2 && type == 6) { //wc translate z
-			myWorld.list[selected]->translate(0, 0, theta * 0.02);
-		}
-		else if (coordinate == 3 && type == 1) { //VC Rotate x
-			rx = 1;
-			ry = 0;
-			rz = 0;
-			myCam.rotate_view(rx, ry, rz, theta);
-		}
-		else if (coordinate == 3 && type == 2) { //VC Rotate y
-			rx = 0;
-			ry = 1;
-			rz = 0;
-			myCam.rotate_view(rx, ry, rz, theta);
-		}
-		else if (coordinate == 3 && type == 3) { //VC Rotate z
-			rx = 0;
-			ry = 0;
-			rz = 1;
-			myCam.rotate_view(rx, ry, rz, theta);
-		}
-		else if (coordinate == 3 && type == 4) { //VC Translate x
-			myCam.xeye += 0.1 * theta;
-		} else if (coordinate == 3 && type == 5) { //VC Translate y
-			myCam.yeye += 0.1 * theta;
-		} else if (coordinate == 3 && type == 6) { //VC Translate z
-			myCam.zeye += 0.1 * theta;
-		}
-		else if (coordinate == 3 && type == 7) { //VC Clipping Near
-			theta = (xBegin - x < 0) ? 1 : -1;
-			myCam.dnear += 0.1 * theta;
-		}
-		else if (coordinate == 3 && type == 8) { //VC Clipping Far
-			myCam.dfar += 0.1 * theta;
-		}
-		else if (coordinate == 3 && type == 9) { //Angle
-			myCam.vangle += 0.1 * theta;
-		}
-		//LIGHT TRANSFORMATIONS
-		else if (coordinate == 4 && type == 1) { //Light Rotate x
-			rx = 1;
-			ry = 0;
-			rz = 0;
-			Spot.rotateWC(rx, ry, rz, theta * 0.5);
-		} else if (coordinate == 4 && type == 2) { //Light Rotate y
-			rx = 0;
-			ry = 1;
-			rz = 0;
-			Spot.rotateWC(rx, ry, rz, theta * 0.5);
-		} else if (coordinate == 4 && type == 3) { //Light Rotate z
-			rx = 0;
-			ry = 0;
-			rz = 1;
-			Spot.rotateWC(rx, ry, rz, theta * 0.5);
-		} else if (coordinate == 4 && type == 4) { //Light Translate x
-			Spot.lx += theta * 0.02;
-		} else if (coordinate == 4 && type == 5) { //Light Translate y
-			Spot.ly += theta * 0.02;
-		} else if (coordinate == 4 && type == 6) { //Light Translate z
-			Spot.lz += theta * 0.02;
-		} else if (coordinate == 4 && type == 7) { // Ambient Ka
-			ambient[0] += theta * 0.01;
-			ambient[1] += theta * 0.01;
-			ambient[2] += theta * 0.01;
-			if (Spot.Ka > 1.0) {
-				Spot.Ka = 1.0;
-			} else if (Spot.Ka < 0) {
-				Spot.Ka = 0.0;
-			} else {
+	GLfloat rx, ry, rz, theta, thetaX, thetaY;
+	if (moving == 1) {
+		if (game_start == 1) {
+			thetaX = (x - xBegin > 0) ? 1 : -1;
+			thetaY = (yBegin - y > 0) ? 1 : -1;
+			myWorld.list[0]->translate(thetaX * 0.02, 0, 0);
+			myWorld.list[0]->translate(0, thetaY * 0.02, 0);
+			xBegin = x;
+			yBegin = y;
+		} else if (game_start == 0) {
+			theta = (xBegin - x > 0) ? 1 : -1;
+			if (coordinate == 1 && type == 1) { // mc rotate x
+				rx = myWorld.list[selected]->getMC().mat[0][0];
+				ry = myWorld.list[selected]->getMC().mat[1][0];
+				rz = myWorld.list[selected]->getMC().mat[2][0];
+				myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
+			} else if (coordinate == 1 && type == 2) { // mc rotate y
+				rx = myWorld.list[selected]->getMC().mat[0][1];
+				ry = myWorld.list[selected]->getMC().mat[1][1];
+				rz = myWorld.list[selected]->getMC().mat[2][1];
+				myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
+			} else if (coordinate == 1 && type == 3) { // mc rotate z
+				rx = myWorld.list[selected]->getMC().mat[0][2];
+				ry = myWorld.list[selected]->getMC().mat[1][2];
+				rz = myWorld.list[selected]->getMC().mat[2][2];
+				myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
+			} else if (coordinate == 1 && type == 4) { // mc scale
+				myWorld.list[selected]->scaleX(theta * 0.02);
+			} else if (coordinate == 1 && type == 5) { // mc scale
+				myWorld.list[selected]->scaleY(theta * 0.02);
+			} else if (coordinate == 1 && type == 6) { // mc scale
+				myWorld.list[selected]->scaleZ(theta * 0.02);
+			} else if (coordinate == 1 && type == 7) { // mc scale
+				myWorld.list[selected]->scale_change(theta * 0.02);
+			} else if (coordinate == 2 && type == 1) { // wc rotate x
+				rx = 1;
+				ry = 0;
+				rz = 0;
+				myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
+			} else if (coordinate == 2 && type == 2) { // wc rotate y
+				rx = 0;
+				ry = 1;
+				rz = 0;
+				myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
+			} else if (coordinate == 2 && type == 3) { //wc rotate z
+				rx = 0;
+				ry = 0;
+				rz = 1;
+				myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
+			} else if (coordinate == 2 && type == 4) { //wc translate x
+			//myWorld.list[selected]->translate(theta * 0.02, 0, 0);
+				getPos(x, y);
+				//myWorld.list[selected]->translate((float) posX, 0, 0);
+			} else if (coordinate == 2 && type == 5) { //wc translate y
+				myWorld.list[selected]->translate(0, theta * 0.02, 0);
+			} else if (coordinate == 2 && type == 6) { //wc translate z
+				myWorld.list[selected]->translate(0, 0, theta * 0.02);
+			} else if (coordinate == 3 && type == 1) { //VC Rotate x
+				rx = 1;
+				ry = 0;
+				rz = 0;
+				myCam.rotate_view(rx, ry, rz, theta);
+			} else if (coordinate == 3 && type == 2) { //VC Rotate y
+				rx = 0;
+				ry = 1;
+				rz = 0;
+				myCam.rotate_view(rx, ry, rz, theta);
+			} else if (coordinate == 3 && type == 3) { //VC Rotate z
+				rx = 0;
+				ry = 0;
+				rz = 1;
+				myCam.rotate_view(rx, ry, rz, theta);
+			} else if (coordinate == 3 && type == 4) { //VC Translate x
+				myCam.xeye += 0.1 * theta;
+			} else if (coordinate == 3 && type == 5) { //VC Translate y
+				myCam.yeye += 0.1 * theta;
+			} else if (coordinate == 3 && type == 6) { //VC Translate z
+				myCam.zeye += 0.1 * theta;
+			} else if (coordinate == 3 && type == 7) { //VC Clipping Near
 				theta = (xBegin - x < 0) ? 1 : -1;
-				Spot.Ka += theta * 0.01;
+				myCam.dnear += 0.1 * theta;
+			} else if (coordinate == 3 && type == 8) { //VC Clipping Far
+				myCam.dfar += 0.1 * theta;
+			} else if (coordinate == 3 && type == 9) { //Angle
+				myCam.vangle += 0.1 * theta;
 			}
-		}
-
-		else if (coordinate == 4 && type == 8) { // Ambient B
-			ambient[0] += theta * 0.01;
-			ambient[1] += theta * 0.01;
-			ambient[2] += theta * 0.01;
-
-			if (Spot.B > 1.0) {
-				Spot.B = 1.0;
-			} else if (Spot.B < 0) {
-				Spot.B = 0.0;
-			} else {
-				theta = (xBegin - x < 0) ? 1 : -1;
-				Spot.B += theta * 0.01;
+			//LIGHT TRANSFORMATIONS
+			else if (coordinate == 4 && type == 1) { //Light Rotate x
+				rx = 1;
+				ry = 0;
+				rz = 0;
+				Spot.rotateWC(rx, ry, rz, theta * 0.5);
+			} else if (coordinate == 4 && type == 2) { //Light Rotate y
+				rx = 0;
+				ry = 1;
+				rz = 0;
+				Spot.rotateWC(rx, ry, rz, theta * 0.5);
+			} else if (coordinate == 4 && type == 3) { //Light Rotate z
+				rx = 0;
+				ry = 0;
+				rz = 1;
+				Spot.rotateWC(rx, ry, rz, theta * 0.5);
+			} else if (coordinate == 4 && type == 4) { //Light Translate x
+				Spot.lx += theta * 0.02;
+			} else if (coordinate == 4 && type == 5) { //Light Translate y
+				Spot.ly += theta * 0.02;
+			} else if (coordinate == 4 && type == 6) { //Light Translate z
+				Spot.lz += theta * 0.02;
+			} else if (coordinate == 4 && type == 7) { // Ambient Ka
+				ambient[0] += theta * 0.01;
+				ambient[1] += theta * 0.01;
+				ambient[2] += theta * 0.01;
+				if (Spot.Ka > 1.0) {
+					Spot.Ka = 1.0;
+				} else if (Spot.Ka < 0) {
+					Spot.Ka = 0.0;
+				} else {
+					theta = (xBegin - x < 0) ? 1 : -1;
+					Spot.Ka += theta * 0.01;
+				}
 			}
 
-		}
+			else if (coordinate == 4 && type == 8) { // Ambient B
+				ambient[0] += theta * 0.01;
+				ambient[1] += theta * 0.01;
+				ambient[2] += theta * 0.01;
 
-		else if (coordinate == 4 && type == 9) { // Point Light Kd
-			diffuse[0] += theta * 0.01;
-			diffuse[1] += theta * 0.01;
-			diffuse[2] += theta * 0.01;
+				if (Spot.B > 1.0) {
+					Spot.B = 1.0;
+				} else if (Spot.B < 0) {
+					Spot.B = 0.0;
+				} else {
+					theta = (xBegin - x < 0) ? 1 : -1;
+					Spot.B += theta * 0.01;
+				}
 
-			if (Spot.Kd > 1.0) {
-				Spot.Kd = 1.0;
-			} else if (Spot.Kd < 0) {
-				Spot.Kd = 0.0;
-			} else {
-				theta = (xBegin - x < 0) ? 1 : -1;
-				Spot.Kd += theta * 0.01;
+			}
+
+			else if (coordinate == 4 && type == 9) { // Point Light Kd
+				diffuse[0] += theta * 0.01;
+				diffuse[1] += theta * 0.01;
+				diffuse[2] += theta * 0.01;
+
+				if (Spot.Kd > 1.0) {
+					Spot.Kd = 1.0;
+				} else if (Spot.Kd < 0) {
+					Spot.Kd = 0.0;
+				} else {
+					theta = (xBegin - x < 0) ? 1 : -1;
+					Spot.Kd += theta * 0.01;
+				}
+
+			}
+
+			else if (coordinate == 4 && type == 10) { // Point Intensity P
+				diffuse[0] += theta * 0.01;
+				diffuse[1] += theta * 0.01;
+				diffuse[2] += theta * 0.01;
+				if (Spot.P > 1.0) {
+					Spot.P = 1.0;
+				} else if (Spot.P < 0) {
+					Spot.P = 0.0;
+				} else {
+					theta = (xBegin - x < 0) ? 1 : -1;
+					Spot.P += theta * 0.01;
+				}
+
 			}
 
 		}
-
-		else if (coordinate == 4 && type == 10) { // Point Intensity P
-			diffuse[0] += theta * 0.01;
-			diffuse[1] += theta * 0.01;
-			diffuse[2] += theta * 0.01;
-			if (Spot.P > 1.0) {
-				Spot.P = 1.0;
-			} else if (Spot.P < 0) {
-				Spot.P = 0.0;
-			} else {
-				theta = (xBegin - x < 0) ? 1 : -1;
-				Spot.P += theta * 0.01;
-			}
-
-		}
-
-
 	}
 	glutPostRedisplay();
 }
@@ -494,6 +478,13 @@ void mainMenu(GLint option) {
 	}
 	case 2: {
 		exit(0);
+	}
+		break;
+	case 3: {
+		if (game_start == 0)
+			game_start = 1;
+		else
+			game_start = 0;
 	}
 	}
 
@@ -720,6 +711,7 @@ void menu() {
 	glutAddSubMenu(" Miscellaneous ", A3_Menu);
 	glutAddSubMenu(" Print ", Print_Menu);
 	glutAddMenuEntry(" Reset ", 1);
+	glutAddMenuEntry(" Game Start/Stop ", 3);
 	glutAddMenuEntry(" Quit", 2);
 }
 
@@ -742,6 +734,7 @@ int main(int argc, char** argv) {
 
 	glutDisplayFunc(display);
 	glutMotionFunc(mouseMotion);
+	glutPassiveMotionFunc(mouseMotion);
 	glutMouseFunc(mouseAction);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	glutMainLoop();

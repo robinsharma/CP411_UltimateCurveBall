@@ -21,6 +21,8 @@ public:
 	GLfloat location[1][3];
 	GLuint textureID;
 	GLUquadric *quad;
+	GLfloat sphere_center_mc[4];
+	GLfloat sphere_center_wc[4];
 
 	Sphere();
 	void draw();
