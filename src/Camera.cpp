@@ -2,7 +2,7 @@
 
 //This has all the information for the camera
 Camera::Camera() {
-	xeye = -0.013437, yeye = 0.249881, zeye = 8.181573;  //  Viewing-coordinate origin.
+	xeye = -0.00, yeye = 0.0, zeye = 8.0;  //  Viewing-coordinate origin.
 	xref = 0.0, yref = 0.0, zref = 0.0;  //  Look-at point.
 	Vx = 0.0, Vy = 1.0, Vz = 0.0;        //  View up vector.
 	stereo = 0; //0 for Mono, 1 for Stereo

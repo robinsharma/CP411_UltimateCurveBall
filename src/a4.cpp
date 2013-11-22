@@ -152,10 +152,10 @@ void mouseMotion(GLint x, GLint y) {
 	GLfloat rx, ry, rz, theta, thetaX, thetaY;
 	if (moving == 1) {
 		if (game_start == 1) {
-			thetaX = (x - xBegin > 0) ? 1 : -1;
-			thetaY = (yBegin - y > 0) ? 1 : -1;
-			myWorld.list[0]->translate(thetaX * 0.02, 0, 0);
-			myWorld.list[0]->translate(0, thetaY * 0.02, 0);
+			thetaX = (x - xBegin);//> 0) ? 1 : -1;
+			thetaY = (yBegin - y); //> 0) ? 1 : -1;
+			myWorld.list[0]->translate(thetaX * 0.003, 0, 0);
+			myWorld.list[0]->translate(0, thetaY * 0.003, 0);
 			xBegin = x;
 			yBegin = y;
 		} else if (game_start == 0) {
@@ -414,7 +414,8 @@ void create_court() {
 	myWorld.list[1]->scaleZ(-0.24);
 	myWorld.list[1]->translate(0, 0, -2.5);
 
-	myWorld.list[2]->translate(0, 2.5, 0);
+	myWorld.list[2]->translate(0, 0, 0);
+	myWorld.list[2]->scale_change(-0.8);
 
 	myWorld.leftWall.translate(-1.0, 0, 0);
 	myWorld.leftWall.scaleX(-0.9);
