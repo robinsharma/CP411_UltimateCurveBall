@@ -6,6 +6,7 @@
  */
 
 #include "Sphere.hpp"
+#include <stdio.h>
 
 Sphere::Sphere() {
 	radius = 1.0;
@@ -29,6 +30,12 @@ Sphere::Sphere() {
 }
 
 void Sphere::draw() {
+	sphere_center_wc[0] = sphere_center_mc[0];
+	sphere_center_wc[1] = sphere_center_mc[1];
+	sphere_center_wc[2] = sphere_center_mc[2];
+	sphere_center_wc[3] = 1.0;
+	this->MC.multiply_vector(sphere_center_wc);
+	printf("(%f, %f, %f) \n",sphere_center_wc[0],sphere_center_wc[1],sphere_center_wc[2]);
 	glPushMatrix();
 	this->ctm_multiply();
 	glScalef(sx, sy, sz);
