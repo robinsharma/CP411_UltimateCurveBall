@@ -11,11 +11,16 @@
 
 World::World() {
 
-	list[0] = new Cube();
-	list[1] = new Cube();
-	list[2] = new Sphere();
+	list[0] = new Cube(); 	//Player's paddle
+	list[1] = new Cube();	//Opponent's paddle
+	list[2] = new Cube();	//Left wall
+	list[3] = new Cube();	//Top wall
+	list[4] = new Cube(); 	//Right wall
+	list[5] = new Cube();	//Bottom wall
 
-	length = 3;
+	ball = new Sphere();
+
+	length = 6;
 	/* object list
 	 ObjectList.push_back(list[0]);
 	 ObjectList.push_back(list[1]);
@@ -41,10 +46,12 @@ void World::draw_world() {
 	for(i = 0; i < length; i++) {
 		list[i]->draw();
 	}
-	leftWall.draw();
-	topWall.draw();
-	rightWall.draw();
-	bottomWall.draw();
+	ball->draw();
+
+	//leftWall.draw();
+	//topWall.draw();
+	//rightWall.draw();
+	//bottomWall.draw();
 
 	/*
 	 for (std::list<Shape*>::const_iterator it = ObjectList.begin(); it!=ObjectList.end(); ++it) {

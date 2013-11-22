@@ -11,6 +11,7 @@
 #define CWORLD_HPP
 
 #include "Cube.hpp"
+#include "Sphere.hpp"
 #include "Pyramid.hpp"
 #include "House.hpp"
 #include "Light.hpp"
@@ -27,7 +28,8 @@ class World {
 
 public:
 
-	Shape* list[3];
+	Cube* list[6];
+	Sphere* ball;
 
 	Cube leftWall, topWall, rightWall, bottomWall;
 	GLint length;

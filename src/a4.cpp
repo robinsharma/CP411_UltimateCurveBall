@@ -151,7 +151,7 @@ void mouseMotion(GLint x, GLint y) {
 	GLfloat rx, ry, rz, theta, thetaX, thetaY;
 	if (moving == 1) {
 		if (game_start == 1) {
-			thetaX = (x - xBegin);//> 0) ? 1 : -1;
+			thetaX = (x - xBegin); //> 0) ? 1 : -1;
 			thetaY = (yBegin - y); //> 0) ? 1 : -1;
 			myWorld.list[0]->translate(thetaX * 0.003, 0, 0);
 			myWorld.list[0]->translate(0, thetaY * 0.003, 0);
@@ -341,15 +341,27 @@ void getPos(GLint x, GLint y) {
 	printf("%f %f posX: %f, posY: %f\n", x, y, posX, posZ);
 }
 /*-------ANIMATION FUNCTION-------------------*/
+GLint check_collision_aux() {
+
+}
+
+void check_collision(GLfloat x, GLfloat y, GLfloat z) {
+	GLint n = 0;
+	GLint found = 0;
+	while ( n < 1 && found == 0 ) {
+
+		n++;
+	}
+}
 
 void move(void) {
 	GLfloat rx, ry, rz, theta;
 
 	theta = 0.05;
-	rx = myWorld.list[selected]->getMC().mat[0][1];
-	ry = myWorld.list[selected]->getMC().mat[1][1];
-	rz = myWorld.list[selected]->getMC().mat[2][1];
-	myWorld.list[selected]->rotate_mc(rx, ry, rz, theta);
+	rx = myWorld.ball->getMC().mat[0][1];
+	ry = myWorld.ball->getMC().mat[1][1];
+	rz = myWorld.ball->getMC().mat[2][1];
+	myWorld.ball->rotate_mc(rx, ry, rz, theta);
 
 	glutPostRedisplay();
 }
@@ -362,7 +374,7 @@ void Disable() {
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHT0);
 	glutIdleFunc(NULL);
-	glUseProgram(0);
+	//glUseProgram(0);
 }
 
 void Enable() {
@@ -409,28 +421,29 @@ void create_court() {
 	myWorld.list[0]->scaleZ(-0.24);
 	myWorld.list[0]->translate(0, 0, 2.5);
 
+	//This scales and positions the opponents paddle
 	myWorld.list[1]->scale_change(-0.75);
 	myWorld.list[1]->scaleZ(-0.24);
 	myWorld.list[1]->translate(0, 0, -2.5);
 
-	myWorld.list[2]->translate(0, 0, 0);
-	myWorld.list[2]->scale_change(-0.8);
+	myWorld.ball->translate(0, 0, 0);
+	myWorld.ball->scale_change(-0.8);
 
-	myWorld.leftWall.translate(-1.0, 0, 0);
-	myWorld.leftWall.scaleX(-0.9);
-	myWorld.leftWall.scaleZ(1.5);
+	myWorld.list[2]->translate(-1.0, 0, 0);
+	myWorld.list[2]->scaleX(-0.9);
+	myWorld.list[2]->scaleZ(1.5);
 
-	myWorld.topWall.translate(0, 1.0, 0);
-	myWorld.topWall.scaleY(-0.9);
-	myWorld.topWall.scaleZ(1.5);
+	myWorld.list[3]->translate(0, 1.0, 0);
+	myWorld.list[3]->scaleY(-0.9);
+	myWorld.list[3]->scaleZ(1.5);
 
-	myWorld.rightWall.translate(1.0, 0, 0);
-	myWorld.rightWall.scaleX(-0.9);
-	myWorld.rightWall.scaleZ(1.5);
+	myWorld.list[4]->translate(1.0, 0, 0);
+	myWorld.list[4]->scaleX(-0.9);
+	myWorld.list[4]->scaleZ(1.5);
 
-	myWorld.bottomWall.translate(0, -1.0, 0);
-	myWorld.bottomWall.scaleY(-0.9);
-	myWorld.bottomWall.scaleZ(1.5);
+	myWorld.list[5]->translate(0, -1.0, 0);
+	myWorld.list[5]->scaleY(-0.9);
+	myWorld.list[5]->scaleZ(1.5);
 }
 
 void init(void) {
@@ -441,8 +454,8 @@ void init(void) {
 	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref,
 			myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
 	glEnable(GL_DEPTH_TEST);
-	programObject = InitShader("vshader.glsl", "fshader.glsl");
-	glUseProgram(0);
+	//programObject = InitShader("vshader.glsl", "fshader.glsl");
+	//glUseProgram(0);
 
 	create_court();
 }
@@ -579,11 +592,11 @@ void LightTransMenu(GLint Option) {
 void glslSubMenu(GLint glslOption) {
 	switch (glslOption) {
 	case 1:
-		glUseProgram(programObject);
+		//glUseProgram(programObject);
 
 		break;
 	case 2:
-		glUseProgram(0);
+		//glUseProgram(0);
 
 		break;
 	default:
@@ -733,6 +746,7 @@ int main(int argc, char** argv) {
 	menu();
 
 	glutDisplayFunc(display);
+	glutIdleFunc(move);
 	glutMotionFunc(mouseMotion);
 	glutPassiveMotionFunc(mouseMotion);
 	glutMouseFunc(mouseAction);
