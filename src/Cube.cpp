@@ -70,6 +70,10 @@ Cube::Cube() {
 	cubeShade[0] = 1, cubeShade[1] = 1, cubeShade[2] = 1;
 	cubeShade[3] = 1, cubeShade[4] = 1, cubeShade[5] = 1;
 
+	//to keep track of the cube center for dot product
+	cube_center_mc[0] = 0.0, cube_center_mc[1] = 0.0, cube_center_mc[2] = 0.0, cube_center_mc[3] = 1.0;
+	cube_center_wc[0] = 0.0, cube_center_wc[1] = 0.0, cube_center_wc[2] = 0.0, cube_center_wc[3] = 1.0;
+
 	cube_face_center_mc[0][0] = 0.0, cube_face_center_mc[0][1] = 0.0, cube_face_center_mc[0][2] =
 			-1.0;
 	cube_face_center_mc[1][0] = 1.0, cube_face_center_mc[1][1] = 0.0, cube_face_center_mc[1][2] =
@@ -145,6 +149,11 @@ void Cube::updateCube() {\
 	GLfloat sx, sy, sz, norm, ns, nx, ny, nz;
 
 	// update cube
+	cube_center_wc[0] = cube_center_mc[0];
+	cube_center_wc[1] = cube_center_mc[1];
+	cube_center_wc[2] = cube_center_mc[2];
+	cube_center_wc[3] = 1.0;
+	this->MC.multiply_vector(cube_center_wc);
 
 	//everything places in one loop for efficiency (avoid running multiple loops)
 	for (int i = 0; i < 6; i++) {

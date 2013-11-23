@@ -341,29 +341,88 @@ void getPos(GLint x, GLint y) {
 	printf("%f %f posX: %f, posY: %f\n", x, y, posX, posZ);
 }
 /*-------ANIMATION FUNCTION-------------------*/
-GLint check_collision_aux() {
+GLfloat ball_z_trans = 0.01;
+//This function doesn't work as planned. Will fix tomorrow
+GLint check_collision_aux(Cube* object) {
+	GLfloat sphereP1[3];
+	GLfloat radius = 0.2;
+	int count = 0;
+	sphereP1[0] = myWorld.ball -> sphere_center_wc[0];
+	sphereP1[1] = myWorld.ball -> sphere_center_wc[1];
+	sphereP1[2] = (myWorld.ball -> sphere_center_wc[2]) + radius;
+	int i;
+	for(i = 0; i < 6; i++){
+		printf("%f, %f, %f \n", sphereP1[0], sphereP1[1], sphereP1[2]);
+		printf("%f, %f, %f \n", object->cube_face_center_wc[i][0], object->cube_face_center_wc[i][1], object->cube_face_center_wc[i][2]);
+		printf("%f, %f, %f \n", object->cube_face_norm_wc[i][0], object->cube_face_norm_wc[i][1], object->cube_face_norm_wc[i][2]);
+		//float result = ((object->cube_face_center_wc[i][0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
+		//		((object->cube_face_center_wc[i][1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
+		//		((object->cube_face_center_wc[i][2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
+		float result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
+			((object->cube_center_wc[1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
+			((object->cube_center_wc[2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
 
+		printf("%f \n", result);
+		if (result < 0) count++;
+		printf("%d, %d \n", i, count);
+	}
+	if (count == 6) return 1;
+	return 0;
 }
 
-void check_collision(GLfloat x, GLfloat y, GLfloat z) {
-	GLint n = 0;
-	GLint found = 0;
-	while ( n < 1 && found == 0 ) {
+//This function doesn't work as planned. Will fix tomorrow
+GLint check_collision_aux2(Cube* object) {
+	GLfloat sphereP1[3];
+	GLfloat radius = -0.2;
+	int count = 0;
+	sphereP1[0] = myWorld.ball -> sphere_center_wc[0];
+	sphereP1[1] = myWorld.ball -> sphere_center_wc[1];
+	sphereP1[2] = (myWorld.ball -> sphere_center_wc[2]) + radius;
+	int i;
+	for(i = 0; i < 6; i++){
+		printf("%f, %f, %f \n", sphereP1[0], sphereP1[1], sphereP1[2]);
+		printf("%f, %f, %f \n", object->cube_face_center_wc[i][0], object->cube_face_center_wc[i][1], object->cube_face_center_wc[i][2]);
+		printf("%f, %f, %f \n", object->cube_face_norm_wc[i][0], object->cube_face_norm_wc[i][1], object->cube_face_norm_wc[i][2]);
+		//float result = ((object->cube_face_center_wc[i][0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
+		//		((object->cube_face_center_wc[i][1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
+		//		((object->cube_face_center_wc[i][2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
+		float result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
+			((object->cube_center_wc[1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
+			((object->cube_center_wc[2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
 
+		printf("%f \n", result);
+		if (result < 0) count++;
+		printf("%d, %d \n", i, count);
+	}
+	if (count == 6) return 1;
+	return 0;
+}
+
+void check_collision() {
+	GLint n = 0;
+	GLint found = 0, found2 = 0;
+	while ( n < 2 && found == 0 && found2 == 0) {
+		found = check_collision_aux(myWorld.list[n]);
+		found2 = check_collision_aux2(myWorld.list[n]);
 		n++;
+	}
+	if(found == 1 || found2 == 1){
+		ball_z_trans = ball_z_trans * -1;
 	}
 }
 
 void move(void) {
+	check_collision();
 	GLfloat rx, ry, rz, theta;
 
 	theta = 0.05;
 	rx = myWorld.ball->getMC().mat[0][1];
 	ry = myWorld.ball->getMC().mat[1][1];
 	rz = myWorld.ball->getMC().mat[2][1];
-	myWorld.ball->rotate_mc(rx, ry, rz, theta);
+	myWorld.ball->translate(0, 0, ball_z_trans);
 
 	glutPostRedisplay();
+
 }
 
 void Disable() {
@@ -418,12 +477,12 @@ void ResetLightAll() {
 void create_court() {
 	//This scales and positions the players paddle
 	myWorld.list[0]->scale_change(-0.75);
-	myWorld.list[0]->scaleZ(-0.24);
+	myWorld.list[0]->scaleZ(-0.2);
 	myWorld.list[0]->translate(0, 0, 2.5);
 
 	//This scales and positions the opponents paddle
 	myWorld.list[1]->scale_change(-0.75);
-	myWorld.list[1]->scaleZ(-0.24);
+	myWorld.list[1]->scaleZ(-0.2);
 	myWorld.list[1]->translate(0, 0, -2.5);
 
 	myWorld.ball->translate(0, 0, 0);

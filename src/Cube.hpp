@@ -20,7 +20,7 @@ protected:
 	GLfloat vertex[8][3];
 	GLint face[6][4];
 	GLfloat cube_face_norm_mc[6][3]; // normal of faces in MC
-	GLfloat cube_face_norm_wc[6][4]; // normal of faces in WC in homogenous cordinates.
+
 
 	GLfloat faceColor[6][3]; // color for each face
 
@@ -33,7 +33,7 @@ protected:
 
 	GLfloat cube_face_center_mc[6][3]; // in MC
 
-	GLfloat cube_face_center_wc[6][4]; // in WC, will be update from the cube_face_center_mc
+
 	//void shade();
 	void backFace(GLint);
 	void getNormal(GLint);
@@ -42,7 +42,10 @@ public:
 	void draw_face(int);
 	void draw();
 	void updateCube();
-
+	GLfloat cube_face_center_wc[6][4]; // in WC, will be update from the cube_face_center_mc
+	GLfloat cube_face_norm_wc[6][4]; // normal of faces in WC in homogenous cordinates.
+	GLfloat cube_center_mc[4];
+	GLfloat cube_center_wc[4];
 };
 
 #endif
