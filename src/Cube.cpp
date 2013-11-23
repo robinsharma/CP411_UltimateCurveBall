@@ -117,6 +117,8 @@ Cube::Cube() {
 	face[3][3] = 0, face[4][0] = 5, face[4][1] = 7;
 	face[4][2] = 3, face[4][3] = 1, face[5][0] = 6;
 	face[5][1] = 4, face[5][2] = 0, face[5][3] = 2;
+
+	r = 1.0, b = 1.0, g = 1.0;
 }
 
 void Cube::draw_face(int i) {
@@ -134,15 +136,20 @@ void Cube::draw() {
 	updateCube(); // update the backFaceTest, etc
 	glScalef(sx, sy, sz);
 	for (int i = 0; i < 6; i++) {
-			glColor3f(faceColor[faceIndex[i]][0] * cubeShade[faceIndex[i]],
-					faceColor[faceIndex[i]][1] * cubeShade[faceIndex[i]],
-					faceColor[faceIndex[i]][2] * cubeShade[faceIndex[i]]);
+			glColor3f(r, g, b);
 			draw_face(faceIndex[i]);
 	}
 	glPopMatrix();
 }
 
-void Cube::updateCube() {\
+void Cube::setColor(GLfloat red, GLfloat green, GLfloat blue){
+	r = red;
+	b = blue;
+	g = green;
+}
+
+
+void Cube::updateCube() {
 
 
 	//Shading variables

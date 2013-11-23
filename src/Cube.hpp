@@ -17,6 +17,7 @@
 
 class Cube: public Shape {
 protected:
+	GLfloat r, g, b;
 	GLfloat vertex[8][3];
 	GLint face[6][4];
 	GLfloat cube_face_norm_mc[6][3]; // normal of faces in MC
@@ -46,6 +47,8 @@ public:
 	GLfloat cube_face_norm_wc[6][4]; // normal of faces in WC in homogenous cordinates.
 	GLfloat cube_center_mc[4];
 	GLfloat cube_center_wc[4];
+
+	void setColor(GLfloat, GLfloat, GLfloat);
 };
 
 #endif

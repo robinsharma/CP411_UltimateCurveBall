@@ -26,7 +26,6 @@ GLint winWidth = 800, winHeight = 800;
 GLfloat xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
 
 /*  Set positions for near and far clipping planes:  */
-//GLfloat theta = 0.0, rx = 1.0, ry = 0.0, rz = 0.0, s=0.8;
 GLfloat red = 1.0, green = 1.0, blue = 1.0;  //color
 GLint moving = 0, start = 0, xBegin = 0, yBegin = 0, coordinate = 1, type = 1,
 		selected = 0, game_start = 0;
@@ -44,9 +43,6 @@ GLfloat ambient[] = { 0.1, 0.1, 0.3, 1.0 };
 GLfloat diffuse[] = { 0.6, 0.6, 1.0, 1.0 };
 GLfloat specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
-//GLfloat lmodel_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
-//GLfloat local_view[] = { 0.0 };
-
 //Material
 GLfloat no_mat[] = { 0.0, 0.0, 0.0, 1.0 };
 GLfloat mat_ambient[] = { 0.7, 0.7, 0.7, 1.0 };
@@ -57,8 +53,6 @@ GLfloat high_shininess[] = { 100.0 };
 GLfloat mat_emission[] = { 1, 1, 1, 1 };
 
 GLuint programObject;
-
-GLdouble posX, posY, posZ;
 
 void display(void) {
 
@@ -72,7 +66,7 @@ void display(void) {
 	glLoadIdentity();
 	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref,
 			myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
-
+/* Axis
 	glLineWidth(3);
 
 	glBegin(GL_LINES);
@@ -89,7 +83,7 @@ void display(void) {
 	glVertex3f(0, 0, 2);
 	glVertex3f(0, 0, 0);
 	glEnd();
-	glLineWidth(1);
+	glLineWidth(1);*/
 	Spot.on();
 	if (Spot.getOn()) {
 		glEnable(GL_DEPTH_TEST); // enable OpenGL depth buffer algorithm for hidden surface removal
@@ -148,7 +142,8 @@ void mouseAction(int button, int state, int x, int y) {
 }
 
 void mouseMotion(GLint x, GLint y) {
-	GLfloat rx, ry, rz, theta, thetaX, thetaY;
+	//GLfloat rx, ry, rz theta,
+	GLfloat thetaX, thetaY;
 	if (moving == 1) {
 		if (game_start == 1) {
 			thetaX = (x - xBegin); //> 0) ? 1 : -1;
@@ -157,6 +152,7 @@ void mouseMotion(GLint x, GLint y) {
 			myWorld.list[0]->translate(0, thetaY * 0.003, 0);
 			xBegin = x;
 			yBegin = y;
+			/*
 		} else if (game_start == 0) {
 			theta = (xBegin - x > 0) ? 1 : -1;
 			if (coordinate == 1 && type == 1) { // mc rotate x
@@ -316,12 +312,14 @@ void mouseMotion(GLint x, GLint y) {
 				}
 
 			}
+			*/
 
 		}
 	}
 	glutPostRedisplay();
 }
 
+/*
 void getPos(GLint x, GLint y) {
 	GLint viewport[4];
 	GLdouble modelview[16];
@@ -340,6 +338,9 @@ void getPos(GLint x, GLint y) {
 			&posY, &posZ);
 	printf("%f %f posX: %f, posY: %f\n", x, y, posX, posZ);
 }
+
+*/
+
 /*-------ANIMATION FUNCTION-------------------*/
 GLfloat ball_z_trans = 0.01;
 //This function doesn't work as planned. Will fix tomorrow
@@ -413,9 +414,9 @@ void check_collision() {
 
 void move(void) {
 	check_collision();
-	GLfloat rx, ry, rz, theta;
+	GLfloat rx, ry, rz;
 
-	theta = 0.05;
+	//theta = 0.05;
 	rx = myWorld.ball->getMC().mat[0][1];
 	ry = myWorld.ball->getMC().mat[1][1];
 	rz = myWorld.ball->getMC().mat[2][1];
@@ -424,6 +425,33 @@ void move(void) {
 	glutPostRedisplay();
 
 }
+
+int check = 2;
+void ColorChange(int x) {
+	if (check> 5) {
+		check = 1;
+		myWorld.list[2]->setColor(1.0, 1.0, 1.0);
+		myWorld.list[3]->setColor(1.0, 1.0, 1.0);
+		myWorld.list[4]->setColor(1.0, 1.0, 1.0);
+		myWorld.list[5]->setColor(1.0, 1.0, 1.0);
+	}
+	/*
+	myWorld.list[2]->setColor(1.0, 1.0, 1.0);
+	myWorld.list[3]->setColor(1.0, 1.0, 1.0);
+	myWorld.list[4]->setColor(1.0, 1.0, 1.0);
+	myWorld.list[5]->setColor(1.0, 1.0, 1.0);
+*/
+	else {
+	myWorld.list[check]->setColor(1.0, 0.5, 0.0);
+	}
+	check++;
+	if (x == 1) {
+		glutTimerFunc(1000, ColorChange, 1);
+	}
+	glutPostRedisplay();
+
+}
+
 
 void Disable() {
 	glDisable(GL_DEPTH_TEST);
@@ -476,33 +504,48 @@ void ResetLightAll() {
 /*-----------------------------------------------------------*/
 void create_court() {
 	//This scales and positions the players paddle
+	myWorld.list[0]->setColor(1.0, 1.0, 1.0);
 	myWorld.list[0]->scale_change(-0.75);
 	myWorld.list[0]->scaleZ(-0.2);
+	//myWorld.list[0]->scaleX(0.1);
+
 	myWorld.list[0]->translate(0, 0, 2.5);
 
 	//This scales and positions the opponents paddle
+	myWorld.list[1]->setColor(1.0, 0.5, 0.5);
 	myWorld.list[1]->scale_change(-0.75);
 	myWorld.list[1]->scaleZ(-0.2);
+	//myWorld.list[1]->scaleX(0.1);
+
 	myWorld.list[1]->translate(0, 0, -2.5);
 
 	myWorld.ball->translate(0, 0, 0);
 	myWorld.ball->scale_change(-0.8);
 
-	myWorld.list[2]->translate(-1.0, 0, 0);
+	myWorld.list[2]->setColor(1.0, 0.5, 0.0);
+	myWorld.list[2]->translate(-1.5, 0, 0);
 	myWorld.list[2]->scaleX(-0.9);
 	myWorld.list[2]->scaleZ(1.5);
+	myWorld.list[2]->scaleY(0.5);
 
-	myWorld.list[3]->translate(0, 1.0, 0);
+	myWorld.list[3]->setColor(1.0, 1.0, 1.0);
+	myWorld.list[3]->translate(0, 1.5, 0);
 	myWorld.list[3]->scaleY(-0.9);
 	myWorld.list[3]->scaleZ(1.5);
+	myWorld.list[3]->scaleX(0.5);
 
-	myWorld.list[4]->translate(1.0, 0, 0);
+	myWorld.list[4]->setColor(1.0, 0.5, 0.0);
+	myWorld.list[4]->translate(1.5, 0, 0);
 	myWorld.list[4]->scaleX(-0.9);
 	myWorld.list[4]->scaleZ(1.5);
+	myWorld.list[4]->scaleY(0.5);
 
-	myWorld.list[5]->translate(0, -1.0, 0);
+	myWorld.list[5]->setColor(1.0, 1.0, 1.0);
+	myWorld.list[5]->translate(0, -1.5, 0);
 	myWorld.list[5]->scaleY(-0.9);
 	myWorld.list[5]->scaleZ(1.5);
+	myWorld.list[5]->scaleX(0.5);
+
 }
 
 void init(void) {
@@ -521,6 +564,8 @@ void init(void) {
 
 /*-------MENUS------------------------------------------------------------*/
 
+/*
+
 void MCTransMenu(GLint transOption) {
 	coordinate = 1;
 	type = transOption; //1 for rotate x, 2 for rotate y, 3 for rotate z, 4 for scale
@@ -533,9 +578,12 @@ void WCTransMenu(GLint transOption) {
 	glutPostRedisplay();
 }
 
+*/
+
 void mainMenu(GLint option) {
 	switch (option) {
 	case 1: { //reset
+		/*
 		myWorld.list[0] = new Cube();
 
 		myCam.xeye = 3.0, myCam.yeye = 3.0, myCam.zeye = 7.0; //set view back to default!
@@ -546,6 +594,7 @@ void mainMenu(GLint option) {
 		ResetLightAll();
 		Disable();
 		glutPostRedisplay();
+		*/
 		break;
 	}
 	case 2: {
@@ -553,20 +602,26 @@ void mainMenu(GLint option) {
 	}
 		break;
 	case 3: {
-		if (game_start == 0)
+		if (game_start == 0) {
 			game_start = 1;
-		else
+			ColorChange(1);
+		}
+		else {
 			game_start = 0;
+
+		}
 	}
 	}
 
 }
 
+/*
 void VCTransMenu(GLint transOption) {
 	coordinate = 3;
 	type = transOption; // 1 rotate x, 2 rotate y, 3 rotate z, 4 translate x, 5 translate y, 6 translate z, 7 clipping near, 8 clipping far, 9 angle
 	glutPostRedisplay();
 }
+*/
 
 void colorSubMenu(GLint colorOption) {
 	switch (colorOption) {
@@ -598,6 +653,8 @@ void colorSubMenu(GLint colorOption) {
 	glColor3f(red, green, blue);
 	glutPostRedisplay();
 }
+
+/*
 
 void A3Menu(GLint faceOption) {
 	switch (faceOption) {
@@ -694,7 +751,7 @@ void ObjMenu(GLint option) {
 	}
 	glutPostRedisplay();
 }
-
+*/
 void printMenu(GLint x) {
 	switch (x) {
 	case 1:
@@ -709,6 +766,8 @@ void printMenu(GLint x) {
 void menu() {
 	GLint WCTrans_Menu, VCTrans_Menu, MCTrans_Menu, A3_Menu, LightTrans_Menu,
 			glsl_shad, Obj_Menu, Print_Menu;
+
+	/*
 	MCTrans_Menu = glutCreateMenu(MCTransMenu);
 	glutAddMenuEntry(" Rotate x ", 1);
 	glutAddMenuEntry(" Rotate y ", 2);
@@ -761,10 +820,12 @@ void menu() {
 	glsl_shad = glutCreateMenu(glslSubMenu);
 	glutAddMenuEntry(" On ", 1);
 	glutAddMenuEntry(" Off ", 2);
+	*/
 
 	Print_Menu = glutCreateMenu(printMenu);
 	glutAddMenuEntry(" Print View Variables ", 1);
 
+	/*
 	Obj_Menu = glutCreateMenu(ObjMenu);
 	glutAddMenuEntry(" Cube ", 1);
 	glutAddMenuEntry(" Cube 2 ", 2);
@@ -772,8 +833,10 @@ void menu() {
 	glutAddMenuEntry(" Solar System Animation ", 3);
 	glutAddMenuEntry(" Show Point Light ", 4);
 	glutAddMenuEntry(" Hide Point Light ", 5);
-
+*/
 	glutCreateMenu(mainMenu);      // Create main pop-up menu.
+
+	/*
 	glutAddSubMenu(" GLSL ", glsl_shad);
 	glutAddSubMenu(" Model Transformations ", MCTrans_Menu);
 	glutAddSubMenu(" WC Transformations ", WCTrans_Menu);
@@ -781,8 +844,9 @@ void menu() {
 	glutAddSubMenu(" Light Transformations ", LightTrans_Menu);
 	glutAddSubMenu(" Object Display ", Obj_Menu);
 	glutAddSubMenu(" Miscellaneous ", A3_Menu);
+	*/
 	glutAddSubMenu(" Print ", Print_Menu);
-	glutAddMenuEntry(" Reset ", 1);
+	//glutAddMenuEntry(" Reset ", 1);
 	glutAddMenuEntry(" Game Start/Stop ", 3);
 	glutAddMenuEntry(" Quit", 2);
 }
