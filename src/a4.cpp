@@ -414,12 +414,14 @@ void check_collision() {
 
 void move(void) {
 	check_collision();
-	GLfloat rx, ry, rz;
+	/*
+	GLfloat rx, ry, rz, theta;
 
-	//theta = 0.05;
+	theta = 0.05;
 	rx = myWorld.ball->getMC().mat[0][1];
 	ry = myWorld.ball->getMC().mat[1][1];
 	rz = myWorld.ball->getMC().mat[2][1];
+	*/
 	myWorld.ball->translate(0, 0, ball_z_trans);
 
 	glutPostRedisplay();
@@ -504,6 +506,9 @@ void ResetLightAll() {
 /*-----------------------------------------------------------*/
 void create_court() {
 	//This scales and positions the players paddle
+	//myWorld.list[1]->setTexture = true;
+	myWorld.list[4]->setTexture = true;
+
 	myWorld.list[0]->setColor(1.0, 1.0, 1.0);
 	myWorld.list[0]->scale_change(-0.75);
 	myWorld.list[0]->scaleZ(-0.2);
@@ -534,7 +539,7 @@ void create_court() {
 	myWorld.list[3]->scaleZ(1.5);
 	myWorld.list[3]->scaleX(0.5);
 
-	myWorld.list[4]->setColor(1.0, 0.5, 0.0);
+	//myWorld.list[4]->setColor(1.0, 0.5, 0.0);
 	myWorld.list[4]->translate(1.5, 0, 0);
 	myWorld.list[4]->scaleX(-0.9);
 	myWorld.list[4]->scaleZ(1.5);
@@ -604,7 +609,7 @@ void mainMenu(GLint option) {
 	case 3: {
 		if (game_start == 0) {
 			game_start = 1;
-			ColorChange(1);
+			//ColorChange(1);
 		}
 		else {
 			game_start = 0;
@@ -764,9 +769,11 @@ void printMenu(GLint x) {
 }
 
 void menu() {
+	/*
 	GLint WCTrans_Menu, VCTrans_Menu, MCTrans_Menu, A3_Menu, LightTrans_Menu,
 			glsl_shad, Obj_Menu, Print_Menu;
-
+*/
+	GLint Print_Menu;
 	/*
 	MCTrans_Menu = glutCreateMenu(MCTransMenu);
 	glutAddMenuEntry(" Rotate x ", 1);

@@ -13,6 +13,7 @@
 #include <GL/glut.h>
 
 #include "Shape.hpp"
+#include "LoadImage.hpp"
 
 
 class Cube: public Shape {
@@ -41,6 +42,7 @@ protected:
 public:
 	Cube();
 	void draw_face(int);
+	void draw_face_texture(int);
 	void draw();
 	void updateCube();
 	GLfloat cube_face_center_wc[6][4]; // in WC, will be update from the cube_face_center_mc
@@ -49,6 +51,12 @@ public:
 	GLfloat cube_center_wc[4];
 
 	void setColor(GLfloat, GLfloat, GLfloat);
+	bool loadbmp(UINT textureArray[], LPSTR strFileName, int ID);
+
+	GLuint textures[2];
+	Image* myImage;
+	bool texturesLoaded;
+	bool setTexture;
 };
 
 #endif

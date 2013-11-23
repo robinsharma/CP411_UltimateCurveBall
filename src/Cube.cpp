@@ -71,8 +71,10 @@ Cube::Cube() {
 	cubeShade[3] = 1, cubeShade[4] = 1, cubeShade[5] = 1;
 
 	//to keep track of the cube center for dot product
-	cube_center_mc[0] = 0.0, cube_center_mc[1] = 0.0, cube_center_mc[2] = 0.0, cube_center_mc[3] = 1.0;
-	cube_center_wc[0] = 0.0, cube_center_wc[1] = 0.0, cube_center_wc[2] = 0.0, cube_center_wc[3] = 1.0;
+	cube_center_mc[0] = 0.0, cube_center_mc[1] = 0.0, cube_center_mc[2] = 0.0, cube_center_mc[3] =
+			1.0;
+	cube_center_wc[0] = 0.0, cube_center_wc[1] = 0.0, cube_center_wc[2] = 0.0, cube_center_wc[3] =
+			1.0;
 
 	cube_face_center_mc[0][0] = 0.0, cube_face_center_mc[0][1] = 0.0, cube_face_center_mc[0][2] =
 			-1.0;
@@ -119,6 +121,7 @@ Cube::Cube() {
 	face[5][1] = 4, face[5][2] = 0, face[5][3] = 2;
 
 	r = 1.0, b = 1.0, g = 1.0;
+	setTexture = false;
 }
 
 void Cube::draw_face(int i) {
@@ -130,27 +133,70 @@ void Cube::draw_face(int i) {
 	glEnd();
 }
 
+void Cube::draw_face_texture(int i) {
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glBegin(GL_POLYGON);
+	glVertex3fv(&vertex[face[i][0]][0]);
+	glVertex3fv(&vertex[face[i][1]][0]);
+	glVertex3fv(&vertex[face[i][2]][0]);
+	glVertex3fv(&vertex[face[i][3]][0]);
+	glEnd();
+
+}
+
 void Cube::draw() {
 	glPushMatrix();
 	this->ctm_multiply(); // update the CTM
 	updateCube(); // update the backFaceTest, etc
 	glScalef(sx, sy, sz);
-	for (int i = 0; i < 6; i++) {
+	if (setTexture) {
+		if (!texturesLoaded) {
+			myImage = new Image();
+
+			char filename[] = "Untitled.bmp";
+			loadbmp(textures, filename, 0);
+			texturesLoaded = true;
+		}
+		for (int i = 0; i < 6; i++) {
+			draw_face_texture(faceIndex[i]);
+
+		}
+		glDisable(GL_TEXTURE_2D);
+
+	} else {
+		for (int i = 0; i < 6; i++) {
 			glColor3f(r, g, b);
 			draw_face(faceIndex[i]);
+		}
 	}
 	glPopMatrix();
 }
 
-void Cube::setColor(GLfloat red, GLfloat green, GLfloat blue){
+void Cube::setColor(GLfloat red, GLfloat green, GLfloat blue) {
 	r = red;
 	b = blue;
 	g = green;
 }
 
+bool Cube::loadbmp(GLuint textureArray[], char* strFileName, int ID) {
+	if (!strFileName)
+		return false;
+	myImage->ImageLoad(strFileName);
+	if (myImage == NULL)
+		exit(0);
+	glGenTextures(1, &textureArray[ID]);
+	glBindTexture(GL_TEXTURE_2D, textureArray[ID]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, myImage->sizeX, myImage->sizeY, 0, GL_RGB,
+	GL_UNSIGNED_BYTE, myImage->data);
+	return true;
+}
 
 void Cube::updateCube() {
-
 
 	//Shading variables
 	GLfloat sx, sy, sz, norm, ns, nx, ny, nz;
