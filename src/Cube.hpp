@@ -51,12 +51,8 @@ public:
 	GLfloat cube_center_wc[4];
 
 	void setColor(GLfloat, GLfloat, GLfloat);
-	bool loadbmp(UINT textureArray[], LPSTR strFileName, int ID);
 
-	GLuint textures[2];
-	Image* myImage;
-	bool texturesLoaded;
-	bool setTexture;
+	GLint textureID;
 };
 
 #endif

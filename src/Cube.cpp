@@ -16,6 +16,9 @@ using namespace std;
 extern Camera myCam;
 
 extern Light Spot;
+
+extern GLuint textures[4];
+
 Cube::Cube() {
 
 	cube_face_norm_mc[0][0] = 0.0, cube_face_norm_mc[0][1] = 0.0, cube_face_norm_mc[0][2] =
@@ -121,7 +124,7 @@ Cube::Cube() {
 	face[5][1] = 4, face[5][2] = 0, face[5][3] = 2;
 
 	r = 1.0, b = 1.0, g = 1.0;
-	setTexture = false;
+	textureID = -1;
 }
 
 void Cube::draw_face(int i) {
@@ -135,8 +138,8 @@ void Cube::draw_face(int i) {
 
 void Cube::draw_face_texture(int i) {
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, textures[0]);
-
+	glBindTexture(GL_TEXTURE_2D, textures[textureID]);
+	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBegin(GL_POLYGON);
 	glTexCoord2f( 0., 1.);
 	glVertex3fv(&vertex[face[i][0]][0]);
@@ -147,6 +150,8 @@ void Cube::draw_face_texture(int i) {
 	glTexCoord2f( 1., 1.);
 	glVertex3fv(&vertex[face[i][3]][0]);
 	glEnd();
+	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
 
 }
 
@@ -155,20 +160,11 @@ void Cube::draw() {
 	this->ctm_multiply(); // update the CTM
 	updateCube(); // update the backFaceTest, etc
 	glScalef(sx, sy, sz);
-	if (setTexture) {
-		if (!texturesLoaded) {
-			myImage = new Image();
-
-			char filename[] = "Wolfsmall.bmp";
-			loadbmp(textures, filename, 0);
-			texturesLoaded = true;
-		}
+	if (textureID != -1) {
 		for (int i = 0; i < 6; i++) {
 			draw_face_texture(faceIndex[i]);
-
 		}
 		glDisable(GL_TEXTURE_2D);
-
 	} else {
 		for (int i = 0; i < 6; i++) {
 			glColor3f(r, g, b);
@@ -184,20 +180,6 @@ void Cube::setColor(GLfloat red, GLfloat green, GLfloat blue) {
 	g = green;
 }
 
-bool Cube::loadbmp(GLuint textureArray[], char* strFileName, int ID) {
-	if (!strFileName)
-		return false;
-	myImage->ImageLoad(strFileName);
-	if (myImage == NULL)
-		exit(0);
-	glGenTextures(1, &textureArray[ID]);
-	glBindTexture(GL_TEXTURE_2D, textureArray[ID]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, myImage->sizeX, myImage->sizeY, 0, GL_RGB,
-	GL_UNSIGNED_BYTE, myImage->data);
-	return true;
-}
 
 void Cube::updateCube() {
 

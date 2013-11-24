@@ -20,6 +20,7 @@
 
 void getPos(GLint, GLint);
 void mouseMotion(GLint, GLint);
+bool loadbmp(UINT textureArray[], LPSTR strFileName, int ID);
 
 GLint winWidth = 800, winHeight = 800;
 /*  Set coordinate limits for the clipping window:  */
@@ -53,6 +54,10 @@ GLfloat high_shininess[] = { 100.0 };
 GLfloat mat_emission[] = { 1, 1, 1, 1 };
 
 GLuint programObject;
+
+GLuint textures[4];
+Image* myImage;
+bool texturesLoaded;
 
 void display(void) {
 
@@ -108,14 +113,37 @@ void display(void) {
 		glMaterialfv(GL_FRONT, GL_SPECULAR, mat_ambient);
 		glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
 		glMaterialfv(GL_FRONT, GL_EMISSION, no_mat);
-	} else
+	} else {
 		glDisable(GL_LIGHTING);
+	}
 
+	if(!texturesLoaded) {
+		myImage = new Image();
+		char filename[] = "Wolfsmall.bmp";
+		loadbmp(textures, filename, 0);
+		texturesLoaded = true;
+		myWorld.list[0]->textureID = 0;
+	}
 	myWorld.draw_world(); // draw all objects in the world
 	Spot.draw();
 
 	glFlush();
 	glutSwapBuffers();
+}
+
+bool loadbmp(GLuint textureArray[], char* strFileName, int ID) {
+	if (!strFileName)
+		return false;
+	myImage->ImageLoad(strFileName);
+	if (myImage == NULL)
+		exit(0);
+	glGenTextures(1, &textureArray[ID]);
+	glBindTexture(GL_TEXTURE_2D, textureArray[ID]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, myImage->sizeX, myImage->sizeY, 0, GL_RGB,
+	GL_UNSIGNED_BYTE, myImage->data);
+	return true;
 }
 
 /*-----DISPLAY FUNCTION END----------------------------------------*/
@@ -506,50 +534,50 @@ void ResetLightAll() {
 
 /*-----------------------------------------------------------*/
 void create_court() {
-	//This scales and positions the players paddle
-	//myWorld.list[1]->setTexture = true;
-	myWorld.list[4]->setTexture = true;
-
+	//Play paddle
 	myWorld.list[0]->setColor(1.0, 1.0, 1.0);
 	myWorld.list[0]->scale_change(-0.75);
 	myWorld.list[0]->scaleZ(-0.2);
-	//myWorld.list[0]->scaleX(0.1);
-
+	myWorld.list[0]->scaleX(0.1);
 	myWorld.list[0]->translate(0, 0, 2.5);
 
-	//This scales and positions the opponents paddle
+	//Opponent Paddle
 	myWorld.list[1]->setColor(1.0, 0.5, 0.5);
 	myWorld.list[1]->scale_change(-0.75);
 	myWorld.list[1]->scaleZ(-0.2);
-	//myWorld.list[1]->scaleX(0.1);
+	myWorld.list[1]->scaleX(0.1);
+	myWorld.list[1]->translate(0, 0, -4.5);
 
-	myWorld.list[1]->translate(0, 0, -2.5);
-
+	//Ball
 	myWorld.ball->translate(0, 0, 0);
 	myWorld.ball->scale_change(-0.8);
 
+	//Left wall
 	myWorld.list[2]->setColor(1.0, 0.5, 0.0);
 	myWorld.list[2]->translate(-1.5, 0, 0);
 	myWorld.list[2]->scaleX(-0.9);
-	myWorld.list[2]->scaleZ(1.5);
+	myWorld.list[2]->scaleZ(4.5);
 	myWorld.list[2]->scaleY(0.5);
 
+	//Top wall
 	myWorld.list[3]->setColor(1.0, 1.0, 1.0);
 	myWorld.list[3]->translate(0, 1.5, 0);
 	myWorld.list[3]->scaleY(-0.9);
-	myWorld.list[3]->scaleZ(1.5);
+	myWorld.list[3]->scaleZ(4.5);
 	myWorld.list[3]->scaleX(0.5);
 
-	//myWorld.list[4]->setColor(1.0, 0.5, 0.0);
+	//Right wall
+	myWorld.list[4]->setColor(0.0, 0.37647, 0.53333);
 	myWorld.list[4]->translate(1.5, 0, 0);
 	myWorld.list[4]->scaleX(-0.9);
-	myWorld.list[4]->scaleZ(1.5);
+	myWorld.list[4]->scaleZ(4.5);
 	myWorld.list[4]->scaleY(0.5);
 
+	//Bottom wall
 	myWorld.list[5]->setColor(1.0, 1.0, 1.0);
 	myWorld.list[5]->translate(0, -1.5, 0);
 	myWorld.list[5]->scaleY(-0.9);
-	myWorld.list[5]->scaleZ(1.5);
+	myWorld.list[5]->scaleZ(4.5);
 	myWorld.list[5]->scaleX(0.5);
 
 }
@@ -866,6 +894,8 @@ int main(int argc, char** argv) {
 	//PlaySound((LPCSTR) "01 Do I Wanna Know.wav", NULL, SND_FILENAME | SND_ASYNC);
 	//Song by Arctic Monkeys from their album called AM
 	//Album can be purchased from iTunes
+
+
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
