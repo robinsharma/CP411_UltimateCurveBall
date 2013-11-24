@@ -342,16 +342,17 @@ void getPos(GLint x, GLint y) {
 */
 
 /*-------ANIMATION FUNCTION-------------------*/
-GLfloat ball_x_trans = 0.00, ball_y_trans = 0.03, ball_z_trans = 0.00;
+GLfloat ball_x_trans = 0.00, ball_y_trans = 0.02, ball_z_trans = 0.00;
 //This function doesn't work as planned. Will fix tomorrow
 GLint check_collision_aux(Cube* object) {
 	GLfloat sphereP1[3];
 	GLfloat radius = 0.2;
-	int count = 0;
+	GLint count = 0;
 	sphereP1[0] = myWorld.ball -> sphere_center_wc[0];
-	sphereP1[1] = myWorld.ball -> sphere_center_wc[1] + radius;
+	sphereP1[1] = myWorld.ball -> sphere_center_wc[1] + radius + ball_y_trans;
 	sphereP1[2] = (myWorld.ball -> sphere_center_wc[2]);
-	int i;
+
+	GLint i;
 	for(i = 0; i < 6; i++){
 		printf("%f, %f, %f \n", sphereP1[0], sphereP1[1], sphereP1[2]);
 		printf("%f, %f, %f \n", object->cube_face_center_wc[i][0], object->cube_face_center_wc[i][1], object->cube_face_center_wc[i][2]);
@@ -359,7 +360,7 @@ GLint check_collision_aux(Cube* object) {
 		//float result = ((object->cube_face_center_wc[i][0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
 		//		((object->cube_face_center_wc[i][1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
 		//		((object->cube_face_center_wc[i][2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
-		float result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
+		GLfloat result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
 			((object->cube_center_wc[1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
 			((object->cube_center_wc[2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
 
@@ -375,11 +376,11 @@ GLint check_collision_aux(Cube* object) {
 GLint check_collision_aux2(Cube* object) {
 	GLfloat sphereP1[3];
 	GLfloat radius = -0.2;
-	int count = 0;
+	GLint count = 0;
 	sphereP1[0] = myWorld.ball -> sphere_center_wc[0];
 	sphereP1[1] = myWorld.ball -> sphere_center_wc[1] + radius;
 	sphereP1[2] = (myWorld.ball -> sphere_center_wc[2]);
-	int i;
+	GLint i;
 	for(i = 0; i < 6; i++){
 		printf("%f, %f, %f \n", sphereP1[0], sphereP1[1], sphereP1[2]);
 		printf("%f, %f, %f \n", object->cube_face_center_wc[i][0], object->cube_face_center_wc[i][1], object->cube_face_center_wc[i][2]);
@@ -387,7 +388,7 @@ GLint check_collision_aux2(Cube* object) {
 		//float result = ((object->cube_face_center_wc[i][0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
 		//		((object->cube_face_center_wc[i][1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
 		//		((object->cube_face_center_wc[i][2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
-		float result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
+		GLfloat result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
 			((object->cube_center_wc[1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
 			((object->cube_center_wc[2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
 
@@ -400,12 +401,11 @@ GLint check_collision_aux2(Cube* object) {
 }
 
 void check_collision() {
-	GLint n = 3;
+	GLint n = 0;
 	GLint found = 0, found2 = 0;
 	while ( n < 6 && found == 0 && found2 == 0) {
 		found = check_collision_aux(myWorld.list[n]);
 		found2 = check_collision_aux2(myWorld.list[n]);
-		n++;
 		n++;
 	}
 	if(found == 1 || found2 == 1){
