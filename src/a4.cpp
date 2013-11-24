@@ -66,24 +66,24 @@ void display(void) {
 	glLoadIdentity();
 	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref,
 			myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
-/* Axis
-	glLineWidth(3);
+	/* Axis
+	 glLineWidth(3);
 
-	glBegin(GL_LINES);
-	//x-axis
-	glColor3f(1.0, 1.0, 1.0);
-	glVertex3f(2, 0, 0);
-	glVertex3f(0, 0, 0);
-	//y-axis
-	glColor3f(0.0, 1.0, 0.0);
-	glVertex3f(0, 2, 0);
-	glVertex3f(0, 0, 0);
-	//z-axis
-	glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(0, 0, 2);
-	glVertex3f(0, 0, 0);
-	glEnd();
-	glLineWidth(1);*/
+	 glBegin(GL_LINES);
+	 //x-axis
+	 glColor3f(1.0, 1.0, 1.0);
+	 glVertex3f(2, 0, 0);
+	 glVertex3f(0, 0, 0);
+	 //y-axis
+	 glColor3f(0.0, 1.0, 0.0);
+	 glVertex3f(0, 2, 0);
+	 glVertex3f(0, 0, 0);
+	 //z-axis
+	 glColor3f(1.0, 0.0, 0.0);
+	 glVertex3f(0, 0, 2);
+	 glVertex3f(0, 0, 0);
+	 glEnd();
+	 glLineWidth(1);*/
 	Spot.on();
 	if (Spot.getOn()) {
 		glEnable(GL_DEPTH_TEST); // enable OpenGL depth buffer algorithm for hidden surface removal
@@ -153,166 +153,166 @@ void mouseMotion(GLint x, GLint y) {
 			xBegin = x;
 			yBegin = y;
 			/*
-		} else if (game_start == 0) {
-			theta = (xBegin - x > 0) ? 1 : -1;
-			if (coordinate == 1 && type == 1) { // mc rotate x
-				rx = myWorld.list[selected]->getMC().mat[0][0];
-				ry = myWorld.list[selected]->getMC().mat[1][0];
-				rz = myWorld.list[selected]->getMC().mat[2][0];
-				myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-			} else if (coordinate == 1 && type == 2) { // mc rotate y
-				rx = myWorld.list[selected]->getMC().mat[0][1];
-				ry = myWorld.list[selected]->getMC().mat[1][1];
-				rz = myWorld.list[selected]->getMC().mat[2][1];
-				myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-			} else if (coordinate == 1 && type == 3) { // mc rotate z
-				rx = myWorld.list[selected]->getMC().mat[0][2];
-				ry = myWorld.list[selected]->getMC().mat[1][2];
-				rz = myWorld.list[selected]->getMC().mat[2][2];
-				myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
-			} else if (coordinate == 1 && type == 4) { // mc scale
-				myWorld.list[selected]->scaleX(theta * 0.02);
-			} else if (coordinate == 1 && type == 5) { // mc scale
-				myWorld.list[selected]->scaleY(theta * 0.02);
-			} else if (coordinate == 1 && type == 6) { // mc scale
-				myWorld.list[selected]->scaleZ(theta * 0.02);
-			} else if (coordinate == 1 && type == 7) { // mc scale
-				myWorld.list[selected]->scale_change(theta * 0.02);
-			} else if (coordinate == 2 && type == 1) { // wc rotate x
-				rx = 1;
-				ry = 0;
-				rz = 0;
-				myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-			} else if (coordinate == 2 && type == 2) { // wc rotate y
-				rx = 0;
-				ry = 1;
-				rz = 0;
-				myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-			} else if (coordinate == 2 && type == 3) { //wc rotate z
-				rx = 0;
-				ry = 0;
-				rz = 1;
-				myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
-			} else if (coordinate == 2 && type == 4) { //wc translate x
-			//myWorld.list[selected]->translate(theta * 0.02, 0, 0);
-				getPos(x, y);
-				//myWorld.list[selected]->translate((float) posX, 0, 0);
-			} else if (coordinate == 2 && type == 5) { //wc translate y
-				myWorld.list[selected]->translate(0, theta * 0.02, 0);
-			} else if (coordinate == 2 && type == 6) { //wc translate z
-				myWorld.list[selected]->translate(0, 0, theta * 0.02);
-			} else if (coordinate == 3 && type == 1) { //VC Rotate x
-				rx = 1;
-				ry = 0;
-				rz = 0;
-				myCam.rotate_view(rx, ry, rz, theta);
-			} else if (coordinate == 3 && type == 2) { //VC Rotate y
-				rx = 0;
-				ry = 1;
-				rz = 0;
-				myCam.rotate_view(rx, ry, rz, theta);
-			} else if (coordinate == 3 && type == 3) { //VC Rotate z
-				rx = 0;
-				ry = 0;
-				rz = 1;
-				myCam.rotate_view(rx, ry, rz, theta);
-			} else if (coordinate == 3 && type == 4) { //VC Translate x
-				myCam.xeye += 0.1 * theta;
-			} else if (coordinate == 3 && type == 5) { //VC Translate y
-				myCam.yeye += 0.1 * theta;
-			} else if (coordinate == 3 && type == 6) { //VC Translate z
-				myCam.zeye += 0.1 * theta;
-			} else if (coordinate == 3 && type == 7) { //VC Clipping Near
-				theta = (xBegin - x < 0) ? 1 : -1;
-				myCam.dnear += 0.1 * theta;
-			} else if (coordinate == 3 && type == 8) { //VC Clipping Far
-				myCam.dfar += 0.1 * theta;
-			} else if (coordinate == 3 && type == 9) { //Angle
-				myCam.vangle += 0.1 * theta;
-			}
-			//LIGHT TRANSFORMATIONS
-			else if (coordinate == 4 && type == 1) { //Light Rotate x
-				rx = 1;
-				ry = 0;
-				rz = 0;
-				Spot.rotateWC(rx, ry, rz, theta * 0.5);
-			} else if (coordinate == 4 && type == 2) { //Light Rotate y
-				rx = 0;
-				ry = 1;
-				rz = 0;
-				Spot.rotateWC(rx, ry, rz, theta * 0.5);
-			} else if (coordinate == 4 && type == 3) { //Light Rotate z
-				rx = 0;
-				ry = 0;
-				rz = 1;
-				Spot.rotateWC(rx, ry, rz, theta * 0.5);
-			} else if (coordinate == 4 && type == 4) { //Light Translate x
-				Spot.lx += theta * 0.02;
-			} else if (coordinate == 4 && type == 5) { //Light Translate y
-				Spot.ly += theta * 0.02;
-			} else if (coordinate == 4 && type == 6) { //Light Translate z
-				Spot.lz += theta * 0.02;
-			} else if (coordinate == 4 && type == 7) { // Ambient Ka
-				ambient[0] += theta * 0.01;
-				ambient[1] += theta * 0.01;
-				ambient[2] += theta * 0.01;
-				if (Spot.Ka > 1.0) {
-					Spot.Ka = 1.0;
-				} else if (Spot.Ka < 0) {
-					Spot.Ka = 0.0;
-				} else {
-					theta = (xBegin - x < 0) ? 1 : -1;
-					Spot.Ka += theta * 0.01;
-				}
-			}
+			 } else if (game_start == 0) {
+			 theta = (xBegin - x > 0) ? 1 : -1;
+			 if (coordinate == 1 && type == 1) { // mc rotate x
+			 rx = myWorld.list[selected]->getMC().mat[0][0];
+			 ry = myWorld.list[selected]->getMC().mat[1][0];
+			 rz = myWorld.list[selected]->getMC().mat[2][0];
+			 myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
+			 } else if (coordinate == 1 && type == 2) { // mc rotate y
+			 rx = myWorld.list[selected]->getMC().mat[0][1];
+			 ry = myWorld.list[selected]->getMC().mat[1][1];
+			 rz = myWorld.list[selected]->getMC().mat[2][1];
+			 myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
+			 } else if (coordinate == 1 && type == 3) { // mc rotate z
+			 rx = myWorld.list[selected]->getMC().mat[0][2];
+			 ry = myWorld.list[selected]->getMC().mat[1][2];
+			 rz = myWorld.list[selected]->getMC().mat[2][2];
+			 myWorld.list[selected]->rotate_mc(rx, ry, rz, theta * 0.5);
+			 } else if (coordinate == 1 && type == 4) { // mc scale
+			 myWorld.list[selected]->scaleX(theta * 0.02);
+			 } else if (coordinate == 1 && type == 5) { // mc scale
+			 myWorld.list[selected]->scaleY(theta * 0.02);
+			 } else if (coordinate == 1 && type == 6) { // mc scale
+			 myWorld.list[selected]->scaleZ(theta * 0.02);
+			 } else if (coordinate == 1 && type == 7) { // mc scale
+			 myWorld.list[selected]->scale_change(theta * 0.02);
+			 } else if (coordinate == 2 && type == 1) { // wc rotate x
+			 rx = 1;
+			 ry = 0;
+			 rz = 0;
+			 myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
+			 } else if (coordinate == 2 && type == 2) { // wc rotate y
+			 rx = 0;
+			 ry = 1;
+			 rz = 0;
+			 myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
+			 } else if (coordinate == 2 && type == 3) { //wc rotate z
+			 rx = 0;
+			 ry = 0;
+			 rz = 1;
+			 myWorld.list[selected]->rotate_origin(rx, ry, rz, theta * 0.5);
+			 } else if (coordinate == 2 && type == 4) { //wc translate x
+			 //myWorld.list[selected]->translate(theta * 0.02, 0, 0);
+			 getPos(x, y);
+			 //myWorld.list[selected]->translate((float) posX, 0, 0);
+			 } else if (coordinate == 2 && type == 5) { //wc translate y
+			 myWorld.list[selected]->translate(0, theta * 0.02, 0);
+			 } else if (coordinate == 2 && type == 6) { //wc translate z
+			 myWorld.list[selected]->translate(0, 0, theta * 0.02);
+			 } else if (coordinate == 3 && type == 1) { //VC Rotate x
+			 rx = 1;
+			 ry = 0;
+			 rz = 0;
+			 myCam.rotate_view(rx, ry, rz, theta);
+			 } else if (coordinate == 3 && type == 2) { //VC Rotate y
+			 rx = 0;
+			 ry = 1;
+			 rz = 0;
+			 myCam.rotate_view(rx, ry, rz, theta);
+			 } else if (coordinate == 3 && type == 3) { //VC Rotate z
+			 rx = 0;
+			 ry = 0;
+			 rz = 1;
+			 myCam.rotate_view(rx, ry, rz, theta);
+			 } else if (coordinate == 3 && type == 4) { //VC Translate x
+			 myCam.xeye += 0.1 * theta;
+			 } else if (coordinate == 3 && type == 5) { //VC Translate y
+			 myCam.yeye += 0.1 * theta;
+			 } else if (coordinate == 3 && type == 6) { //VC Translate z
+			 myCam.zeye += 0.1 * theta;
+			 } else if (coordinate == 3 && type == 7) { //VC Clipping Near
+			 theta = (xBegin - x < 0) ? 1 : -1;
+			 myCam.dnear += 0.1 * theta;
+			 } else if (coordinate == 3 && type == 8) { //VC Clipping Far
+			 myCam.dfar += 0.1 * theta;
+			 } else if (coordinate == 3 && type == 9) { //Angle
+			 myCam.vangle += 0.1 * theta;
+			 }
+			 //LIGHT TRANSFORMATIONS
+			 else if (coordinate == 4 && type == 1) { //Light Rotate x
+			 rx = 1;
+			 ry = 0;
+			 rz = 0;
+			 Spot.rotateWC(rx, ry, rz, theta * 0.5);
+			 } else if (coordinate == 4 && type == 2) { //Light Rotate y
+			 rx = 0;
+			 ry = 1;
+			 rz = 0;
+			 Spot.rotateWC(rx, ry, rz, theta * 0.5);
+			 } else if (coordinate == 4 && type == 3) { //Light Rotate z
+			 rx = 0;
+			 ry = 0;
+			 rz = 1;
+			 Spot.rotateWC(rx, ry, rz, theta * 0.5);
+			 } else if (coordinate == 4 && type == 4) { //Light Translate x
+			 Spot.lx += theta * 0.02;
+			 } else if (coordinate == 4 && type == 5) { //Light Translate y
+			 Spot.ly += theta * 0.02;
+			 } else if (coordinate == 4 && type == 6) { //Light Translate z
+			 Spot.lz += theta * 0.02;
+			 } else if (coordinate == 4 && type == 7) { // Ambient Ka
+			 ambient[0] += theta * 0.01;
+			 ambient[1] += theta * 0.01;
+			 ambient[2] += theta * 0.01;
+			 if (Spot.Ka > 1.0) {
+			 Spot.Ka = 1.0;
+			 } else if (Spot.Ka < 0) {
+			 Spot.Ka = 0.0;
+			 } else {
+			 theta = (xBegin - x < 0) ? 1 : -1;
+			 Spot.Ka += theta * 0.01;
+			 }
+			 }
 
-			else if (coordinate == 4 && type == 8) { // Ambient B
-				ambient[0] += theta * 0.01;
-				ambient[1] += theta * 0.01;
-				ambient[2] += theta * 0.01;
+			 else if (coordinate == 4 && type == 8) { // Ambient B
+			 ambient[0] += theta * 0.01;
+			 ambient[1] += theta * 0.01;
+			 ambient[2] += theta * 0.01;
 
-				if (Spot.B > 1.0) {
-					Spot.B = 1.0;
-				} else if (Spot.B < 0) {
-					Spot.B = 0.0;
-				} else {
-					theta = (xBegin - x < 0) ? 1 : -1;
-					Spot.B += theta * 0.01;
-				}
+			 if (Spot.B > 1.0) {
+			 Spot.B = 1.0;
+			 } else if (Spot.B < 0) {
+			 Spot.B = 0.0;
+			 } else {
+			 theta = (xBegin - x < 0) ? 1 : -1;
+			 Spot.B += theta * 0.01;
+			 }
 
-			}
+			 }
 
-			else if (coordinate == 4 && type == 9) { // Point Light Kd
-				diffuse[0] += theta * 0.01;
-				diffuse[1] += theta * 0.01;
-				diffuse[2] += theta * 0.01;
+			 else if (coordinate == 4 && type == 9) { // Point Light Kd
+			 diffuse[0] += theta * 0.01;
+			 diffuse[1] += theta * 0.01;
+			 diffuse[2] += theta * 0.01;
 
-				if (Spot.Kd > 1.0) {
-					Spot.Kd = 1.0;
-				} else if (Spot.Kd < 0) {
-					Spot.Kd = 0.0;
-				} else {
-					theta = (xBegin - x < 0) ? 1 : -1;
-					Spot.Kd += theta * 0.01;
-				}
+			 if (Spot.Kd > 1.0) {
+			 Spot.Kd = 1.0;
+			 } else if (Spot.Kd < 0) {
+			 Spot.Kd = 0.0;
+			 } else {
+			 theta = (xBegin - x < 0) ? 1 : -1;
+			 Spot.Kd += theta * 0.01;
+			 }
 
-			}
+			 }
 
-			else if (coordinate == 4 && type == 10) { // Point Intensity P
-				diffuse[0] += theta * 0.01;
-				diffuse[1] += theta * 0.01;
-				diffuse[2] += theta * 0.01;
-				if (Spot.P > 1.0) {
-					Spot.P = 1.0;
-				} else if (Spot.P < 0) {
-					Spot.P = 0.0;
-				} else {
-					theta = (xBegin - x < 0) ? 1 : -1;
-					Spot.P += theta * 0.01;
-				}
+			 else if (coordinate == 4 && type == 10) { // Point Intensity P
+			 diffuse[0] += theta * 0.01;
+			 diffuse[1] += theta * 0.01;
+			 diffuse[2] += theta * 0.01;
+			 if (Spot.P > 1.0) {
+			 Spot.P = 1.0;
+			 } else if (Spot.P < 0) {
+			 Spot.P = 0.0;
+			 } else {
+			 theta = (xBegin - x < 0) ? 1 : -1;
+			 Spot.P += theta * 0.01;
+			 }
 
-			}
-			*/
+			 }
+			 */
 
 		}
 	}
@@ -320,26 +320,26 @@ void mouseMotion(GLint x, GLint y) {
 }
 
 /*
-void getPos(GLint x, GLint y) {
-	GLint viewport[4];
-	GLdouble modelview[16];
-	GLdouble projection[16];
-	GLfloat winX, winY, winZ;
+ void getPos(GLint x, GLint y) {
+ GLint viewport[4];
+ GLdouble modelview[16];
+ GLdouble projection[16];
+ GLfloat winX, winY, winZ;
 
-	glGetDoublev( GL_MODELVIEW_MATRIX, modelview);
-	glGetDoublev( GL_PROJECTION_MATRIX, projection);
-	glGetIntegerv( GL_VIEWPORT, viewport);
+ glGetDoublev( GL_MODELVIEW_MATRIX, modelview);
+ glGetDoublev( GL_PROJECTION_MATRIX, projection);
+ glGetIntegerv( GL_VIEWPORT, viewport);
 
-	winX = (float) x;
-	winY = (float) viewport[3] - (float) y;
-	glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+ winX = (float) x;
+ winY = (float) viewport[3] - (float) y;
+ glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 
-	gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX,
-			&posY, &posZ);
-	printf("%f %f posX: %f, posY: %f\n", x, y, posX, posZ);
-}
+ gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX,
+ &posY, &posZ);
+ printf("%f %f posX: %f, posY: %f\n", x, y, posX, posZ);
+ }
 
-*/
+ */
 
 /*-------ANIMATION FUNCTION-------------------*/
 GLfloat ball_x_trans = 0.00, ball_y_trans = 0.02, ball_z_trans = 0.00;
@@ -348,88 +348,109 @@ GLint check_collision_aux(Cube* object) {
 	GLfloat sphereP1[3];
 	GLfloat radius = 0.2;
 	GLint count = 0;
-	sphereP1[0] = myWorld.ball -> sphere_center_wc[0];
-	sphereP1[1] = myWorld.ball -> sphere_center_wc[1] + radius + ball_y_trans;
-	sphereP1[2] = (myWorld.ball -> sphere_center_wc[2]);
+	sphereP1[0] = myWorld.ball->sphere_center_wc[0];
+	sphereP1[1] = myWorld.ball->sphere_center_wc[1];// + radius + ball_y_trans
+	sphereP1[2] = (myWorld.ball->sphere_center_wc[2]);
 
+	/*GLint i;
+	 for(i = 0; i < 6; i++){
+	 printf("%f, %f, %f \n", sphereP1[0], sphereP1[1], sphereP1[2]);
+	 printf("%f, %f, %f \n", object->cube_face_center_wc[i][0], object->cube_face_center_wc[i][1], object->cube_face_center_wc[i][2]);
+	 printf("%f, %f, %f \n", object->cube_face_norm_wc[i][0], object->cube_face_norm_wc[i][1], object->cube_face_norm_wc[i][2]);
+	 //float result = ((object->cube_face_center_wc[i][0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
+	 //		((object->cube_face_center_wc[i][1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
+	 //		((object->cube_face_center_wc[i][2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
+	 GLfloat result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
+	 ((object->cube_center_wc[1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
+	 ((object->cube_center_wc[2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
+
+	 printf("%f \n", result);
+	 if (result < 0) count++;
+	 printf("%d, %d \n", i, count);
+	 }
+	 if (count == 6) return 1;*/
 	GLint i;
-	for(i = 0; i < 6; i++){
-		printf("%f, %f, %f \n", sphereP1[0], sphereP1[1], sphereP1[2]);
-		printf("%f, %f, %f \n", object->cube_face_center_wc[i][0], object->cube_face_center_wc[i][1], object->cube_face_center_wc[i][2]);
-		printf("%f, %f, %f \n", object->cube_face_norm_wc[i][0], object->cube_face_norm_wc[i][1], object->cube_face_norm_wc[i][2]);
-		//float result = ((object->cube_face_center_wc[i][0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
-		//		((object->cube_face_center_wc[i][1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
-		//		((object->cube_face_center_wc[i][2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
-		GLfloat result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
-			((object->cube_center_wc[1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
-			((object->cube_center_wc[2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
-
-		printf("%f \n", result);
-		if (result < 0) count++;
-		printf("%d, %d \n", i, count);
+	for (i = 0; i < 6; i++) {
+		GLfloat facing_in = ((0 - object->cube_face_center_wc[i][0]) * object->cube_face_norm_wc[i][0])
+				+ ((0 - object->cube_face_center_wc[i][1]) * object->cube_face_norm_wc[i][1])
+				+ ((0 - object->cube_face_center_wc[i][2]) * object->cube_face_norm_wc[i][2]);
+		if(facing_in > 0){
+			printf("Face: %d... \n",i);
+		}
 	}
-	if (count == 6) return 1;
 	return 0;
 }
 
 //This function doesn't work as planned. Will fix tomorrow
-GLint check_collision_aux2(Cube* object) {
-	GLfloat sphereP1[3];
-	GLfloat radius = -0.2;
-	GLint count = 0;
-	sphereP1[0] = myWorld.ball -> sphere_center_wc[0];
-	sphereP1[1] = myWorld.ball -> sphere_center_wc[1] + radius;
-	sphereP1[2] = (myWorld.ball -> sphere_center_wc[2]);
-	GLint i;
-	for(i = 0; i < 6; i++){
-		printf("%f, %f, %f \n", sphereP1[0], sphereP1[1], sphereP1[2]);
-		printf("%f, %f, %f \n", object->cube_face_center_wc[i][0], object->cube_face_center_wc[i][1], object->cube_face_center_wc[i][2]);
-		printf("%f, %f, %f \n", object->cube_face_norm_wc[i][0], object->cube_face_norm_wc[i][1], object->cube_face_norm_wc[i][2]);
-		//float result = ((object->cube_face_center_wc[i][0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
-		//		((object->cube_face_center_wc[i][1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
-		//		((object->cube_face_center_wc[i][2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
-		GLfloat result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
-			((object->cube_center_wc[1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
-			((object->cube_center_wc[2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
+	GLint
+	check_collision_aux2(Cube * object)
+	{
+		GLfloat sphereP1[3];
+		GLfloat radius = -0.2;
+		GLint count = 0;
+		sphereP1[0] = myWorld.ball->sphere_center_wc[0];
+		sphereP1[1] = myWorld.ball->sphere_center_wc[1] + radius;
+		sphereP1[2] = (myWorld.ball->sphere_center_wc[2]);
+		/*GLint i;
+			 for(i = 0; i < 6; i++){
+			 printf("%f, %f, %f \n", sphereP1[0], sphereP1[1], sphereP1[2]);
+			 printf("%f, %f, %f \n", object->cube_face_center_wc[i][0], object->cube_face_center_wc[i][1], object->cube_face_center_wc[i][2]);
+			 printf("%f, %f, %f \n", object->cube_face_norm_wc[i][0], object->cube_face_norm_wc[i][1], object->cube_face_norm_wc[i][2]);
+			 //float result = ((object->cube_face_center_wc[i][0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
+			 //		((object->cube_face_center_wc[i][1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
+			 //		((object->cube_face_center_wc[i][2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
+			 GLfloat result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
+			 ((object->cube_center_wc[1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
+			 ((object->cube_center_wc[2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
 
-		printf("%f \n", result);
-		if (result < 0) count++;
-		printf("%d, %d \n", i, count);
+			 printf("%f \n", result);
+			 if (result < 0) count++;
+			 printf("%d, %d \n", i, count);
+			 }
+			 if (count == 6) return 1;*/
+			GLint i;
+			for (i = 0; i < 6; i++) {
+				GLfloat facing_in = ((0 - object->cube_face_center_wc[i][0]) * (object->cube_face_center_wc[i][0] - object->cube_center_wc[0]))
+						+ ((0 - object->cube_face_center_wc[i][1]) * (object->cube_face_center_wc[i][1] - object->cube_center_wc[1]))
+						+ ((0 - object->cube_face_center_wc[i][2]) * (object->cube_face_center_wc[i][2] - object->cube_center_wc[2]));
+				if(facing_in > 0){
+					printf("Face: %d... \n",i);
+				}
+			}
+			return 0;
 	}
-	if (count == 6) return 1;
-	return 0;
-}
 
-void check_collision() {
-	GLint n = 0;
-	GLint found = 0, found2 = 0;
-	while ( n < 6 && found == 0 && found2 == 0) {
-		found = check_collision_aux(myWorld.list[n]);
-		found2 = check_collision_aux2(myWorld.list[n]);
-		n++;
+	void check_collision() {
+		GLint n = 0;
+		GLint found = 0, found2 = 0;
+		while ( n < 6 && found == 0 && found2 == 0) {
+			printf("Object: %d, ", n);
+			found = check_collision_aux(myWorld.list[n]);
+			found2 = check_collision_aux2(myWorld.list[n]);
+			n++;
+		}
+		if(found == 1 || found2 == 1) {
+			ball_y_trans = ball_y_trans * -1;
+		}
 	}
-	if(found == 1 || found2 == 1){
-		ball_y_trans = ball_y_trans * -1;
+
+	void move(void) {
+		check_collision();
+		/*
+		 GLfloat rx, ry, rz, theta;
+
+		 theta = 0.05;
+		 rx = myWorld.ball->getMC().mat[0][1];
+		 ry = myWorld.ball->getMC().mat[1][1];
+		 rz = myWorld.ball->getMC().mat[2][1];
+		 */
+		myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
+
+		glutPostRedisplay();
+
 	}
-}
 
-void move(void) {
-	check_collision();
-	/*
-	GLfloat rx, ry, rz, theta;
-
-	theta = 0.05;
-	rx = myWorld.ball->getMC().mat[0][1];
-	ry = myWorld.ball->getMC().mat[1][1];
-	rz = myWorld.ball->getMC().mat[2][1];
-	*/
-	myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
-
-	glutPostRedisplay();
-
-}
-
-int check = 2;
+	int check = 2;
 void ColorChange(int x) {
 	if (check> 5) {
 		check = 1;
@@ -439,13 +460,13 @@ void ColorChange(int x) {
 		myWorld.list[5]->setColor(1.0, 1.0, 1.0);
 	}
 	/*
-	myWorld.list[2]->setColor(1.0, 1.0, 1.0);
-	myWorld.list[3]->setColor(1.0, 1.0, 1.0);
-	myWorld.list[4]->setColor(1.0, 1.0, 1.0);
-	myWorld.list[5]->setColor(1.0, 1.0, 1.0);
-*/
+	 myWorld.list[2]->setColor(1.0, 1.0, 1.0);
+	 myWorld.list[3]->setColor(1.0, 1.0, 1.0);
+	 myWorld.list[4]->setColor(1.0, 1.0, 1.0);
+	 myWorld.list[5]->setColor(1.0, 1.0, 1.0);
+	 */
 	else {
-	myWorld.list[check]->setColor(1.0, 0.5, 0.0);
+		myWorld.list[check]->setColor(1.0, 0.5, 0.0);
 	}
 	check++;
 	if (x == 1) {
@@ -454,7 +475,6 @@ void ColorChange(int x) {
 	glutPostRedisplay();
 
 }
-
 
 void Disable() {
 	glDisable(GL_DEPTH_TEST);
@@ -478,8 +498,8 @@ void Enable() {
 }
 
 void ResetLightPosition() {
-	GLfloat temp[] = { 1.8, 1.8, 1.5, 1.0 };
-	GLfloat temp2[] = { 0.0, 0.0, 0.0, 1.0 };
+	GLfloat temp[] = {1.8, 1.8, 1.5, 1.0};
+	GLfloat temp2[] = {0.0, 0.0, 0.0, 1.0};
 	int i = 0;
 	for (i = 0; i < 4; i++) {
 		position[i] = temp[i];
@@ -488,9 +508,9 @@ void ResetLightPosition() {
 }
 
 void ResetLightValue() {
-	GLfloat temp1[] = { 0.1, 0.1, 0.3, 1.0 };
-	GLfloat temp2[] = { 0.6, 0.6, 1.0, 1.0 };
-	GLfloat temp3[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat temp1[] = {0.1, 0.1, 0.3, 1.0};
+	GLfloat temp2[] = {0.6, 0.6, 1.0, 1.0};
+	GLfloat temp3[] = {1.0, 1.0, 1.0, 1.0};
 	int i = 0;
 	for (i = 0; i < 4; i++) {
 		ambient[i] = temp1[i];
@@ -572,89 +592,89 @@ void init(void) {
 
 /*
 
-void MCTransMenu(GLint transOption) {
-	coordinate = 1;
-	type = transOption; //1 for rotate x, 2 for rotate y, 3 for rotate z, 4 for scale
-	glutPostRedisplay();
-}
+ void MCTransMenu(GLint transOption) {
+ coordinate = 1;
+ type = transOption; //1 for rotate x, 2 for rotate y, 3 for rotate z, 4 for scale
+ glutPostRedisplay();
+ }
 
-void WCTransMenu(GLint transOption) {
-	coordinate = 2;
-	type = transOption; //1 rot x; 2 rot y; 3 rot z; 4 trans x; 5 trans y; 6 trans z
-	glutPostRedisplay();
-}
+ void WCTransMenu(GLint transOption) {
+ coordinate = 2;
+ type = transOption; //1 rot x; 2 rot y; 3 rot z; 4 trans x; 5 trans y; 6 trans z
+ glutPostRedisplay();
+ }
 
-*/
+ */
 
 void mainMenu(GLint option) {
 	switch (option) {
-	case 1: { //reset
-		/*
-		myWorld.list[0] = new Cube();
+		case 1: { //reset
+			/*
+			 myWorld.list[0] = new Cube();
 
-		myCam.xeye = 3.0, myCam.yeye = 3.0, myCam.zeye = 7.0; //set view back to default!
-		myCam.vangle = 40.0, myCam.dnear = 2.0, myCam.dfar = 20.0;
-		Spot.resetAll();
-		Spot.off();
-		glutIdleFunc(NULL);
-		ResetLightAll();
-		Disable();
-		glutPostRedisplay();
-		*/
-		break;
-	}
-	case 2: {
-		exit(0);
-	}
-		break;
-	case 3: {
-		if (game_start == 0) {
-			game_start = 1;
-			//ColorChange(1);
+			 myCam.xeye = 3.0, myCam.yeye = 3.0, myCam.zeye = 7.0; //set view back to default!
+			 myCam.vangle = 40.0, myCam.dnear = 2.0, myCam.dfar = 20.0;
+			 Spot.resetAll();
+			 Spot.off();
+			 glutIdleFunc(NULL);
+			 ResetLightAll();
+			 Disable();
+			 glutPostRedisplay();
+			 */
+			break;
 		}
-		else {
-			game_start = 0;
+		case 2: {
+			exit(0);
+		}
+		break;
+		case 3: {
+			if (game_start == 0) {
+				game_start = 1;
+				//ColorChange(1);
+			}
+			else {
+				game_start = 0;
 
+			}
 		}
-	}
 	}
 
 }
 
 /*
-void VCTransMenu(GLint transOption) {
-	coordinate = 3;
-	type = transOption; // 1 rotate x, 2 rotate y, 3 rotate z, 4 translate x, 5 translate y, 6 translate z, 7 clipping near, 8 clipping far, 9 angle
-	glutPostRedisplay();
-}
-*/
+ void VCTransMenu(GLint transOption) {
+ coordinate = 3;
+ type = transOption; // 1 rotate x, 2 rotate y, 3 rotate z, 4 translate x, 5 translate y, 6 translate z, 7 clipping near, 8 clipping far, 9 angle
+ glutPostRedisplay();
+ }
+ */
 
 void colorSubMenu(GLint colorOption) {
 	switch (colorOption) {
-	case 1: { //White
-		red = 1.0;
-		green = 1.0;
-		blue = 1.0;
-		break;
-	}
-	case 2: { //Red
-		red = 1.0;
-		green = 0.0;
-		blue = 0.0;
-		break;
-	}
-	case 3: { //Green
-		red = 0.0;
-		green = 1.0;
-		blue = 0.0;
-		break;
-	}
-	case 4: { //Blue
-		red = 0.0;
-		green = 0.0;
-		blue = 1.0;
-		break;
-	}
+		case 1: { //White
+			red = 1.0;
+			green = 1.0;
+			blue = 1.0;
+			break;
+		}
+		case 2: { //Red
+			red = 1.0;
+			green = 0.0;
+			blue = 0.0;
+			break;
+		}
+		case 3: { //Green
+			red = 0.0;
+			green = 1.0;
+			blue = 0.0;
+			break;
+		}
+		case 4: { //Blue
+			red = 0.0;
+			green = 0.0;
+			blue = 1.0;
+			break;
+		}
 	}
 	glColor3f(red, green, blue);
 	glutPostRedisplay();
@@ -662,105 +682,105 @@ void colorSubMenu(GLint colorOption) {
 
 /*
 
-void A3Menu(GLint faceOption) {
-	switch (faceOption) {
-	case 1: {
-		glutIdleFunc(move);
-	}
-		break; // run the animation
-	case 2: {
-		glutIdleFunc(NULL);
-		break;
-	} // stop animation, and do other drawing
+ void A3Menu(GLint faceOption) {
+ switch (faceOption) {
+ case 1: {
+ glutIdleFunc(move);
+ }
+ break; // run the animation
+ case 2: {
+ glutIdleFunc(NULL);
+ break;
+ } // stop animation, and do other drawing
 
-	case 3: { //Turn on Light
-		Spot.on();
-		break;
-	}
+ case 3: { //Turn on Light
+ Spot.on();
+ break;
+ }
 
-	case 4: { //Turn off Light
-		Spot.off();
-		break;
-	}
+ case 4: { //Turn off Light
+ Spot.off();
+ break;
+ }
 
-	case 5: { //Reset light position
-		Spot.resetPosition();
-		ResetLightPosition();
+ case 5: { //Reset light position
+ Spot.resetPosition();
+ ResetLightPosition();
 
-		break;
-	}
+ break;
+ }
 
-	case 6: { //Reset light value
-		Spot.resetIllumination();
-		ResetLightValue();
-		break;
-	}
+ case 6: { //Reset light value
+ Spot.resetIllumination();
+ ResetLightValue();
+ break;
+ }
 
-	case 7: { //Reset light ALL
-		Spot.resetAll();
-		ResetLightAll();
-		break;
-	}
+ case 7: { //Reset light ALL
+ Spot.resetAll();
+ ResetLightAll();
+ break;
+ }
 
-	}
-	glutPostRedisplay();
-}
+ }
+ glutPostRedisplay();
+ }
 
-void LightTransMenu(GLint Option) {
-	coordinate = 4;
-	type = Option;
-}
+ void LightTransMenu(GLint Option) {
+ coordinate = 4;
+ type = Option;
+ }
 
-void glslSubMenu(GLint glslOption) {
-	switch (glslOption) {
-	case 1:
-		//glUseProgram(programObject);
+ void glslSubMenu(GLint glslOption) {
+ switch (glslOption) {
+ case 1:
+ //glUseProgram(programObject);
 
-		break;
-	case 2:
-		//glUseProgram(0);
+ break;
+ case 2:
+ //glUseProgram(0);
 
-		break;
-	default:
-		break;
-	}
+ break;
+ default:
+ break;
+ }
 
-	glutPostRedisplay();
-}
+ glutPostRedisplay();
+ }
 
-void ObjMenu(GLint option) {
-	switch (option) {
-	case 1: { //Cube
-		Enable();
-		selected = 0;
-		break;
-	}
+ void ObjMenu(GLint option) {
+ switch (option) {
+ case 1: { //Cube
+ Enable();
+ selected = 0;
+ break;
+ }
 
-	case 2: {
-		selected = 1;
-		break;
-	}
+ case 2: {
+ selected = 1;
+ break;
+ }
 
-	case 3: {
-		selected = 2;
-		break;
-	}
-	case 4: { //Show Point Light
-		Spot.pointOn();
-		break;
-	}
+ case 3: {
+ selected = 2;
+ break;
+ }
+ case 4: { //Show Point Light
+ Spot.pointOn();
+ break;
+ }
 
-	case 5: { //Hide Point Light
-		Spot.pointOff();
-		break;
-	}
-	}
-	glutPostRedisplay();
-}
-*/
+ case 5: { //Hide Point Light
+ Spot.pointOff();
+ break;
+ }
+ }
+ glutPostRedisplay();
+ }
+ */
 void printMenu(GLint x) {
 	switch (x) {
-	case 1:
+		case 1:
 		printf(
 				"Dnear: %f Dfar: %f vAngle: %f xeye: %f, yeye: %f, zeye: %f, xref: %f, yref: %f, zref: %f\n",
 				myCam.dnear, myCam.dfar, myCam.vangle, myCam.xeye, myCam.yeye,
@@ -771,88 +791,88 @@ void printMenu(GLint x) {
 
 void menu() {
 	/*
-	GLint WCTrans_Menu, VCTrans_Menu, MCTrans_Menu, A3_Menu, LightTrans_Menu,
-			glsl_shad, Obj_Menu, Print_Menu;
-*/
+	 GLint WCTrans_Menu, VCTrans_Menu, MCTrans_Menu, A3_Menu, LightTrans_Menu,
+	 glsl_shad, Obj_Menu, Print_Menu;
+	 */
 	GLint Print_Menu;
 	/*
-	MCTrans_Menu = glutCreateMenu(MCTransMenu);
-	glutAddMenuEntry(" Rotate x ", 1);
-	glutAddMenuEntry(" Rotate y ", 2);
-	glutAddMenuEntry(" Rotate z ", 3);
-	glutAddMenuEntry(" ScaleX ", 4);
-	glutAddMenuEntry(" ScaleY ", 5);
-	glutAddMenuEntry(" ScaleZ ", 6);
-	glutAddMenuEntry(" Scale All ", 7);
+	 MCTrans_Menu = glutCreateMenu(MCTransMenu);
+	 glutAddMenuEntry(" Rotate x ", 1);
+	 glutAddMenuEntry(" Rotate y ", 2);
+	 glutAddMenuEntry(" Rotate z ", 3);
+	 glutAddMenuEntry(" ScaleX ", 4);
+	 glutAddMenuEntry(" ScaleY ", 5);
+	 glutAddMenuEntry(" ScaleZ ", 6);
+	 glutAddMenuEntry(" Scale All ", 7);
 
-	WCTrans_Menu = glutCreateMenu(WCTransMenu);
-	glutAddMenuEntry(" Rotate x ", 1);
-	glutAddMenuEntry(" Rotate y ", 2);
-	glutAddMenuEntry(" Rotate z", 3);
-	glutAddMenuEntry(" Translate x ", 4);
-	glutAddMenuEntry(" Translate y ", 5);
-	glutAddMenuEntry(" Translate z", 6);
+	 WCTrans_Menu = glutCreateMenu(WCTransMenu);
+	 glutAddMenuEntry(" Rotate x ", 1);
+	 glutAddMenuEntry(" Rotate y ", 2);
+	 glutAddMenuEntry(" Rotate z", 3);
+	 glutAddMenuEntry(" Translate x ", 4);
+	 glutAddMenuEntry(" Translate y ", 5);
+	 glutAddMenuEntry(" Translate z", 6);
 
-	VCTrans_Menu = glutCreateMenu(VCTransMenu);
-	glutAddMenuEntry(" Rotate x ", 1);
-	glutAddMenuEntry(" Rotate y ", 2);
-	glutAddMenuEntry(" Rotate z", 3);
-	glutAddMenuEntry(" Translate x ", 4);
-	glutAddMenuEntry(" Translate y ", 5);
-	glutAddMenuEntry(" Translate z", 6);
-	glutAddMenuEntry(" Clipping Near ", 7);
-	glutAddMenuEntry(" Clipping Far ", 8);
-	glutAddMenuEntry(" Angle ", 9);
+	 VCTrans_Menu = glutCreateMenu(VCTransMenu);
+	 glutAddMenuEntry(" Rotate x ", 1);
+	 glutAddMenuEntry(" Rotate y ", 2);
+	 glutAddMenuEntry(" Rotate z", 3);
+	 glutAddMenuEntry(" Translate x ", 4);
+	 glutAddMenuEntry(" Translate y ", 5);
+	 glutAddMenuEntry(" Translate z", 6);
+	 glutAddMenuEntry(" Clipping Near ", 7);
+	 glutAddMenuEntry(" Clipping Far ", 8);
+	 glutAddMenuEntry(" Angle ", 9);
 
-	A3_Menu = glutCreateMenu(A3Menu);
-	glutAddMenuEntry("Animation On", 1);
-	glutAddMenuEntry("Animation Off", 2);
-	glutAddMenuEntry("Cube Light On", 3);
-	glutAddMenuEntry("Cube Light Off", 4);
-	glutAddMenuEntry("Reset Light Position", 5);
-	glutAddMenuEntry("Reset Light Values", 6);
-	glutAddMenuEntry("Reset Light All", 7);
+	 A3_Menu = glutCreateMenu(A3Menu);
+	 glutAddMenuEntry("Animation On", 1);
+	 glutAddMenuEntry("Animation Off", 2);
+	 glutAddMenuEntry("Cube Light On", 3);
+	 glutAddMenuEntry("Cube Light Off", 4);
+	 glutAddMenuEntry("Reset Light Position", 5);
+	 glutAddMenuEntry("Reset Light Values", 6);
+	 glutAddMenuEntry("Reset Light All", 7);
 
-	LightTrans_Menu = glutCreateMenu(LightTransMenu);
-	glutAddMenuEntry("Rotate x", 1);
-	glutAddMenuEntry("Rotate y", 2);
-	glutAddMenuEntry("Rotate z", 3);
-	glutAddMenuEntry("Translate x", 4);
-	glutAddMenuEntry("Translate y", 5);
-	glutAddMenuEntry("Translate z", 6);
-	glutAddMenuEntry("Ambient Ka", 7);
-	glutAddMenuEntry("Ambient B", 8);
-	glutAddMenuEntry("Point Light Kd", 9);
-	glutAddMenuEntry("Point Intensity P", 10);
+	 LightTrans_Menu = glutCreateMenu(LightTransMenu);
+	 glutAddMenuEntry("Rotate x", 1);
+	 glutAddMenuEntry("Rotate y", 2);
+	 glutAddMenuEntry("Rotate z", 3);
+	 glutAddMenuEntry("Translate x", 4);
+	 glutAddMenuEntry("Translate y", 5);
+	 glutAddMenuEntry("Translate z", 6);
+	 glutAddMenuEntry("Ambient Ka", 7);
+	 glutAddMenuEntry("Ambient B", 8);
+	 glutAddMenuEntry("Point Light Kd", 9);
+	 glutAddMenuEntry("Point Intensity P", 10);
 
-	glsl_shad = glutCreateMenu(glslSubMenu);
-	glutAddMenuEntry(" On ", 1);
-	glutAddMenuEntry(" Off ", 2);
-	*/
+	 glsl_shad = glutCreateMenu(glslSubMenu);
+	 glutAddMenuEntry(" On ", 1);
+	 glutAddMenuEntry(" Off ", 2);
+	 */
 
 	Print_Menu = glutCreateMenu(printMenu);
 	glutAddMenuEntry(" Print View Variables ", 1);
 
 	/*
-	Obj_Menu = glutCreateMenu(ObjMenu);
-	glutAddMenuEntry(" Cube ", 1);
-	glutAddMenuEntry(" Cube 2 ", 2);
-	glutAddMenuEntry(" Sphere ", 3);
-	glutAddMenuEntry(" Solar System Animation ", 3);
-	glutAddMenuEntry(" Show Point Light ", 4);
-	glutAddMenuEntry(" Hide Point Light ", 5);
-*/
+	 Obj_Menu = glutCreateMenu(ObjMenu);
+	 glutAddMenuEntry(" Cube ", 1);
+	 glutAddMenuEntry(" Cube 2 ", 2);
+	 glutAddMenuEntry(" Sphere ", 3);
+	 glutAddMenuEntry(" Solar System Animation ", 3);
+	 glutAddMenuEntry(" Show Point Light ", 4);
+	 glutAddMenuEntry(" Hide Point Light ", 5);
+	 */
 	glutCreateMenu(mainMenu);      // Create main pop-up menu.
 
 	/*
-	glutAddSubMenu(" GLSL ", glsl_shad);
-	glutAddSubMenu(" Model Transformations ", MCTrans_Menu);
-	glutAddSubMenu(" WC Transformations ", WCTrans_Menu);
-	glutAddSubMenu(" View Transformations ", VCTrans_Menu);
-	glutAddSubMenu(" Light Transformations ", LightTrans_Menu);
-	glutAddSubMenu(" Object Display ", Obj_Menu);
-	glutAddSubMenu(" Miscellaneous ", A3_Menu);
-	*/
+	 glutAddSubMenu(" GLSL ", glsl_shad);
+	 glutAddSubMenu(" Model Transformations ", MCTrans_Menu);
+	 glutAddSubMenu(" WC Transformations ", WCTrans_Menu);
+	 glutAddSubMenu(" View Transformations ", VCTrans_Menu);
+	 glutAddSubMenu(" Light Transformations ", LightTrans_Menu);
+	 glutAddSubMenu(" Object Display ", Obj_Menu);
+	 glutAddSubMenu(" Miscellaneous ", A3_Menu);
+	 */
 	glutAddSubMenu(" Print ", Print_Menu);
 	//glutAddMenuEntry(" Reset ", 1);
 	glutAddMenuEntry(" Game Start/Stop ", 3);
