@@ -136,12 +136,15 @@ void Cube::draw_face(int i) {
 void Cube::draw_face_texture(int i) {
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
 	glBegin(GL_POLYGON);
+	glTexCoord2f( 0., 1.);
 	glVertex3fv(&vertex[face[i][0]][0]);
+	glTexCoord2f( 0., 0.);
 	glVertex3fv(&vertex[face[i][1]][0]);
+	glTexCoord2f( 1., 0.);
 	glVertex3fv(&vertex[face[i][2]][0]);
+	glTexCoord2f( 1., 1.);
 	glVertex3fv(&vertex[face[i][3]][0]);
 	glEnd();
 
@@ -156,7 +159,7 @@ void Cube::draw() {
 		if (!texturesLoaded) {
 			myImage = new Image();
 
-			char filename[] = "Untitled.bmp";
+			char filename[] = "Wolfsmall.bmp";
 			loadbmp(textures, filename, 0);
 			texturesLoaded = true;
 		}
