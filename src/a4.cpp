@@ -18,7 +18,6 @@
 #include "World.hpp"
 #include "Camera.hpp"
 
-void getPos(GLint, GLint);
 void mouseMotion(GLint, GLint);
 bool loadbmp(UINT textureArray[], LPSTR strFileName, int ID);
 
@@ -55,7 +54,7 @@ GLfloat mat_emission[] = { 1, 1, 1, 1 };
 
 GLuint programObject;
 
-GLuint textures[4];
+GLuint textures[6];
 Image* myImage;
 bool texturesLoaded;
 
@@ -119,10 +118,29 @@ void display(void) {
 
 	if(!texturesLoaded) {
 		myImage = new Image();
-		char filename[] = "Wolfsmall.bmp";
+
+		char filename[] = "earth.bmp";
 		loadbmp(textures, filename, 0);
-		texturesLoaded = true;
-		myWorld.list[0]->textureID = 0;
+
+		char filename1[] = "moon.bmp";
+		loadbmp(textures, filename1, 1);
+
+		char filename2[] = "sun.bmp";
+		loadbmp(textures, filename2, 2);
+
+		char filename3[] = "Wolfsmall.bmp";
+		loadbmp(textures, filename3, 3);
+
+		char filename4[] = "Untitled1.bmp";
+		loadbmp(textures, filename4, 4);
+
+		myWorld.list[2]->textureID = 0; //left wall
+		myWorld.list[3]->textureID = 1; //top wall
+		myWorld.list[4]->textureID = 2; //right wall
+		myWorld.list[5]->textureID = 3; //bottom wall
+		myWorld.list[0]->textureID = 4; //player paddle
+
+		texturesLoaded = true; //only need to load up textures once
 	}
 	myWorld.draw_world(); // draw all objects in the world
 	Spot.draw();

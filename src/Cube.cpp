@@ -137,9 +137,12 @@ void Cube::draw_face(int i) {
 }
 
 void Cube::draw_face_texture(int i) {
+	glColor3f(1.0, 1.0, 1.0);
+
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textures[textureID]);
-	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	//GLfloat color[] = {1.0, 1.0, 1.0, 0.0};
+	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBegin(GL_POLYGON);
 	glTexCoord2f( 0., 1.);
 	glVertex3fv(&vertex[face[i][0]][0]);
@@ -165,6 +168,7 @@ void Cube::draw() {
 			draw_face_texture(faceIndex[i]);
 		}
 		glDisable(GL_TEXTURE_2D);
+		//glBindTexture( GL_TEXTURE_2D, 0 );
 	} else {
 		for (int i = 0; i < 6; i++) {
 			glColor3f(r, g, b);
