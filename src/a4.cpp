@@ -353,11 +353,19 @@ void mouseMotion(GLint x, GLint y) {
  GLdouble modelview[16];
  GLdouble projection[16];
  GLfloat winX, winY, winZ;
+<<<<<<< HEAD
 
  glGetDoublev( GL_MODELVIEW_MATRIX, modelview);
  glGetDoublev( GL_PROJECTION_MATRIX, projection);
  glGetIntegerv( GL_VIEWPORT, viewport);
 
+=======
+
+ glGetDoublev( GL_MODELVIEW_MATRIX, modelview);
+ glGetDoublev( GL_PROJECTION_MATRIX, projection);
+ glGetIntegerv( GL_VIEWPORT, viewport);
+
+>>>>>>> 75f39d7886e8ffd5bbfc8aebf7667660a05123cf
  winX = (float) x;
  winY = (float) viewport[3] - (float) y;
  glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
