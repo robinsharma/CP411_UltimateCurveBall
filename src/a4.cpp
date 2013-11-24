@@ -116,7 +116,7 @@ void display(void) {
 		glDisable(GL_LIGHTING);
 	}
 
-	if(!texturesLoaded) {
+	if (!texturesLoaded) {
 		myImage = new Image();
 
 		char filename[] = "earth.bmp";
@@ -371,19 +371,19 @@ void mouseMotion(GLint x, GLint y) {
  GLdouble modelview[16];
  GLdouble projection[16];
  GLfloat winX, winY, winZ;
-<<<<<<< HEAD
+ <<<<<<< HEAD
 
  glGetDoublev( GL_MODELVIEW_MATRIX, modelview);
  glGetDoublev( GL_PROJECTION_MATRIX, projection);
  glGetIntegerv( GL_VIEWPORT, viewport);
 
-=======
+ =======
 
  glGetDoublev( GL_MODELVIEW_MATRIX, modelview);
  glGetDoublev( GL_PROJECTION_MATRIX, projection);
  glGetIntegerv( GL_VIEWPORT, viewport);
 
->>>>>>> 75f39d7886e8ffd5bbfc8aebf7667660a05123cf
+ >>>>>>> 75f39d7886e8ffd5bbfc8aebf7667660a05123cf
  winX = (float) x;
  winY = (float) viewport[3] - (float) y;
  glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
@@ -403,7 +403,7 @@ GLint check_collision_aux(Cube* object) {
 	GLfloat radius = 0.2;
 	GLint count = 0;
 	sphereP1[0] = myWorld.ball->sphere_center_wc[0];
-	sphereP1[1] = myWorld.ball->sphere_center_wc[1];// + radius + ball_y_trans
+	sphereP1[1] = myWorld.ball->sphere_center_wc[1]; // + radius + ball_y_trans
 	sphereP1[2] = (myWorld.ball->sphere_center_wc[2]);
 
 	/*GLint i;
@@ -425,88 +425,56 @@ GLint check_collision_aux(Cube* object) {
 	 if (count == 6) return 1;*/
 	GLint i;
 	for (i = 0; i < 6; i++) {
-		GLfloat facing_in = ((0 - object->cube_face_center_wc[i][0]) * object->cube_face_norm_wc[i][0])
-				+ ((0 - object->cube_face_center_wc[i][1]) * object->cube_face_norm_wc[i][1])
-				+ ((0 - object->cube_face_center_wc[i][2]) * object->cube_face_norm_wc[i][2]);
-		if(facing_in > 0){
-			printf("Face: %d... \n",i);
+		GLfloat facing_in = ((0 - object->cube_face_center_wc[i][0]) * (object->cube_face_center_wc[i][0] - object->cube_center_wc[0])) +
+				((0 - object->cube_face_center_wc[i][1]) * (object->cube_face_center_wc[i][1] - object->cube_center_wc[1])) +
+				((0 - object->cube_face_center_wc[i][2]) * (object->cube_face_center_wc[i][2] - object->cube_center_wc[2]));
+		if (facing_in > 0) {
+			printf("Face: %d... \n", i);
+			if (i == 5 && (object->cube_face_center_wc[i][1] < sphereP1[1])) {
+				printf("Cube face center y: %f, sphere y: %f \n",object->cube_face_center_wc[i][1], sphereP1[1]);
+				ball_y_trans = ball_y_trans * -1;
+			} else if (i == 4
+					&& (object->cube_face_center_wc[i][1] > sphereP1[1])) {
+				ball_y_trans = ball_y_trans * -1;
+			}
 		}
 	}
 	return 0;
 }
 
-//This function doesn't work as planned. Will fix tomorrow
-	GLint
-	check_collision_aux2(Cube * object)
-	{
-		GLfloat sphereP1[3];
-		GLfloat radius = -0.2;
-		GLint count = 0;
-		sphereP1[0] = myWorld.ball->sphere_center_wc[0];
-		sphereP1[1] = myWorld.ball->sphere_center_wc[1] + radius;
-		sphereP1[2] = (myWorld.ball->sphere_center_wc[2]);
-		/*GLint i;
-			 for(i = 0; i < 6; i++){
-			 printf("%f, %f, %f \n", sphereP1[0], sphereP1[1], sphereP1[2]);
-			 printf("%f, %f, %f \n", object->cube_face_center_wc[i][0], object->cube_face_center_wc[i][1], object->cube_face_center_wc[i][2]);
-			 printf("%f, %f, %f \n", object->cube_face_norm_wc[i][0], object->cube_face_norm_wc[i][1], object->cube_face_norm_wc[i][2]);
-			 //float result = ((object->cube_face_center_wc[i][0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
-			 //		((object->cube_face_center_wc[i][1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
-			 //		((object->cube_face_center_wc[i][2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
-			 GLfloat result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
-			 ((object->cube_center_wc[1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
-			 ((object->cube_center_wc[2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
-
-			 printf("%f \n", result);
-			 if (result < 0) count++;
-			 printf("%d, %d \n", i, count);
-			 }
-			 if (count == 6) return 1;*/
-			GLint i;
-			for (i = 0; i < 6; i++) {
-				GLfloat facing_in = ((0 - object->cube_face_center_wc[i][0]) * (object->cube_face_center_wc[i][0] - object->cube_center_wc[0]))
-						+ ((0 - object->cube_face_center_wc[i][1]) * (object->cube_face_center_wc[i][1] - object->cube_center_wc[1]))
-						+ ((0 - object->cube_face_center_wc[i][2]) * (object->cube_face_center_wc[i][2] - object->cube_center_wc[2]));
-				if(facing_in > 0){
-					printf("Face: %d... \n",i);
-				}
-			}
-			return 0;
+void check_collision() {
+	GLint n = 0;
+	GLint found = 0, found2 = 0;
+	while (n < 6 && found == 0 && found2 == 0) {
+		printf("Object: %d, ", n);
+		found = check_collision_aux(myWorld.list[n]);
+		//found2 = check_collision_aux2(myWorld.list[n]);
+		n++;
 	}
+	//if (found == 1 || found2 == 1) {
+//	ball_y_trans = ball_y_trans * -1;
+	//}
+}
 
-	void check_collision() {
-		GLint n = 0;
-		GLint found = 0, found2 = 0;
-		while ( n < 6 && found == 0 && found2 == 0) {
-			printf("Object: %d, ", n);
-			found = check_collision_aux(myWorld.list[n]);
-			found2 = check_collision_aux2(myWorld.list[n]);
-			n++;
-		}
-		if(found == 1 || found2 == 1) {
-			ball_y_trans = ball_y_trans * -1;
-		}
-	}
+void move(void) {
+	check_collision();
+	/*
+	 GLfloat rx, ry, rz, theta;
 
-	void move(void) {
-		check_collision();
-		/*
-		 GLfloat rx, ry, rz, theta;
+	 theta = 0.05;
+	 rx = myWorld.ball->getMC().mat[0][1];
+	 ry = myWorld.ball->getMC().mat[1][1];
+	 rz = myWorld.ball->getMC().mat[2][1];
+	 */
+	myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
 
-		 theta = 0.05;
-		 rx = myWorld.ball->getMC().mat[0][1];
-		 ry = myWorld.ball->getMC().mat[1][1];
-		 rz = myWorld.ball->getMC().mat[2][1];
-		 */
-		myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
+	glutPostRedisplay();
 
-		glutPostRedisplay();
+}
 
-	}
-
-	int check = 2;
+int check = 2;
 void ColorChange(int x) {
-	if (check> 5) {
+	if (check > 5) {
 		check = 1;
 		myWorld.list[2]->setColor(1.0, 1.0, 1.0);
 		myWorld.list[3]->setColor(1.0, 1.0, 1.0);
@@ -552,8 +520,8 @@ void Enable() {
 }
 
 void ResetLightPosition() {
-	GLfloat temp[] = {1.8, 1.8, 1.5, 1.0};
-	GLfloat temp2[] = {0.0, 0.0, 0.0, 1.0};
+	GLfloat temp[] = { 1.8, 1.8, 1.5, 1.0 };
+	GLfloat temp2[] = { 0.0, 0.0, 0.0, 1.0 };
 	int i = 0;
 	for (i = 0; i < 4; i++) {
 		position[i] = temp[i];
@@ -562,9 +530,9 @@ void ResetLightPosition() {
 }
 
 void ResetLightValue() {
-	GLfloat temp1[] = {0.1, 0.1, 0.3, 1.0};
-	GLfloat temp2[] = {0.6, 0.6, 1.0, 1.0};
-	GLfloat temp3[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat temp1[] = { 0.1, 0.1, 0.3, 1.0 };
+	GLfloat temp2[] = { 0.6, 0.6, 1.0, 1.0 };
+	GLfloat temp3[] = { 1.0, 1.0, 1.0, 1.0 };
 	int i = 0;
 	for (i = 0; i < 4; i++) {
 		ambient[i] = temp1[i];
@@ -662,35 +630,34 @@ void init(void) {
 
 void mainMenu(GLint option) {
 	switch (option) {
-		case 1: { //reset
-			/*
-			 myWorld.list[0] = new Cube();
+	case 1: { //reset
+		/*
+		 myWorld.list[0] = new Cube();
 
-			 myCam.xeye = 3.0, myCam.yeye = 3.0, myCam.zeye = 7.0; //set view back to default!
-			 myCam.vangle = 40.0, myCam.dnear = 2.0, myCam.dfar = 20.0;
-			 Spot.resetAll();
-			 Spot.off();
-			 glutIdleFunc(NULL);
-			 ResetLightAll();
-			 Disable();
-			 glutPostRedisplay();
-			 */
-			break;
-		}
-		case 2: {
-			exit(0);
-		}
+		 myCam.xeye = 3.0, myCam.yeye = 3.0, myCam.zeye = 7.0; //set view back to default!
+		 myCam.vangle = 40.0, myCam.dnear = 2.0, myCam.dfar = 20.0;
+		 Spot.resetAll();
+		 Spot.off();
+		 glutIdleFunc(NULL);
+		 ResetLightAll();
+		 Disable();
+		 glutPostRedisplay();
+		 */
 		break;
-		case 3: {
-			if (game_start == 0) {
-				game_start = 1;
-				//ColorChange(1);
-			}
-			else {
-				game_start = 0;
+	}
+	case 2: {
+		exit(0);
+	}
+		break;
+	case 3: {
+		if (game_start == 0) {
+			game_start = 1;
+			//ColorChange(1);
+		} else {
+			game_start = 0;
 
-			}
 		}
+	}
 	}
 
 }
@@ -705,30 +672,30 @@ void mainMenu(GLint option) {
 
 void colorSubMenu(GLint colorOption) {
 	switch (colorOption) {
-		case 1: { //White
-			red = 1.0;
-			green = 1.0;
-			blue = 1.0;
-			break;
-		}
-		case 2: { //Red
-			red = 1.0;
-			green = 0.0;
-			blue = 0.0;
-			break;
-		}
-		case 3: { //Green
-			red = 0.0;
-			green = 1.0;
-			blue = 0.0;
-			break;
-		}
-		case 4: { //Blue
-			red = 0.0;
-			green = 0.0;
-			blue = 1.0;
-			break;
-		}
+	case 1: { //White
+		red = 1.0;
+		green = 1.0;
+		blue = 1.0;
+		break;
+	}
+	case 2: { //Red
+		red = 1.0;
+		green = 0.0;
+		blue = 0.0;
+		break;
+	}
+	case 3: { //Green
+		red = 0.0;
+		green = 1.0;
+		blue = 0.0;
+		break;
+	}
+	case 4: { //Blue
+		red = 0.0;
+		green = 0.0;
+		blue = 1.0;
+		break;
+	}
 	}
 	glColor3f(red, green, blue);
 	glutPostRedisplay();
@@ -834,7 +801,7 @@ void colorSubMenu(GLint colorOption) {
  */
 void printMenu(GLint x) {
 	switch (x) {
-		case 1:
+	case 1:
 		printf(
 				"Dnear: %f Dfar: %f vAngle: %f xeye: %f, yeye: %f, zeye: %f, xref: %f, yref: %f, zref: %f\n",
 				myCam.dnear, myCam.dfar, myCam.vangle, myCam.xeye, myCam.yeye,
@@ -940,8 +907,6 @@ int main(int argc, char** argv) {
 	//PlaySound((LPCSTR) "01 Do I Wanna Know.wav", NULL, SND_FILENAME | SND_ASYNC);
 	//Song by Arctic Monkeys from their album called AM
 	//Album can be purchased from iTunes
-
-
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
