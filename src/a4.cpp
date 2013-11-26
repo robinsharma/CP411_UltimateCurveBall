@@ -59,7 +59,7 @@ Image* myImage;
 bool texturesLoaded;
 
 GLint Game_time = 0;
-GLint speed = 5;
+GLint speed = 1;
 
 void display(void) {
 
@@ -523,10 +523,8 @@ void move(void) {
 		myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
 		//move opponents paddle in relation to ball (NO Z TRANSLATION!)
 		myWorld.list[1]->translate(ball_x_trans, ball_y_trans, 0);
+		glutPostRedisplay();
 	}
-	glutPostRedisplay();
-
-
 }
 
 int check = 2;
