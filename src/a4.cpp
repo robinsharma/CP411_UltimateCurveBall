@@ -400,6 +400,7 @@ void check_collision_paddles(Cube* object, int paddle) {
 				(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
 				ball_z_trans = ball_z_trans * -1;
 			}
+			//miss
 			else{
 				ball_x_trans = 0;
 				ball_y_trans = 0;
@@ -415,6 +416,7 @@ void check_collision_paddles(Cube* object, int paddle) {
 				(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
 				ball_z_trans = ball_z_trans * -1;
 			}
+			//miss
 			else{
 				ball_x_trans = 0;
 				ball_y_trans = 0;
@@ -488,11 +490,13 @@ void check_collision_wall(Cube* object) {
 
 void check_collision() {
 	GLint n = 0;
+	//check paddles
 	while(n < 2){
 		printf("Object: %d, ", n);
 		check_collision_paddles(myWorld.list[n],n);
 		n++;
 	}
+	// n now equals 2. Check walls
 	while (n < 6) {
 		printf("Object: %d, ", n);
 		check_collision_wall(myWorld.list[n]);
@@ -502,15 +506,9 @@ void check_collision() {
 
 void move(void) {
 	check_collision();
-	/*
-	 GLfloat rx, ry, rz, theta;
-
-	 theta = 0.05;
-	 rx = myWorld.ball->getMC().mat[0][1];
-	 ry = myWorld.ball->getMC().mat[1][1];
-	 rz = myWorld.ball->getMC().mat[2][1];
-	 */
+	//Move ball in the proper direction
 	myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
+	//move opponents paddle in relation to ball (NO Z TRANSLATION!)
 	myWorld.list[1]->translate(ball_x_trans, ball_y_trans, 0);
 	glutPostRedisplay();
 
