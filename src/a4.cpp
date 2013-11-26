@@ -384,12 +384,51 @@ void mouseMotion(GLint x, GLint y) {
  */
 
 /*-------ANIMATION FUNCTION-------------------*/
-GLfloat ball_x_trans = 0.02, ball_y_trans = 0.01, ball_z_trans = 0.00;
-//This function doesn't work as planned. Will fix tomorrow
-GLint check_collision_aux(Cube* object) {
+GLfloat ball_x_trans = 0.02, ball_y_trans = 0.0, ball_z_trans = 0.02;
+
+void check_collision_paddles(Cube* object, int paddle) {
 	GLfloat sphereP1[3];
 	GLfloat radius = 0.2;
-	GLint count = 0;
+	sphereP1[0] = myWorld.ball->sphere_center_wc[0];
+	sphereP1[1] = myWorld.ball->sphere_center_wc[1]; // + radius + ball_y_trans
+	sphereP1[2] = myWorld.ball->sphere_center_wc[2];
+	if (paddle == 0){//user paddle
+		//check if colliding with z-axis of paddle
+		if(object->cube_face_center_wc[0][2] <  (sphereP1[2] + radius)){
+			//check x and y axis to see if contact madle with paddle or a MISS
+			if((object->cube_face_center_wc[1][0] > sphereP1[0] && object->cube_face_center_wc[3][0] < sphereP1[0]) &&
+				(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
+				ball_z_trans = ball_z_trans * -1;
+			}
+			else{
+				ball_x_trans = 0;
+				ball_y_trans = 0;
+				ball_z_trans = 0;
+			}
+		}
+	}
+	else if(paddle == 1){
+		//check if colliding with z-axis of paddle
+		if(object->cube_face_center_wc[2][2] >  (sphereP1[2] - radius)){
+			//check x and y axis to see if contact madle with paddle or a MISS
+			if((object->cube_face_center_wc[1][0] > sphereP1[0] && object->cube_face_center_wc[3][0] < sphereP1[0]) &&
+				(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
+				ball_z_trans = ball_z_trans * -1;
+			}
+			else{
+				ball_x_trans = 0;
+				ball_y_trans = 0;
+				ball_z_trans = 0;
+			}
+		}
+	}
+}
+
+//This function doesn't work as planned. Will fix tomorrow
+void check_collision_wall(Cube* object) {
+	GLfloat sphereP1[3];
+	GLfloat radius = 0.2;
+	//GLint count = 0;
 	sphereP1[0] = myWorld.ball->sphere_center_wc[0];
 	sphereP1[1] = myWorld.ball->sphere_center_wc[1]; // + radius + ball_y_trans
 	sphereP1[2] = (myWorld.ball->sphere_center_wc[2]);
@@ -445,21 +484,20 @@ GLint check_collision_aux(Cube* object) {
 			}
 		}
 	}
-	return 0;
 }
 
 void check_collision() {
-	GLint n = 2;
-	GLint found = 0, found2 = 0;
-	while (n < 6 && found == 0 && found2 == 0) {
+	GLint n = 0;
+	while(n < 2){
 		printf("Object: %d, ", n);
-		found = check_collision_aux(myWorld.list[n]);
-		//found2 = check_collision_aux2(myWorld.list[n]);
+		check_collision_paddles(myWorld.list[n],n);
 		n++;
 	}
-	//if (found == 1 || found2 == 1) {
-//	ball_y_trans = ball_y_trans * -1;
-	//}
+	while (n < 6) {
+		printf("Object: %d, ", n);
+		check_collision_wall(myWorld.list[n]);
+		n++;
+	}
 }
 
 void move(void) {
@@ -473,7 +511,7 @@ void move(void) {
 	 rz = myWorld.ball->getMC().mat[2][1];
 	 */
 	myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
-
+	myWorld.list[1]->translate(ball_x_trans, ball_y_trans, 0);
 	glutPostRedisplay();
 
 }
