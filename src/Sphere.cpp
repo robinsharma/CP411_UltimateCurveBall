@@ -30,6 +30,10 @@ Sphere::Sphere() {
 }
 
 void Sphere::draw() {
+	this->quad = gluNewQuadric();
+	gluQuadricTexture(this->quad, GL_TRUE);
+	gluQuadricOrientation(this->quad, GLU_OUTSIDE);
+	gluQuadricNormals(this->quad, GLU_SMOOTH);
 	sphere_center_wc[0] = sphere_center_mc[0];
 	sphere_center_wc[1] = sphere_center_mc[1];
 	sphere_center_wc[2] = sphere_center_mc[2];
@@ -39,9 +43,12 @@ void Sphere::draw() {
 	glPushMatrix();
 	this->ctm_multiply();
 	glScalef(scale_x, scale_y, scale_y);
-	glColor3f(1.0, 1.0, 0.0);
-	glutWireSphere(1.0, 30, 30);
+	glColor3f(0.169, 0.612, 0.71);
+	//glutWireSphere(1.0, 30, 30);
+	gluSphere(this->quad, 1.0, 30, 30);
 	glPopMatrix();
+	gluDeleteQuadric(this->quad);
+
 
 }
 

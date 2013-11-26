@@ -70,25 +70,8 @@ void display(void) {
 	glLoadIdentity();
 	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref,
 			myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
-	/* Axis
-	 glLineWidth(3);
 
-	 glBegin(GL_LINES);
-	 //x-axis
-	 glColor3f(1.0, 1.0, 1.0);
-	 glVertex3f(2, 0, 0);
-	 glVertex3f(0, 0, 0);
-	 //y-axis
-	 glColor3f(0.0, 1.0, 0.0);
-	 glVertex3f(0, 2, 0);
-	 glVertex3f(0, 0, 0);
-	 //z-axis
-	 glColor3f(1.0, 0.0, 0.0);
-	 glVertex3f(0, 0, 2);
-	 glVertex3f(0, 0, 0);
-	 glEnd();
-	 glLineWidth(1);*/
-	Spot.on();
+	Spot.on(); //turn on light
 	if (Spot.getOn()) {
 		glEnable(GL_DEPTH_TEST); // enable OpenGL depth buffer algorithm for hidden surface removal
 		glEnable(GL_CULL_FACE);
@@ -119,26 +102,31 @@ void display(void) {
 	if (!texturesLoaded) {
 		myImage = new Image();
 
-		char filename[] = "earth.bmp";
+		char filename[] = "whiteline.bmp";
 		loadbmp(textures, filename, 0);
 
-		char filename1[] = "moon.bmp";
+		char filename1[] = "lines2.bmp";
 		loadbmp(textures, filename1, 1);
 
-		char filename2[] = "sun.bmp";
+		char filename2[] = "whiteline1.bmp";
 		loadbmp(textures, filename2, 2);
 
-		char filename3[] = "Wolfsmall.bmp";
+		char filename3[] = "lines.bmp";
 		loadbmp(textures, filename3, 3);
 
-		char filename4[] = "Untitled1.bmp";
+		char filename4[] = "Paddle.bmp";
 		loadbmp(textures, filename4, 4);
 
-		myWorld.list[2]->textureID = 0; //left wall
-		myWorld.list[3]->textureID = 1; //top wall
-		myWorld.list[4]->textureID = 2; //right wall
+		char filename5[] = "Paddle2.bmp";
+		loadbmp(textures, filename5, 5);
+
+		myWorld.list[2]->textureID = 1; //left wall
+		myWorld.list[3]->textureID = 3; //top wall
+		myWorld.list[4]->textureID = 3; //right wall
 		myWorld.list[5]->textureID = 3; //bottom wall
 		myWorld.list[0]->textureID = 4; //player paddle
+		myWorld.list[1]->textureID = 5; //player paddle
+
 
 		texturesLoaded = true; //only need to load up textures once
 	}
@@ -606,7 +594,9 @@ void create_court() {
 	myWorld.list[4]->scaleY(0.5);
 
 	//Bottom wall
-	myWorld.list[5]->setColor(1.0, 1.0, 1.0);
+	//myWorld.list[5]->setColor(0.0, 0.37647, 0.53333);
+	myWorld.list[5]->setColor(0.47, 0.333, 0.333);
+
 	myWorld.list[5]->translate(0, -1.5, 0);
 	myWorld.list[5]->scaleY(-0.9);
 	myWorld.list[5]->scaleZ(4.5);
@@ -671,6 +661,8 @@ void mainMenu(GLint option) {
 		if (game_start == 0) {
 			game_start = 1;
 			//ColorChange(1);
+			PlaySound((LPCSTR) "Start.wav", NULL, SND_FILENAME | SND_ASYNC);
+
 		} else {
 			game_start = 0;
 
@@ -828,12 +820,42 @@ void printMenu(GLint x) {
 	}
 }
 
+void backgroundColor(GLint x) {
+	switch (x) {
+	case 1: //Black
+		myWorld.list[2]->textureID = 1; //left wall
+		myWorld.list[3]->textureID = 3; //top wall
+		myWorld.list[4]->textureID = 3; //right wall
+		myWorld.list[5]->textureID = 3; //bottom wall
+		break;
+	case 2: //white
+		myWorld.list[2]->textureID = 0; //left wall
+		myWorld.list[3]->textureID = 2; //top wall
+		myWorld.list[4]->textureID = 2; //right wall
+		myWorld.list[5]->textureID = 2; //bottom wall
+		break;
+
+	case 3: //inverted 1
+		myWorld.list[2]->textureID = 0; //left wall
+		myWorld.list[3]->textureID = 2; //top wall
+		myWorld.list[4]->textureID = 3; //right wall
+		myWorld.list[5]->textureID = 3; //bottom wall
+		break;
+	case 4: //inverted 2
+		myWorld.list[2]->textureID = 1; //left wall
+		myWorld.list[3]->textureID = 3; //top wall
+		myWorld.list[4]->textureID = 2; //right wall
+		myWorld.list[5]->textureID = 2; //bottom wall
+	}
+	glutPostRedisplay();
+}
+
 void menu() {
 	/*
 	 GLint WCTrans_Menu, VCTrans_Menu, MCTrans_Menu, A3_Menu, LightTrans_Menu,
 	 glsl_shad, Obj_Menu, Print_Menu;
 	 */
-	GLint Print_Menu;
+	GLint Print_Menu, Background_Color;
 	/*
 	 MCTrans_Menu = glutCreateMenu(MCTransMenu);
 	 glutAddMenuEntry(" Rotate x ", 1);
@@ -892,6 +914,14 @@ void menu() {
 	Print_Menu = glutCreateMenu(printMenu);
 	glutAddMenuEntry(" Print View Variables ", 1);
 
+	Background_Color = glutCreateMenu(backgroundColor);
+	glutAddMenuEntry(" Black ", 1);
+	glutAddMenuEntry(" White ", 2);
+	glutAddMenuEntry(" Inverted 1 ", 3);
+	glutAddMenuEntry(" Inverted 2 ", 4);
+
+
+
 	/*
 	 Obj_Menu = glutCreateMenu(ObjMenu);
 	 glutAddMenuEntry(" Cube ", 1);
@@ -913,6 +943,7 @@ void menu() {
 	 glutAddSubMenu(" Miscellaneous ", A3_Menu);
 	 */
 	glutAddSubMenu(" Print ", Print_Menu);
+	glutAddSubMenu( " Background ", Background_Color);
 	//glutAddMenuEntry(" Reset ", 1);
 	glutAddMenuEntry(" Game Start/Stop ", 3);
 	glutAddMenuEntry(" Quit", 2);
