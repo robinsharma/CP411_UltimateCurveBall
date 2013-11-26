@@ -59,7 +59,7 @@ Image* myImage;
 bool texturesLoaded;
 
 GLint Game_time = 0;
-GLint speed = 5;
+GLint speed = 100000;
 
 void display(void) {
 
@@ -523,8 +523,9 @@ void move(void) {
 	myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
 	//move opponents paddle in relation to ball (NO Z TRANSLATION!)
 	myWorld.list[1]->translate(ball_x_trans, ball_y_trans, 0);
-	}
 	glutPostRedisplay();
+
+	}
 
 }
 
@@ -688,6 +689,51 @@ void init(void) {
 
  */
 
+void keyPressed (unsigned char key, int x, int y) {
+	if (key == ' ') {
+		if (game_start == 1) {
+			game_start = 0;
+			glutIdleFunc(NULL);
+		} else {
+			game_start = 1;
+			glutIdleFunc(move);
+		}
+
+	}
+	else if( key == '1') {
+		speed = 1;
+	}
+	else if( key == '2') {
+		speed = 2;
+	}
+	else if( key == '3') {
+		speed = 3;
+	}
+	else if( key == '4') {
+		speed = 4;
+	}
+	else if( key == '5') {
+		speed = 5;
+	}
+
+	else if( key == '6') {
+		speed = 6;
+	}
+
+	else if( key == '7') {
+		speed = 7;
+	}
+
+	else if( key == '8') {
+		speed = 8;
+	}
+
+	else if( key == '9') {
+		speed = 9;
+	}
+	glutPostRedisplay();
+}
+
 void mainMenu(GLint option) {
 	switch (option) {
 	case 1: { //reset
@@ -714,6 +760,7 @@ void mainMenu(GLint option) {
 			game_start = 1;
 			//ColorChange(1);
 			PlaySound((LPCSTR) "Start.wav", NULL, SND_FILENAME | SND_ASYNC);
+			glutIdleFunc(move);
 
 		} else {
 			game_start = 0;
@@ -1019,11 +1066,11 @@ int main(int argc, char** argv) {
 	menu();
 
 	glutDisplayFunc(display);
-	glutIdleFunc(move);
 	glutMotionFunc(mouseMotion);
 	glutPassiveMotionFunc(mouseMotion);
 	glutMouseFunc(mouseAction);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
+	glutKeyboardFunc(keyPressed);
 	glutMainLoop();
 
 	return 0;

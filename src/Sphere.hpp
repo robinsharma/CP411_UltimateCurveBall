@@ -27,6 +27,7 @@ public:
 	Sphere();
 	void draw();
 	void drawShape(GLuint texture);
+	void changeColor(GLfloat, GLfloat, GLfloat);
 
 };
 

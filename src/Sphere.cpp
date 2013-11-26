@@ -10,12 +10,14 @@
 
 Sphere::Sphere() {
 	radius = 1.0;
-	color[0] = 1;
-	color[1] = 0;
-	color[2] = 0;
+
+	color[0] = 0.169;
+	color[1] = 0.612;
+	color[2] = 0.71;
 	color[3] = 0.5;
 	quad = 0;
 	textureID = 0;
+
 
 	sphere_center_mc[0] = 0;
 	sphere_center_mc[1] = 0;
@@ -27,6 +29,12 @@ Sphere::Sphere() {
 	sphere_center_wc[2] = 0;
 	sphere_center_wc[3] = 1.0;
 
+}
+
+void Sphere::changeColor(GLfloat red, GLfloat green, GLfloat blue) {
+	color[0] = red;
+	color[1] = green;
+	color[2] = blue;
 }
 
 void Sphere::draw() {
@@ -43,7 +51,7 @@ void Sphere::draw() {
 	glPushMatrix();
 	this->ctm_multiply();
 	glScalef(scale_x, scale_y, scale_y);
-	glColor3f(0.169, 0.612, 0.71);
+	glColor3f(color[0], color[1], color[2]);
 	//glutWireSphere(1.0, 30, 30);
 	gluSphere(this->quad, 1.0, 30, 30);
 	glPopMatrix();
