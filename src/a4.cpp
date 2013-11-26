@@ -59,7 +59,7 @@ Image* myImage;
 bool texturesLoaded;
 
 GLint Game_time = 0;
-GLint speed = 100000;
+GLint speed = 5;
 
 void display(void) {
 
@@ -519,13 +519,13 @@ void move(void) {
 	//check_collision();
 	Game_time += 1;
 	if (Game_time % speed == 0) {
-	//Move ball in the proper direction
-	myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
-	//move opponents paddle in relation to ball (NO Z TRANSLATION!)
-	myWorld.list[1]->translate(ball_x_trans, ball_y_trans, 0);
+		//Move ball in the proper direction
+		myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
+		//move opponents paddle in relation to ball (NO Z TRANSLATION!)
+		myWorld.list[1]->translate(ball_x_trans, ball_y_trans, 0);
+	}
 	glutPostRedisplay();
 
-	}
 
 }
 
