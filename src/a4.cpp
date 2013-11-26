@@ -396,7 +396,7 @@ void mouseMotion(GLint x, GLint y) {
  */
 
 /*-------ANIMATION FUNCTION-------------------*/
-GLfloat ball_x_trans = 0.00, ball_y_trans = 0.01, ball_z_trans = 0.00;
+GLfloat ball_x_trans = 0.02, ball_y_trans = 0.01, ball_z_trans = 0.00;
 //This function doesn't work as planned. Will fix tomorrow
 GLint check_collision_aux(Cube* object) {
 	GLfloat sphereP1[3];
