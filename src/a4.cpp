@@ -396,7 +396,7 @@ void mouseMotion(GLint x, GLint y) {
  */
 
 /*-------ANIMATION FUNCTION-------------------*/
-GLfloat ball_x_trans = 0.00, ball_y_trans = 0.02, ball_z_trans = 0.00;
+GLfloat ball_x_trans = 0.01, ball_y_trans = 0.00, ball_z_trans = 0.00;
 //This function doesn't work as planned. Will fix tomorrow
 GLint check_collision_aux(Cube* object) {
 	GLfloat sphereP1[3];
@@ -425,11 +425,12 @@ GLint check_collision_aux(Cube* object) {
 	 if (count == 6) return 1;*/
 	GLint i;
 	for (i = 0; i < 6; i++) {
-		GLfloat facing_in = ((0 - object->cube_face_center_wc[i][0]) * (object->cube_face_center_wc[i][0] - object->cube_center_wc[0])) +
-				((0 - object->cube_face_center_wc[i][1]) * (object->cube_face_center_wc[i][1] - object->cube_center_wc[1])) +
-				((0 - object->cube_face_center_wc[i][2]) * (object->cube_face_center_wc[i][2] - object->cube_center_wc[2]));
+		GLfloat facing_in = ((0 - object->cube_center_wc[0]) * (object->cube_face_center_wc[i][0] - object->cube_center_wc[0])) +
+				((0 - object->cube_center_wc[1]) * (object->cube_face_center_wc[i][1] - object->cube_center_wc[1])) +
+				((0 - object->cube_center_wc[2]) * (object->cube_face_center_wc[i][2] - object->cube_center_wc[2]));
 		if (facing_in > 0) {
 			printf("Face: %d... \n", i);
+			//y-direction collisions
 			if (i == 5 && (object->cube_face_center_wc[i][1] < sphereP1[1])) {
 				printf("Cube face center y: %f, sphere y: %f \n",object->cube_face_center_wc[i][1], sphereP1[1]);
 				ball_y_trans = ball_y_trans * -1;
@@ -437,13 +438,28 @@ GLint check_collision_aux(Cube* object) {
 					&& (object->cube_face_center_wc[i][1] > sphereP1[1])) {
 				ball_y_trans = ball_y_trans * -1;
 			}
+			//x direction collisions
+			else if (i == 3	&& (object->cube_face_center_wc[i][0] < (sphereP1[0]/2))) {
+				printf("Cube face center x: %f, sphere x: %f \n",object->cube_face_center_wc[i][0], sphereP1[0]);
+										ball_x_trans = ball_x_trans * -1;
+			}
+			else if (i == 1 && (object->cube_face_center_wc[i][0] > (sphereP1[0]/2))) {
+							ball_x_trans = ball_x_trans * -1;
+			}
+			//z direction collisions
+			else if (i == 0	&& (object->cube_face_center_wc[i][2] < sphereP1[2])) {
+				ball_z_trans = ball_z_trans * -1;
+			}
+			else if (i == 2 && (object->cube_face_center_wc[i][2] > sphereP1[2])) {
+				ball_z_trans = ball_z_trans * -1;
+			}
 		}
 	}
 	return 0;
 }
 
 void check_collision() {
-	GLint n = 0;
+	GLint n = 2;
 	GLint found = 0, found2 = 0;
 	while (n < 6 && found == 0 && found2 == 0) {
 		printf("Object: %d, ", n);
