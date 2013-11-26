@@ -20,6 +20,7 @@
 
 void mouseMotion(GLint, GLint);
 bool loadbmp(UINT textureArray[], LPSTR strFileName, int ID);
+void check_collision();
 
 GLint winWidth = 800, winHeight = 800;
 /*  Set coordinate limits for the clipping window:  */
@@ -37,7 +38,6 @@ Camera myCam;
 
 //Lighting substitute lx, ly, lz
 GLfloat position[] = { 1.8, 1.8, 1.5, 1.0 };
-GLfloat positionSolar[] = { 0.0, 0.0, 0.0, 1.0 };
 
 GLfloat ambient[] = { 0.1, 0.1, 0.3, 1.0 };
 GLfloat diffuse[] = { 0.6, 0.6, 1.0, 1.0 };
@@ -57,6 +57,9 @@ GLuint programObject;
 GLuint textures[6];
 Image* myImage;
 bool texturesLoaded;
+
+GLint Game_time = 0;
+GLint speed = 5;
 
 void display(void) {
 
@@ -132,7 +135,7 @@ void display(void) {
 	}
 	myWorld.draw_world(); // draw all objects in the world
 	Spot.draw();
-
+	check_collision();
 	glFlush();
 	glutSwapBuffers();
 }
@@ -505,11 +508,14 @@ void check_collision() {
 }
 
 void move(void) {
-	check_collision();
+	//check_collision();
+	Game_time += 1;
+	if (Game_time % speed == 0) {
 	//Move ball in the proper direction
 	myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
 	//move opponents paddle in relation to ball (NO Z TRANSLATION!)
 	myWorld.list[1]->translate(ball_x_trans, ball_y_trans, 0);
+	}
 	glutPostRedisplay();
 
 }
@@ -561,13 +567,13 @@ void Enable() {
 	glCullFace(GL_BACK);
 }
 
+/*
 void ResetLightPosition() {
 	GLfloat temp[] = { 1.8, 1.8, 1.5, 1.0 };
 	GLfloat temp2[] = { 0.0, 0.0, 0.0, 1.0 };
 	int i = 0;
 	for (i = 0; i < 4; i++) {
 		position[i] = temp[i];
-		positionSolar[i] = temp2[i];
 	}
 }
 
@@ -583,10 +589,12 @@ void ResetLightValue() {
 	}
 }
 
+
 void ResetLightAll() {
 	ResetLightPosition();
 	ResetLightValue();
 }
+*/
 
 /*-----------------------------------------------------------*/
 void create_court() {
