@@ -38,7 +38,7 @@ void Sphere::draw() {
 	printf("(%f, %f, %f) \n",sphere_center_wc[0],sphere_center_wc[1],sphere_center_wc[2]);
 	glPushMatrix();
 	this->ctm_multiply();
-	glScalef(sx, sy, sz);
+	glScalef(scale_x, scale_y, scale_y);
 	glColor3f(1.0, 1.0, 0.0);
 	glutWireSphere(1.0, 30, 30);
 	glPopMatrix();

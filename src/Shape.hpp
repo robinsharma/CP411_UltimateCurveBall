@@ -26,7 +26,7 @@ using namespace std;
 class Shape {
 protected:
 	Matrix MC; //the Model coordinate system in (X, Y, Z, 0)
-	GLfloat sx, sy, sz;
+	GLfloat scale_x, scale_y, scale_z;
 
 public:
 	Shape();  // constructor

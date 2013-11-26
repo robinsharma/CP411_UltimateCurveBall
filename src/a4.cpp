@@ -396,7 +396,7 @@ void mouseMotion(GLint x, GLint y) {
  */
 
 /*-------ANIMATION FUNCTION-------------------*/
-GLfloat ball_x_trans = 0.01, ball_y_trans = 0.00, ball_z_trans = 0.00;
+GLfloat ball_x_trans = 0.00, ball_y_trans = 0.01, ball_z_trans = 0.00;
 //This function doesn't work as planned. Will fix tomorrow
 GLint check_collision_aux(Cube* object) {
 	GLfloat sphereP1[3];
@@ -431,26 +431,28 @@ GLint check_collision_aux(Cube* object) {
 		if (facing_in > 0) {
 			printf("Face: %d... \n", i);
 			//y-direction collisions
-			if (i == 5 && (object->cube_face_center_wc[i][1] < sphereP1[1])) {
+			if (i == 5 && (object->cube_face_center_wc[i][1] < (sphereP1[1] + radius))) {
 				printf("Cube face center y: %f, sphere y: %f \n",object->cube_face_center_wc[i][1], sphereP1[1]);
 				ball_y_trans = ball_y_trans * -1;
 			} else if (i == 4
-					&& (object->cube_face_center_wc[i][1] > sphereP1[1])) {
+					&& (object->cube_face_center_wc[i][1] > (sphereP1[1] - radius))) {
+				printf("Cube face center y: %f, sphere y: %f \n",object->cube_face_center_wc[i][1], sphereP1[1]);
 				ball_y_trans = ball_y_trans * -1;
 			}
 			//x direction collisions
-			else if (i == 3	&& (object->cube_face_center_wc[i][0] < (sphereP1[0]/2))) {
+			else if (i == 3	&& (object->cube_face_center_wc[i][0] < (sphereP1[0] + radius))) {
 				printf("Cube face center x: %f, sphere x: %f \n",object->cube_face_center_wc[i][0], sphereP1[0]);
 										ball_x_trans = ball_x_trans * -1;
 			}
-			else if (i == 1 && (object->cube_face_center_wc[i][0] > (sphereP1[0]/2))) {
+			else if (i == 1 && (object->cube_face_center_wc[i][0] > (sphereP1[0] - radius))) {
+				printf("Cube face center x: %f, sphere x: %f \n",object->cube_face_center_wc[i][0], sphereP1[0]);
 							ball_x_trans = ball_x_trans * -1;
 			}
 			//z direction collisions
-			else if (i == 0	&& (object->cube_face_center_wc[i][2] < sphereP1[2])) {
+			else if (i == 0	&& (object->cube_face_center_wc[i][2] < (sphereP1[2] + radius))) {
 				ball_z_trans = ball_z_trans * -1;
 			}
-			else if (i == 2 && (object->cube_face_center_wc[i][2] > sphereP1[2])) {
+			else if (i == 2 && (object->cube_face_center_wc[i][2] > (sphereP1[2] - radius))) {
 				ball_z_trans = ball_z_trans * -1;
 			}
 		}

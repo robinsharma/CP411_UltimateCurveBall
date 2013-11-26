@@ -162,7 +162,7 @@ void Cube::draw() {
 	glPushMatrix();
 	this->ctm_multiply(); // update the CTM
 	updateCube(); // update the backFaceTest, etc
-	glScalef(sx, sy, sz);
+	glScalef(scale_x, scale_y, scale_z);
 	if (textureID != -1) {
 		for (int i = 0; i < 6; i++) {
 			draw_face_texture(faceIndex[i]);
@@ -213,9 +213,9 @@ void Cube::updateCube() {
 		cube_face_norm_wc[i][3] = 1.0;
 		this->MC.multiply_vector(cube_face_norm_wc[i]);
 
-		cube_face_center_wc[i][0] = cube_face_center_mc[i][0];
-		cube_face_center_wc[i][1] = cube_face_center_mc[i][1];
-		cube_face_center_wc[i][2] = cube_face_center_mc[i][2];
+		cube_face_center_wc[i][0] = scale_x * cube_face_center_mc[i][0];
+		cube_face_center_wc[i][1] = scale_y * cube_face_center_mc[i][1];
+		cube_face_center_wc[i][2] = scale_z * cube_face_center_mc[i][2];
 		cube_face_center_wc[i][3] = 1.0;
 		this->MC.multiply_vector(cube_face_center_wc[i]);
 

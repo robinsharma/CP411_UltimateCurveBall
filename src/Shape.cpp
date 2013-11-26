@@ -26,9 +26,9 @@ Shape::Shape() {
 	MC.mat[3][1] = 0.0;
 	MC.mat[3][2] = 0.0;
 	MC.mat[3][3] = 1.0;
-	sx = 1;
-	sy = 1;
-	sz = 1;
+	scale_x = 1;
+	scale_y = 1;
+	scale_z = 1;
 }
 
 Shape::~Shape() {
@@ -110,27 +110,27 @@ void Shape::scale_change(GLfloat x) {
 }
 
 void Shape::scaleX(GLfloat x) {
-	if ((sx + x) > 0) {
-		sx += x;
+	if ((scale_x + x) > 0) {
+		scale_x += x;
 		MC.normalize();
 	}
-	else sx = 0;
+	else scale_x = 0;
 }
 
 void Shape::scaleY(GLfloat y) {
-	if ((sy + y) >= 0) {
-		sy += y;
+	if ((scale_y + y) >= 0) {
+		scale_y += y;
 		MC.normalize();
 	}
-	else sy = 0;
+	else scale_y = 0;
 }
 
 void Shape::scaleZ(GLfloat z) {
-	if ((sz + z) >= 0) {
-		sz += z;
+	if ((scale_z + z) >= 0) {
+		scale_z += z;
 		MC.normalize();
 	}
-	else sz = 0;
+	else scale_z = 0;
 }
 
 /**
