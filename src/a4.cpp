@@ -402,6 +402,7 @@ void check_collision_paddles(Cube* object, int paddle) {
 			if((object->cube_face_center_wc[1][0] > sphereP1[0] && object->cube_face_center_wc[3][0] < sphereP1[0]) &&
 				(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
 				ball_z_trans = ball_z_trans * -1;
+				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			}
 			//miss
 			else{
@@ -418,6 +419,7 @@ void check_collision_paddles(Cube* object, int paddle) {
 			if((object->cube_face_center_wc[1][0] > sphereP1[0] && object->cube_face_center_wc[3][0] < sphereP1[0]) &&
 				(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
 				ball_z_trans = ball_z_trans * -1;
+				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			}
 			//miss
 			else{
@@ -466,26 +468,32 @@ void check_collision_wall(Cube* object) {
 			if (i == 5 && (object->cube_face_center_wc[i][1] < (sphereP1[1] + radius))) {
 				printf("Cube face center y: %f, sphere y: %f \n",object->cube_face_center_wc[i][1], sphereP1[1]);
 				ball_y_trans = ball_y_trans * -1;
+				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			} else if (i == 4
 					&& (object->cube_face_center_wc[i][1] > (sphereP1[1] - radius))) {
 				printf("Cube face center y: %f, sphere y: %f \n",object->cube_face_center_wc[i][1], sphereP1[1]);
 				ball_y_trans = ball_y_trans * -1;
+				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			}
 			//x direction collisions
 			else if (i == 3	&& (object->cube_face_center_wc[i][0] < (sphereP1[0] + radius))) {
 				printf("Cube face center x: %f, sphere x: %f \n",object->cube_face_center_wc[i][0], sphereP1[0]);
-										ball_x_trans = ball_x_trans * -1;
+				ball_x_trans = ball_x_trans * -1;
+				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			}
 			else if (i == 1 && (object->cube_face_center_wc[i][0] > (sphereP1[0] - radius))) {
 				printf("Cube face center x: %f, sphere x: %f \n",object->cube_face_center_wc[i][0], sphereP1[0]);
-							ball_x_trans = ball_x_trans * -1;
+				ball_x_trans = ball_x_trans * -1;
+				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			}
 			//z direction collisions
 			else if (i == 0	&& (object->cube_face_center_wc[i][2] < (sphereP1[2] + radius))) {
 				ball_z_trans = ball_z_trans * -1;
+				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			}
 			else if (i == 2 && (object->cube_face_center_wc[i][2] > (sphereP1[2] - radius))) {
 				ball_z_trans = ball_z_trans * -1;
+				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			}
 		}
 	}
