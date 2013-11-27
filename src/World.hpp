@@ -18,6 +18,7 @@
 #include "SolarSystem.hpp"
 //#include "Bezier.hpp"
 #include "wcPt3D.hpp"
+#include "WireCube.hpp"
 //#include "Shape.hpp"
 #include <iostream>
 #include <list>
@@ -30,6 +31,7 @@ public:
 
 	Cube* list[6];
 	Sphere* ball;
+	WireCube* tracker;
 
 	Cube leftWall, topWall, rightWall, bottomWall;
 	GLint length;

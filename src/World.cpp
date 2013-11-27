@@ -20,6 +20,8 @@ World::World() {
 
 	ball = new Sphere();
 
+	tracker = new WireCube();
+
 	length = 6;
 }
 
@@ -36,6 +38,7 @@ void World::draw_world() {
 		list[i]->draw();
 	}
 	ball->draw();
+	tracker->draw();
 
 }
 
