@@ -12,6 +12,10 @@
 #include <math.h>
 #include <time.h>
 #include <unistd.h>
+#include <string.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include "Angel.h"
 
 #include <GL/glut.h>
@@ -73,6 +77,7 @@ bool texturesLoaded;
 
 GLint Game_time = 0;
 GLint speed = 1;
+GLboolean printStart = true;
 
 void display(void) {
 
@@ -150,6 +155,37 @@ void display(void) {
 	myWorld.draw_world(); // draw all objects in the world
 	Spot.draw();
 	//check_collision();
+	glDisable(GL_LIGHTING);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0.0, winWidth, 0.0, winHeight);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3f(1.0, 1.0, 1.0);
+	glRasterPos2i(10, 10);
+	if(game_start == 0){
+		if (printStart) {
+			string name = "Start";
+			//ostringstream sstm;
+			//sstm << name;
+			//string result;
+			//result = sstm.str();
+			//const char* c;
+			glRasterPos2f(380, 390);
+			for (string::iterator i = name.begin(); i != name.end(); ++i) {
+				char c = *i;
+				glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+			}
+		}
+		//renderBitmapString(winWidth/2, winHeight/4, GLUT_BITMAP_HELVETICA_18, result.c_str());
+	}
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
 	glFlush();
 	glutSwapBuffers();
 }
@@ -189,6 +225,8 @@ void mouseAction(int button, int state, int x, int y) {
 			yBegin = y;
 			game_start = 1;
 			glutIdleFunc(move);
+			printStart = false;
+
 		}
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
