@@ -29,7 +29,7 @@ GLfloat xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
 /*  Set positions for near and far clipping planes:  */
 GLfloat red = 1.0, green = 1.0, blue = 1.0;  //color
 GLint moving = 0, start = 0, xBegin = 0, yBegin = 0, coordinate = 1, type = 1,
-		selected = 0, game_start = 0;
+		selected = 0, game_start = 0, missed = 0;
 
 //Declare a world containing all objects to draw.
 World myWorld;
@@ -182,12 +182,14 @@ void mouseMotion(GLint x, GLint y) {
 	GLfloat thetaX, thetaY;
 	if (moving == 1) {
 		if (game_start == 1) {
-			thetaX = (x - xBegin); //> 0) ? 1 : -1;
-			thetaY = (yBegin - y); //> 0) ? 1 : -1;
-			myWorld.list[0]->translate(thetaX * 0.003, 0, 0);
-			myWorld.list[0]->translate(0, thetaY * 0.003, 0);
-			xBegin = x;
-			yBegin = y;
+			if(missed == 0){
+				thetaX = (x - xBegin); //> 0) ? 1 : -1;
+				thetaY = (yBegin - y); //> 0) ? 1 : -1;
+				myWorld.list[0]->translate(thetaX * 0.003, 0, 0);
+				myWorld.list[0]->translate(0, thetaY * 0.003, 0);
+				xBegin = x;
+				yBegin = y;
+			}
 		}
 	}
 	glutPostRedisplay();
@@ -204,24 +206,37 @@ void check_collision_paddles(Cube* object, int paddle) {
 	sphereP1[1] = myWorld.ball->sphere_center_wc[1]; // + radius + ball_y_trans
 	sphereP1[2] = myWorld.ball->sphere_center_wc[2];
 	if (paddle == 0){//user paddle
-		//check if colliding with z-axis of paddle
-		if(object->cube_face_center_wc[0][2] <  (sphereP1[2] + radius)){
-			//check x and y axis to see if contact madle with paddle or a MISS
-			if((object->cube_face_center_wc[1][0] > sphereP1[0] && object->cube_face_center_wc[3][0] < sphereP1[0]) &&
-				(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
-				ball_z_trans = ball_z_trans * -1;
-				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
-			}
-		}
 		//Has not collided with front of paddle and has collided with the back wall.
 		if(object->cube_face_center_wc[2][2] <  (sphereP1[2] - radius)){
 			myWorld.ball->changeColor(1.0,0.0,0.0);
 			ball_x_trans = 0;
 			ball_y_trans = 0;
 			ball_z_trans = 0;
+			missed = 0;
+		}
+		//check if colliding with z-axis of paddle
+		if(object->cube_face_center_wc[0][2] <  (sphereP1[2] + radius)){
+			//check x and y axis to see if contact madle with paddle or a MISS
+			if(missed == 0){
+				if((object->cube_face_center_wc[1][0] > sphereP1[0] && object->cube_face_center_wc[3][0] < sphereP1[0]) &&
+					(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
+					ball_z_trans = ball_z_trans * -1;
+					PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
+				}
+				else{
+					missed = 1;
+				}
+			}
 		}
 	}
 	else if(paddle == 1){
+		//Has not collided with front of paddle and has collided with the back wall.
+		if(object->cube_face_center_wc[0][2] >  (sphereP1[2] - radius)){
+			myWorld.ball->changeColor(1.0,0.0,0.0);
+			ball_x_trans = 0;
+			ball_y_trans = 0;
+			ball_z_trans = 0;
+		}
 		//check if colliding with z-axis of paddle
 		if(object->cube_face_center_wc[2][2] >  (sphereP1[2] - radius)){
 			//check x and y axis to see if contact madle with paddle
@@ -230,13 +245,6 @@ void check_collision_paddles(Cube* object, int paddle) {
 				ball_z_trans = ball_z_trans * -1;
 				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			}
-		}
-		//Has not collided with front of paddle and has collided with the back wall.
-		if(object->cube_face_center_wc[0][2] >  (sphereP1[2] - radius)){
-			myWorld.ball->changeColor(1.0,0.0,0.0);
-			ball_x_trans = 0;
-			ball_y_trans = 0;
-			ball_z_trans = 0;
 		}
 	}
 }
@@ -384,48 +392,19 @@ void Enable() {
 	glCullFace(GL_BACK);
 }
 
-/*
-void ResetLightPosition() {
-	GLfloat temp[] = { 1.8, 1.8, 1.5, 1.0 };
-	GLfloat temp2[] = { 0.0, 0.0, 0.0, 1.0 };
-	int i = 0;
-	for (i = 0; i < 4; i++) {
-		position[i] = temp[i];
-	}
-}
-
-void ResetLightValue() {
-	GLfloat temp1[] = { 0.1, 0.1, 0.3, 1.0 };
-	GLfloat temp2[] = { 0.6, 0.6, 1.0, 1.0 };
-	GLfloat temp3[] = { 1.0, 1.0, 1.0, 1.0 };
-	int i = 0;
-	for (i = 0; i < 4; i++) {
-		ambient[i] = temp1[i];
-		diffuse[i] = temp2[i];
-		specular[i] = temp3[i];
-	}
-}
-
-
-void ResetLightAll() {
-	ResetLightPosition();
-	ResetLightValue();
-}
-*/
-
 /*-----------------------------------------------------------*/
 void create_court() {
 	//Play paddle
 	myWorld.list[0]->setColor(1.0, 1.0, 1.0);
 	myWorld.list[0]->scale_change(-0.75);
-	myWorld.list[0]->scaleZ(-0.2);
+	myWorld.list[0]->scaleZ(-0.23);
 	myWorld.list[0]->scaleX(0.1);
 	myWorld.list[0]->translate(0, 0, 2.5);
 
 	//Opponent Paddle
 	myWorld.list[1]->setColor(1.0, 0.5, 0.5);
 	myWorld.list[1]->scale_change(-0.75);
-	myWorld.list[1]->scaleZ(-0.2);
+	myWorld.list[1]->scaleZ(-0.23);
 	myWorld.list[1]->scaleX(0.1);
 	myWorld.list[1]->translate(0, 0, -4.5);
 
