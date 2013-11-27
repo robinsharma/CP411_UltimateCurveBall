@@ -47,6 +47,7 @@ const GLfloat REGULAR = 0.0002;
 GLfloat curvex, curvey;
 GLint begin, end;
 GLint xCurve1, xCurve2, yCurve1, yCurve2;
+GLint playerLives = 5, aiLives = 3, level = 1;
 
 //Declare a world containing all objects to draw.
 World myWorld;
@@ -332,8 +333,12 @@ void check_collision_paddles(Cube* object, int paddle) {
 			ball_y_trans = 0;
 			ball_z_trans = 0;
 			glutPostRedisplay();
+			playerLives--;
+			if(playerLives > 0){
+				reset();
+			}
 			Sleep(1000);
-			reset();
+			printf("Player Lives: %d. \n", playerLives);
 			//return;
 		}
 		//check if colliding with z-axis of paddle
@@ -361,6 +366,12 @@ void check_collision_paddles(Cube* object, int paddle) {
 			ball_y_trans = 0;
 			ball_z_trans = 0;
 			glutPostRedisplay();
+			aiLives--;
+			printf("AI Lives: %d... Level: %d. \n",aiLives, level);
+			if(aiLives == 0){
+				level++;
+				aiLives = 3;
+			}
 			Sleep(1000);
 			reset();
 			//return;
