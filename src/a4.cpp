@@ -253,18 +253,18 @@ void setCurve(GLint x1, GLint y1, GLint x2, GLint y2) {
 		if (diffy <= -5 && diffy >= -10 ) {
 			//Negative difference. Paddle moved from bottom to top. y curve positive
 			//regular
-			curvey = REGULAR;
+			curvey = -REGULAR;
 		} else if (diffy < -10) {
 			//super curve positive y
-			curvey = SUPER;
+			curvey = -SUPER;
 		}
 	} else if (diffy > 0) {
 		if (diffy >= 5 && diffy <= 10) {
 			//regular curve neg y
-			curvex = -REGULAR;
+			curvey = REGULAR;
 		} else if (diffy > 10) {
 			//super curve neg y
-			curvex = -SUPER;
+			curvey = SUPER;
 		}
 	}
 	printf("Curvex: %f Curvey: %f", curvex, curvey);
