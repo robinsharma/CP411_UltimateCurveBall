@@ -248,15 +248,12 @@ void mouseMotion(GLint x, GLint y) {
 			xBegin = x;
 			yBegin = y;
 			if(check_curve == true){
-				printf("Begin: %d \n",begin);
 				end = glutGet(GLUT_ELAPSED_TIME);
-				printf("End: %d \n",end);
 				if ((end - begin) > 30) {
 					xCurve2 = x;
 					yCurve2 = y;
 					check_curve = false;
 					setCurve(xCurve1, yCurve1, xCurve2, yCurve2);
-					printf("First: %d, Second: %d, Difference: %d \n",xCurve1,xCurve2,xCurve2 - xCurve1);
 				}
 			}
 		}
