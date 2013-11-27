@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+#include <unistd.h>
 #include "Angel.h"
 
 #include <GL/glut.h>
@@ -21,6 +22,8 @@
 void mouseMotion(GLint, GLint);
 bool loadbmp(UINT textureArray[], LPSTR strFileName, int ID);
 void check_collision();
+void move();
+void reset();
 
 GLint winWidth = 800, winHeight = 800;
 /*  Set coordinate limits for the clipping window:  */
@@ -167,9 +170,15 @@ void winReshapeFcn(GLint newWidth, GLint newHeight) {
 
 void mouseAction(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		moving = 1;
-		xBegin = x;
-		yBegin = y;
+		GLfloat width = winWidth * 0.2775;
+		GLfloat height  = winHeight * 0.2;
+		if ((x > (winWidth/2-width/2) && x < (winWidth/2+width/2)) && (y > (winHeight/2-height/2) && y < (winHeight/2+height/2))) {
+			moving = 1;
+			xBegin = x;
+			yBegin = y;
+			game_start = 1;
+			glutIdleFunc(move);
+		}
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
 		//moving = 0;
@@ -182,14 +191,12 @@ void mouseMotion(GLint x, GLint y) {
 	GLfloat thetaX, thetaY;
 	if (moving == 1) {
 		if (game_start == 1) {
-			if(missed == 0){
-				thetaX = (x - xBegin); //> 0) ? 1 : -1;
-				thetaY = (yBegin - y); //> 0) ? 1 : -1;
-				myWorld.list[0]->translate(thetaX * 0.003, 0, 0);
-				myWorld.list[0]->translate(0, thetaY * 0.003, 0);
-				xBegin = x;
-				yBegin = y;
-			}
+			thetaX = (x - xBegin); //> 0) ? 1 : -1;
+			thetaY = (yBegin - y); //> 0) ? 1 : -1;
+			myWorld.list[0]->translate(thetaX * 0.003, 0, 0);
+			myWorld.list[0]->translate(0, thetaY * 0.003, 0);
+			xBegin = x;
+			yBegin = y;
 		}
 	}
 	glutPostRedisplay();
@@ -197,7 +204,7 @@ void mouseMotion(GLint x, GLint y) {
 
 
 /*-------ANIMATION FUNCTION-------------------*/
-GLfloat ball_x_trans = 0.02, ball_y_trans = 0.0, ball_z_trans = 0.03;
+GLfloat ball_x_trans = 0.02, ball_y_trans = 0.03, ball_z_trans = 0.02;
 
 void check_collision_paddles(Cube* object, int paddle) {
 	GLfloat sphereP1[3];
@@ -207,26 +214,24 @@ void check_collision_paddles(Cube* object, int paddle) {
 	sphereP1[2] = myWorld.ball->sphere_center_wc[2];
 	if (paddle == 0){//user paddle
 		//Has not collided with front of paddle and has collided with the back wall.
-		if(object->cube_face_center_wc[2][2] <  (sphereP1[2] - radius)){
+		if(object->cube_face_center_wc[2][2] <  (sphereP1[2] + radius)){
 			myWorld.ball->changeColor(1.0,0.0,0.0);
 			ball_x_trans = 0;
 			ball_y_trans = 0;
 			ball_z_trans = 0;
-			missed = 0;
+			glutPostRedisplay();
+			Sleep(1000);
+			reset();
+			//return;
 		}
 		//check if colliding with z-axis of paddle
 		if(object->cube_face_center_wc[0][2] <  (sphereP1[2] + radius)){
 			//check x and y axis to see if contact madle with paddle or a MISS
-			if(missed == 0){
 				if((object->cube_face_center_wc[1][0] > sphereP1[0] && object->cube_face_center_wc[3][0] < sphereP1[0]) &&
 					(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
 					ball_z_trans = ball_z_trans * -1;
 					PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 				}
-				else{
-					missed = 1;
-				}
-			}
 		}
 	}
 	else if(paddle == 1){
@@ -236,14 +241,20 @@ void check_collision_paddles(Cube* object, int paddle) {
 			ball_x_trans = 0;
 			ball_y_trans = 0;
 			ball_z_trans = 0;
+			usleep(1000000);
 		}
 		//check if colliding with z-axis of paddle
 		if(object->cube_face_center_wc[2][2] >  (sphereP1[2] - radius)){
-			//check x and y axis to see if contact madle with paddle
-			if((object->cube_face_center_wc[1][0] > sphereP1[0] && object->cube_face_center_wc[3][0] < sphereP1[0]) &&
-				(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
-				ball_z_trans = ball_z_trans * -1;
-				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
+			if(missed == 0){
+				//check x and y axis to see if contact madle with paddle
+				if((object->cube_face_center_wc[1][0] > sphereP1[0] && object->cube_face_center_wc[3][0] < sphereP1[0]) &&
+					(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
+					ball_z_trans = ball_z_trans * -1;
+					PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
+				}
+				else{
+					missed = 1;
+				}
 			}
 		}
 	}
@@ -341,10 +352,12 @@ void move(void) {
 		myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
 		//move opponents paddle in relation to ball (NO Z TRANSLATION!)
 		myWorld.list[1]->translate(ball_x_trans, ball_y_trans, 0);
+		myWorld.tracker->translate(0,0,ball_z_trans);
 		glutPostRedisplay();
 	}
 }
 
+/*
 int check = 2;
 void ColorChange(int x) {
 	if (check > 5) {
@@ -354,12 +367,12 @@ void ColorChange(int x) {
 		myWorld.list[4]->setColor(1.0, 1.0, 1.0);
 		myWorld.list[5]->setColor(1.0, 1.0, 1.0);
 	}
-	/*
+
 	 myWorld.list[2]->setColor(1.0, 1.0, 1.0);
 	 myWorld.list[3]->setColor(1.0, 1.0, 1.0);
 	 myWorld.list[4]->setColor(1.0, 1.0, 1.0);
 	 myWorld.list[5]->setColor(1.0, 1.0, 1.0);
-	 */
+
 	else {
 		myWorld.list[check]->setColor(1.0, 0.5, 0.0);
 	}
@@ -370,6 +383,7 @@ void ColorChange(int x) {
 	glutPostRedisplay();
 
 }
+*/
 
 void Disable() {
 	glDisable(GL_DEPTH_TEST);
@@ -442,6 +456,9 @@ void create_court() {
 	myWorld.list[5]->scaleZ(4.5);
 	myWorld.list[5]->scaleX(0.5);
 
+	myWorld.tracker->scaleY(0.3);
+	myWorld.tracker->scaleX(0.3);
+	myWorld.tracker->translate(0,0,0.0);
 }
 
 void init(void) {
@@ -452,10 +469,22 @@ void init(void) {
 	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref,
 			myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
 	glEnable(GL_DEPTH_TEST);
-	//programObject = InitShader("vshader.glsl", "fshader.glsl");
-	//glUseProgram(0);
+	programObject = InitShader("vshader.glsl", "fshader.glsl");
+	glUseProgram(0);
 
 	create_court();
+}
+
+void reset(){
+	myWorld.reset();
+	create_court();
+	missed = 0;
+	moving = 0;
+	game_start = 0;
+	glutIdleFunc(NULL);
+	texturesLoaded = false;
+	ball_x_trans = 0.02, ball_y_trans = 0.03, ball_z_trans = 0.02;
+	glutPostRedisplay();
 }
 
 /*-------MENUS------------------------------------------------------------*/
@@ -466,8 +495,10 @@ void keyPressed (unsigned char key, int x, int y) {
 			game_start = 0;
 			glutIdleFunc(NULL);
 		} else {
-			game_start = 1;
-			glutIdleFunc(move);
+			if (moving != 0) {
+				game_start = 1;
+				glutIdleFunc(move);
+			}
 		}
 
 	}
@@ -508,7 +539,7 @@ void keyPressed (unsigned char key, int x, int y) {
 void mainMenu(GLint option) {
 	switch (option) {
 	case 1: { //reset
-
+		reset();
 		break;
 	}
 	case 2: {
@@ -574,6 +605,16 @@ void printMenu(GLint x) {
 	}
 }
 
+void glslMenu(GLint x) {
+	switch(x) {
+	case 1:
+		glUseProgram(programObject);
+		break;
+	case 2:
+		glUseProgram(0);
+	}
+}
+
 void backgroundColor(GLint x) {
 	switch (x) {
 	case 1: //Black
@@ -605,7 +646,12 @@ void backgroundColor(GLint x) {
 }
 
 void menu() {
-	GLint Print_Menu, Background_Color;
+	GLint Print_Menu, Background_Color, GLSL_Menu;
+
+	GLSL_Menu = glutCreateMenu(glslMenu);
+	glutAddMenuEntry( " On ", 1);
+	glutAddMenuEntry( " Off ", 2);
+
 
 	Print_Menu = glutCreateMenu(printMenu);
 	glutAddMenuEntry(" Print View Variables ", 1);
@@ -620,8 +666,9 @@ void menu() {
 
 	glutAddSubMenu(" Print ", Print_Menu);
 	glutAddSubMenu( " Background ", Background_Color);
-	//glutAddMenuEntry(" Reset ", 1);
+	glutAddMenuEntry(" Reset ", 1);
 	glutAddMenuEntry(" Game Start/Stop ", 3);
+	glutAddSubMenu(" GLSL ", GLSL_Menu);
 	glutAddMenuEntry(" Quit", 2);
 }
 

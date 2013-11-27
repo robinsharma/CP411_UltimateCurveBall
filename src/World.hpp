@@ -44,7 +44,7 @@ public:
 	~World();
 
 	void draw_world(); // draw all objects in the world
-
+	void reset();
 };
 
 #endif

@@ -32,6 +32,17 @@ World::~World() {
 	}
 }
 
+void World::reset(){
+	list[0] = new Cube(); 	//Player's paddle
+	list[1] = new Cube();	//Opponent's paddle
+	list[2] = new Cube();	//Left wall
+	list[3] = new Cube();	//Top wall
+	list[4] = new Cube(); 	//Right wall
+	list[5] = new Cube();	//Bottom wall
+	ball = new Sphere();
+	tracker = new WireCube();
+}
+
 void World::draw_world() {
 	int i = 0;
 	for(i = 0; i < length; i++) {
