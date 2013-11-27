@@ -24,6 +24,8 @@ bool loadbmp(UINT textureArray[], LPSTR strFileName, int ID);
 void check_collision();
 void move();
 void reset();
+void backgroundColor(GLint);
+void setCurve(GLint, GLint, GLint, GLint);
 
 GLint winWidth = 800, winHeight = 800;
 /*  Set coordinate limits for the clipping window:  */
@@ -33,11 +35,14 @@ GLfloat xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
 GLfloat red = 1.0, green = 1.0, blue = 1.0;  //color
 GLint moving = 0, start = 0, xBegin = 0, yBegin = 0, coordinate = 1, type = 1,
 		selected = 0, game_start = 0, missed = 0;
-
+GLboolean whiteBackground = false;
 //Curve related variables
 GLboolean curving_s = false, curving_r = false, check_curve = false;
+const GLfloat SUPER = 0.001;
+const GLfloat REGULAR = 0.0005;
 GLfloat super_curve = 0.001, reg_curve = 0.0005;
-GLfloat begin, end;
+GLfloat curvex, curvey;
+GLint begin, end;
 GLint xCurve1, xCurve2, yCurve1, yCurve2;
 
 //Declare a world containing all objects to draw.
@@ -132,19 +137,20 @@ void display(void) {
 		char filename5[] = "Paddle2.bmp";
 		loadbmp(textures, filename5, 5);
 
-		myWorld.list[2]->textureID = 1; //left wall
-		myWorld.list[3]->textureID = 3; //top wall
-		myWorld.list[4]->textureID = 3; //right wall
-		myWorld.list[5]->textureID = 3; //bottom wall
+		if (whiteBackground) {
+
+			backgroundColor(2);
+
+		} else {
+			backgroundColor(1);
+		}
 		myWorld.list[0]->textureID = 4; //player paddle
 		myWorld.list[1]->textureID = 5; //player paddle
-
-
 		texturesLoaded = true; //only need to load up textures once
 	}
 	myWorld.draw_world(); // draw all objects in the world
 	Spot.draw();
-	check_collision();
+	//check_collision();
 	glFlush();
 	glutSwapBuffers();
 }
@@ -204,14 +210,15 @@ void mouseMotion(GLint x, GLint y) {
 			xBegin = x;
 			yBegin = y;
 			if(check_curve == true){
-				printf("Begin: %f. \n",begin);
+				printf("Begin: %d \n",begin);
 				end = glutGet(GLUT_ELAPSED_TIME);
-				printf("End: %f. \n",end);
+				printf("End: %d \n",end);
 				if ((end - begin) > 30) {
 					xCurve2 = x;
 					yCurve2 = y;
 					check_curve = false;
-					printf("First: %d, Second: %d, Difference: %d. \n",xCurve1,xCurve2,xCurve2 - xCurve1);
+					setCurve(xCurve1, yCurve1, xCurve2, yCurve2);
+					printf("First: %d, Second: %d, Difference: %d \n",xCurve1,xCurve2,xCurve2 - xCurve1);
 				}
 			}
 		}
@@ -219,6 +226,57 @@ void mouseMotion(GLint x, GLint y) {
 	glutPostRedisplay();
 }
 
+void setCurve(GLint x1, GLint y1, GLint x2, GLint y2) {
+	GLint diffx = x2 - x1;
+	GLint diffy = y2 - y1;
+	if (diffx < 0) {
+		if (diffx <= -5 && diffx >= -10 ) {
+			//Negative difference. Paddle moved from right to left. x curve positive
+			//regular
+			curvex = REGULAR;
+
+		} else if (diffx < -10) {
+			//super curve positive x
+			curvex = SUPER;
+		}
+	} else if (diffx > 0) {
+		if (diffx >= 5 && diffx <= 10) {
+			//regular curve neg x
+			curvex = -REGULAR;
+		} else if (diffx > 10) {
+			//super curve neg x
+			curvex = SUPER;
+		}
+	}
+
+	if (diffy < 0) {
+		if (diffy <= -5 && diffy >= -10 ) {
+			//Negative difference. Paddle moved from bottom to top. y curve positive
+			//regular
+			curvey = REGULAR;
+		} else if (diffy < -10) {
+			//super curve positive y
+			curvey = SUPER;
+		}
+	} else if (diffy > 0) {
+		if (diffy >= 5 && diffy <= 10) {
+			//regular curve neg y
+			curvex = -REGULAR;
+		} else if (diffy > 10) {
+			//super curve neg y
+			curvex = -SUPER;
+		}
+	}
+	printf("Curvex: %f Curvey: %f", curvex, curvey);
+}
+/*
+if ( diffx < -5 ) {
+	if (diffx > -10 ) {
+		//regular curve pos x
+	} else {
+		//super curve pos x
+	}
+*/
 
 /*-------ANIMATION FUNCTION-------------------*/
 GLfloat ball_x_trans = 0.00, ball_y_trans = 0.00, ball_z_trans = -0.03;
@@ -250,6 +308,8 @@ void check_collision_paddles(Cube* object, int paddle) {
 				xCurve1 = xBegin;
 				yCurve1 = yBegin;
 				ball_z_trans = ball_z_trans * -1;
+				curvex = 0.0;
+				curvey = 0.0;
 				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 
 			}
@@ -273,6 +333,8 @@ void check_collision_paddles(Cube* object, int paddle) {
 				if(((object->cube_face_center_wc[1][0] + 0.1) > sphereP1[0] && (object->cube_face_center_wc[3][0] - 0.1) < sphereP1[0]) &&
 					((object->cube_face_center_wc[5][1] - 0.11) < sphereP1[1] && (object->cube_face_center_wc[4][1]+ 0.1) > sphereP1[1])){
 					ball_z_trans = ball_z_trans * -1;
+					curvex = 0.0;
+					curvey = 0.0;
 					PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 				}
 				else{
@@ -344,17 +406,17 @@ void check_collision() {
 }
 
 void move(void) {
-	//check_collision();
+	check_collision();
 	Game_time += 1;
 	if (Game_time % speed == 0) {
 		//Move ball in the proper direction
 
-		if(curving_s == true){
-			ball_x_trans += super_curve;
-		}
-		else if(curving_r == true){
-			ball_x_trans += reg_curve;
-		}
+		//if(curving_s == true){
+			ball_x_trans += curvex;
+		//}
+		//else if(curving_r == true){
+			ball_y_trans += curvey;
+		//}
 		myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
 		//move opponents paddle in relation to ball (NO Z TRANSLATION!)
 		myWorld.list[1]->translate(ball_x_trans, ball_y_trans, 0);
@@ -538,6 +600,17 @@ void keyPressed (unsigned char key, int x, int y) {
 
 	else if( key == '9') {
 		speed = 9;
+	} else if(key == 'w') {
+		backgroundColor(2);
+
+	} else if(key == 'b') {
+		backgroundColor(1);
+
+	} else if(key == 'i') {
+		backgroundColor(3);
+
+	} else if(key == 'o') {
+		backgroundColor(4);
 	}
 	glutPostRedisplay();
 }
@@ -628,12 +701,14 @@ void backgroundColor(GLint x) {
 		myWorld.list[3]->textureID = 3; //top wall
 		myWorld.list[4]->textureID = 3; //right wall
 		myWorld.list[5]->textureID = 3; //bottom wall
+		whiteBackground = false;
 		break;
 	case 2: //white
 		myWorld.list[2]->textureID = 0; //left wall
 		myWorld.list[3]->textureID = 2; //top wall
 		myWorld.list[4]->textureID = 2; //right wall
 		myWorld.list[5]->textureID = 2; //bottom wall
+		whiteBackground = true;
 		break;
 
 	case 3: //inverted 1
