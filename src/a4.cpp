@@ -34,6 +34,12 @@ GLfloat red = 1.0, green = 1.0, blue = 1.0;  //color
 GLint moving = 0, start = 0, xBegin = 0, yBegin = 0, coordinate = 1, type = 1,
 		selected = 0, game_start = 0, missed = 0;
 
+//Curve related variables
+GLboolean curving_s = false, curving_r = false, check_curve = false;
+GLfloat super_curve = 0.001, reg_curve = 0.0005;
+GLfloat begin, end;
+GLint xCurve1, xCurve2, yCurve1, yCurve2;
+
 //Declare a world containing all objects to draw.
 World myWorld;
 Light Spot;
@@ -197,6 +203,17 @@ void mouseMotion(GLint x, GLint y) {
 			myWorld.list[0]->translate(0, thetaY * 0.003, 0);
 			xBegin = x;
 			yBegin = y;
+			if(check_curve == true){
+				printf("Begin: %f. \n",begin);
+				end = glutGet(GLUT_ELAPSED_TIME);
+				printf("End: %f. \n",end);
+				if ((end - begin) > 30) {
+					xCurve2 = x;
+					yCurve2 = y;
+					check_curve = false;
+					printf("First: %d, Second: %d, Difference: %d. \n",xCurve1,xCurve2,xCurve2 - xCurve1);
+				}
+			}
 		}
 	}
 	glutPostRedisplay();
@@ -204,7 +221,7 @@ void mouseMotion(GLint x, GLint y) {
 
 
 /*-------ANIMATION FUNCTION-------------------*/
-GLfloat ball_x_trans = 0.02, ball_y_trans = 0.03, ball_z_trans = 0.02;
+GLfloat ball_x_trans = 0.00, ball_y_trans = 0.00, ball_z_trans = -0.03;
 
 void check_collision_paddles(Cube* object, int paddle) {
 	GLfloat sphereP1[3];
@@ -222,16 +239,20 @@ void check_collision_paddles(Cube* object, int paddle) {
 			glutPostRedisplay();
 			Sleep(1000);
 			reset();
-			//return;
 		}
 		//check if colliding with z-axis of paddle
 		if(object->cube_face_center_wc[0][2] <  (sphereP1[2] + radius)){
-			//check x and y axis to see if contact madle with paddle or a MISS
-				if((object->cube_face_center_wc[1][0] > sphereP1[0] && object->cube_face_center_wc[3][0] < sphereP1[0]) &&
-					(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
-					ball_z_trans = ball_z_trans * -1;
-					PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
-				}
+			//check x and y axis to see if contact made with paddle or a MISS
+			if(((object->cube_face_center_wc[1][0] + 0.1) > sphereP1[0] && (object->cube_face_center_wc[3][0] - 0.1) < sphereP1[0]) &&
+				((object->cube_face_center_wc[5][1] - 0.1) < sphereP1[1] && (object->cube_face_center_wc[4][1]+ 0.1) > sphereP1[1])){
+				check_curve = true;
+				begin = glutGet(GLUT_ELAPSED_TIME);
+				xCurve1 = xBegin;
+				yCurve1 = yBegin;
+				ball_z_trans = ball_z_trans * -1;
+				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
+
+			}
 		}
 	}
 	else if(paddle == 1){
@@ -241,14 +262,16 @@ void check_collision_paddles(Cube* object, int paddle) {
 			ball_x_trans = 0;
 			ball_y_trans = 0;
 			ball_z_trans = 0;
-			usleep(1000000);
+			glutPostRedisplay();
+			Sleep(1000);
+			reset();
 		}
 		//check if colliding with z-axis of paddle
 		if(object->cube_face_center_wc[2][2] >  (sphereP1[2] - radius)){
 			if(missed == 0){
 				//check x and y axis to see if contact madle with paddle
-				if((object->cube_face_center_wc[1][0] > sphereP1[0] && object->cube_face_center_wc[3][0] < sphereP1[0]) &&
-					(object->cube_face_center_wc[5][1] < sphereP1[1] && object->cube_face_center_wc[4][1] > sphereP1[1])){
+				if(((object->cube_face_center_wc[1][0] + 0.1) > sphereP1[0] && (object->cube_face_center_wc[3][0] - 0.1) < sphereP1[0]) &&
+					((object->cube_face_center_wc[5][1] - 0.11) < sphereP1[1] && (object->cube_face_center_wc[4][1]+ 0.1) > sphereP1[1])){
 					ball_z_trans = ball_z_trans * -1;
 					PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 				}
@@ -269,49 +292,27 @@ void check_collision_wall(Cube* object) {
 	sphereP1[1] = myWorld.ball->sphere_center_wc[1]; // + radius + ball_y_trans
 	sphereP1[2] = (myWorld.ball->sphere_center_wc[2]);
 
-	/*GLint i;
-	 for(i = 0; i < 6; i++){
-	 printf("%f, %f, %f \n", sphereP1[0], sphereP1[1], sphereP1[2]);
-	 printf("%f, %f, %f \n", object->cube_face_center_wc[i][0], object->cube_face_center_wc[i][1], object->cube_face_center_wc[i][2]);
-	 printf("%f, %f, %f \n", object->cube_face_norm_wc[i][0], object->cube_face_norm_wc[i][1], object->cube_face_norm_wc[i][2]);
-	 //float result = ((object->cube_face_center_wc[i][0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
-	 //		((object->cube_face_center_wc[i][1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
-	 //		((object->cube_face_center_wc[i][2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
-	 GLfloat result = ((object->cube_center_wc[0] - sphereP1[0]) * object->cube_face_norm_wc[i][0]) +
-	 ((object->cube_center_wc[1] - sphereP1[1]) * object->cube_face_norm_wc[i][1]) +
-	 ((object->cube_center_wc[2] - sphereP1[2]) * object->cube_face_norm_wc[i][2]);
-
-	 printf("%f \n", result);
-	 if (result < 0) count++;
-	 printf("%d, %d \n", i, count);
-	 }
-	 if (count == 6) return 1;*/
 	GLint i;
 	for (i = 0; i < 6; i++) {
 		GLfloat facing_in = ((0 - object->cube_center_wc[0]) * (object->cube_face_center_wc[i][0] - object->cube_center_wc[0])) +
 				((0 - object->cube_center_wc[1]) * (object->cube_face_center_wc[i][1] - object->cube_center_wc[1])) +
 				((0 - object->cube_center_wc[2]) * (object->cube_face_center_wc[i][2] - object->cube_center_wc[2]));
 		if (facing_in > 0) {
-			printf("Face: %d... \n", i);
 			//y-direction collisions
 			if (i == 5 && (object->cube_face_center_wc[i][1] < (sphereP1[1] + radius))) {
-				printf("Cube face center y: %f, sphere y: %f \n",object->cube_face_center_wc[i][1], sphereP1[1]);
 				ball_y_trans = ball_y_trans * -1;
 				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			} else if (i == 4
 					&& (object->cube_face_center_wc[i][1] > (sphereP1[1] - radius))) {
-				printf("Cube face center y: %f, sphere y: %f \n",object->cube_face_center_wc[i][1], sphereP1[1]);
 				ball_y_trans = ball_y_trans * -1;
 				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			}
 			//x direction collisions
 			else if (i == 3	&& (object->cube_face_center_wc[i][0] < (sphereP1[0] + radius))) {
-				printf("Cube face center x: %f, sphere x: %f \n",object->cube_face_center_wc[i][0], sphereP1[0]);
 				ball_x_trans = ball_x_trans * -1;
 				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			}
 			else if (i == 1 && (object->cube_face_center_wc[i][0] > (sphereP1[0] - radius))) {
-				printf("Cube face center x: %f, sphere x: %f \n",object->cube_face_center_wc[i][0], sphereP1[0]);
 				ball_x_trans = ball_x_trans * -1;
 				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			}
@@ -332,13 +333,11 @@ void check_collision() {
 	GLint n = 0;
 	//check paddles
 	while(n < 2){
-		printf("Object: %d, ", n);
 		check_collision_paddles(myWorld.list[n],n);
 		n++;
 	}
 	// n now equals 2. Check walls
 	while (n < 6) {
-		printf("Object: %d, ", n);
 		check_collision_wall(myWorld.list[n]);
 		n++;
 	}
@@ -349,6 +348,13 @@ void move(void) {
 	Game_time += 1;
 	if (Game_time % speed == 0) {
 		//Move ball in the proper direction
+
+		if(curving_s == true){
+			ball_x_trans += super_curve;
+		}
+		else if(curving_r == true){
+			ball_x_trans += reg_curve;
+		}
 		myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
 		//move opponents paddle in relation to ball (NO Z TRANSLATION!)
 		myWorld.list[1]->translate(ball_x_trans, ball_y_trans, 0);
