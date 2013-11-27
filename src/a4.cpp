@@ -280,7 +280,7 @@ void setCurve(GLint x1, GLint y1, GLint x2, GLint y2) {
 			curvex = -REGULAR;
 		} else if (diffx > 10) {
 			//super curve neg x
-			curvex = SUPER;
+			curvex = -SUPER;
 		}
 	}
 
