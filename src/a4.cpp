@@ -552,7 +552,7 @@ void reset(){
 	game_start = 0;
 	glutIdleFunc(NULL);
 	texturesLoaded = false;
-	ball_x_trans = 0.00, ball_y_trans = 0.00, ball_z_trans = 0.06;
+	ball_x_trans = 0.00, ball_y_trans = 0.00, ball_z_trans = 0.1;
 	curvex = 0.0, curvey = 0.0;
 	check_curve = false;
 	glutPostRedisplay();
