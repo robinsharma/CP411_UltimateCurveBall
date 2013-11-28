@@ -52,6 +52,7 @@ GLfloat curvex, curvey;
 GLint begin, end;
 GLint xCurve1, xCurve2, yCurve1, yCurve2;
 GLint playerLives = 5, aiLives = AILIVES, level = 1;
+GLfloat ball_x_trans = 0.00, ball_y_trans = 0.00, ball_z_trans = 0.12;
 
 //Declare a world containing all objects to draw.
 World myWorld;
@@ -184,7 +185,6 @@ void display(void) {
 				glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
 			}
 
-		//renderBitmapString(winWidth/2, winHeight/4, GLUT_BITMAP_HELVETICA_18, result.c_str());
 	} else {
 
 		std::ostringstream l;
@@ -367,8 +367,6 @@ void setCurve(GLint x1, GLint y1, GLint x2, GLint y2) {
 }
 
 /*-------ANIMATION FUNCTION-------------------*/
-GLfloat ball_x_trans = 0.00, ball_y_trans = 0.00, ball_z_trans = 0.12;
-
 void check_collision_paddles(Cube* object, int paddle) {
 	GLfloat sphereP1[3];
 	GLfloat radius = 0.2;
@@ -396,7 +394,7 @@ void check_collision_paddles(Cube* object, int paddle) {
 				glutIdleFunc(NULL);
 			}
 			printf("Player Lives: %d. \n", playerLives);
-			//return;
+
 		}
 		//check if colliding with z-axis of paddle
 		else if(object->cube_face_center_wc[0][2] <  (sphereP1[2] + radius)){
@@ -442,7 +440,6 @@ void check_collision_paddles(Cube* object, int paddle) {
 			}
 			Sleep(1000);
 			reset();
-			//return;
 		}
 		//check if colliding with z-axis of paddle
 		else if(object->cube_face_center_wc[2][2] >  (sphereP1[2] - radius)){
@@ -475,7 +472,6 @@ void check_collision_paddles(Cube* object, int paddle) {
 void check_collision_wall(Cube* object) {
 	GLfloat sphereP1[3];
 	GLfloat radius = 0.2;
-	//GLint count = 0;
 	sphereP1[0] = myWorld.ball->sphere_center_wc[0];
 	sphereP1[1] = myWorld.ball->sphere_center_wc[1]; // + radius + ball_y_trans
 	sphereP1[2] = (myWorld.ball->sphere_center_wc[2]);
@@ -535,13 +531,9 @@ void move(void) {
 	check_collision();
 
 	//Move ball in the proper direction
-
-	//if(curving_s == true){
 	ball_x_trans += curvex;
-	//}
-	//else if(curving_r == true){
 	ball_y_trans += curvey;
-	//}
+
 	myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
 	//move opponents paddle in relation to ball (NO Z TRANSLATION!)
 	myWorld.list[1]->translate(ball_x_trans/(2-(level-0)*0.05), ball_y_trans/(2-(level-0)*0.05), 0);
@@ -558,7 +550,6 @@ void Disable() {
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHT0);
 	glutIdleFunc(NULL);
-	//glUseProgram(0);
 }
 
 void Enable() {
@@ -574,14 +565,12 @@ void Enable() {
 /*-----------------------------------------------------------*/
 void create_court() {
 	//Play paddle
-	myWorld.list[0]->setColor(1.0, 1.0, 1.0);
 	myWorld.list[0]->scale_change(-0.75);
 	myWorld.list[0]->scaleZ(-0.1);
 	myWorld.list[0]->scaleX(0.1);
 	myWorld.list[0]->translate(0, 0, 2.5);
 
 	//Opponent Paddle
-	myWorld.list[1]->setColor(1.0, 0.5, 0.5);
 	myWorld.list[1]->scale_change(-0.75);
 	myWorld.list[1]->scaleZ(-0.1);
 	myWorld.list[1]->scaleX(0.1);
@@ -592,30 +581,24 @@ void create_court() {
 	myWorld.ball->scale_change(-0.8);
 
 	//Left wall
-	myWorld.list[2]->setColor(1.0, 0.5, 0.0);
 	myWorld.list[2]->translate(-1.5, 0, 0);
 	myWorld.list[2]->scaleX(-0.9);
 	myWorld.list[2]->scaleZ(4.5);
 	myWorld.list[2]->scaleY(0.5);
 
 	//Top wall
-	myWorld.list[3]->setColor(1.0, 1.0, 1.0);
 	myWorld.list[3]->translate(0, 1.5, 0);
 	myWorld.list[3]->scaleY(-0.9);
 	myWorld.list[3]->scaleZ(4.5);
 	myWorld.list[3]->scaleX(0.5);
 
 	//Right wall
-	myWorld.list[4]->setColor(0.0, 0.37647, 0.53333);
 	myWorld.list[4]->translate(1.5, 0, 0);
 	myWorld.list[4]->scaleX(-0.9);
 	myWorld.list[4]->scaleZ(4.5);
 	myWorld.list[4]->scaleY(0.5);
 
 	//Bottom wall
-	//myWorld.list[5]->setColor(0.0, 0.37647, 0.53333);
-	myWorld.list[5]->setColor(0.47, 0.333, 0.333);
-
 	myWorld.list[5]->translate(0, -1.5, 0);
 	myWorld.list[5]->scaleY(-0.9);
 	myWorld.list[5]->scaleZ(4.5);
@@ -695,21 +678,7 @@ void keyPressed (unsigned char key, int x, int y) {
 
 void mainMenu(GLint option) {
 	switch (option) {
-	case 1: { //reset
-		reset();
-		break;
-	}
-	case 2: {
-		exit(0);
-	}
-		break;
-	case 3: {
-		game_start = 1;
-		glutIdleFunc(move);
-
-		break;
-	}
-	case 4: {
+	case 1: {
 		new_game();
 	}
 	}
@@ -816,10 +785,8 @@ void menu() {
 
 	glutCreateMenu(mainMenu);      // Create main pop-up menu.
 
-	glutAddMenuEntry(" New Game ", 4);
+	glutAddMenuEntry(" New Game ", 1);
 	glutAddSubMenu( " Background ", Background_Color);
-	glutAddMenuEntry(" Reset ", 1);
-	glutAddMenuEntry(" Game Start/Stop ", 3);
 	glutAddSubMenu(" GLSL ", GLSL_Menu);
 	glutAddMenuEntry(" Quit", 2);
 }
