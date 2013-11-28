@@ -1,8 +1,6 @@
 /*
  * Light.hpp
  *
- *  Created on: Oct 24, 2013
- *      Author: Robin
  */
 
 #ifndef LIGHT_HPP_

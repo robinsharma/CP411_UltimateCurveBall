@@ -1,8 +1,6 @@
 /*
  * Sphere.hpp
  *
- *  Created on: Nov 15, 2013
- *      Author: Robin
  */
 
 #ifndef SPHERE_HPP_

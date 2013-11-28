@@ -1,10 +1,5 @@
 /**
  * 	Matrix.hpp
- *	CP411 Assignment 2
- *	Robin Sharma
- *	ID: 110142530
- *	Email: shar2530@mylaurier.ca
- *	Date: October 18, 2013
  */
 
 #ifndef CMATRIX_H

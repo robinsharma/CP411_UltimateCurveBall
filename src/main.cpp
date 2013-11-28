@@ -1,10 +1,8 @@
 /**
- * 	a4.cpp
+ * 	main.cpp
  *	CP411 Final Project
  *	Robin Sharma & Gavin Kerr
- *	ID: 110142530
- *	Email: shar2530@mylaurier.ca
- *	Date: November 5, 2013
+ *	Date: November 28, 2013
  */
 
 #include <stdlib.h>
@@ -23,6 +21,7 @@
 #include "World.hpp"
 #include "Camera.hpp"
 
+//HEADERS---------------------------------------------------------
 void mouseMotion(GLint, GLint);
 bool loadbmp(UINT textureArray[], LPSTR strFileName, int ID);
 void check_collision();
@@ -31,35 +30,38 @@ void reset();
 void backgroundColor(GLint);
 void setCurve(GLint, GLint, GLint, GLint);
 void new_game();
+//----------------------------------------------------------------
 
+//OBJECTS
+World myWorld;
+Light Spot;
+Camera myCam;
+Image* myImage;
+
+//Window and View variables
 GLint winWidth = 800, winHeight = 800;
-/*  Set coordinate limits for the clipping window:  */
 GLfloat xwMin = -40.0, ywMin = -60.0, xwMax = 40.0, ywMax = 60.0;
 
-/*  Set positions for near and far clipping planes:  */
-GLfloat red = 1.0, green = 1.0, blue = 1.0;  //color
-GLint moving = 0, start = 0, xBegin = 0, yBegin = 0, coordinate = 1, type = 1,
-		selected = 0, game_start = 0, missed = 0;
-GLboolean whiteBackground = false;
-//Curve related variables
+//Motion variables
+GLint moving = 0, start = 0, xBegin = 0, yBegin = 0, game_start = 0, missed = 0;
+
+/*-Curve related variables----------------------------------------*/
 GLboolean check_curve = false;
+
+//CONSTANTS
 const GLfloat SUPER = 0.0005;
 const GLfloat REGULAR = 0.0002;
 const GLint AILIVES = 3;
 const GLint PLAYERLIVES = 5;
 const GLfloat ZSPEEDINCREASE = 0.001;
+
 GLfloat curvex, curvey;
 GLint begin, end;
 GLint xCurve1, xCurve2, yCurve1, yCurve2;
 GLint playerLives = 5, aiLives = AILIVES, level = 1;
 GLfloat ball_x_trans = 0.00, ball_y_trans = 0.00, ball_z_trans = 0.12;
 
-//Declare a world containing all objects to draw.
-World myWorld;
-Light Spot;
-Camera myCam;
-
-//Lighting substitute lx, ly, lz
+/*--------LIGHTING VARIABLES-----------------------------------------*/
 GLfloat position[] = { 1.8, 1.8, 1.5, 1.0 };
 
 GLfloat ambient[] = { 0.1, 0.1, 0.3, 1.0 };
@@ -75,14 +77,16 @@ GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 GLfloat high_shininess[] = { 100.0 };
 GLfloat mat_emission[] = { 1, 1, 1, 1 };
 
+//GLSL OBJECTS
 GLuint programObject;
 
+//VISUAL RELATED VARIABLES
 GLuint textures[6];
-Image* myImage;
 bool texturesLoaded;
-
+GLboolean whiteBackground = false;
 GLboolean printStart = true, game_over = false;
 
+//SCORE UP INCREMENTS
 const GLint REGSCORE = 50;
 const GLint SUPERSCORE = 100;
 const GLint HIT = 25;
@@ -90,6 +94,7 @@ const GLint TAKELIFE = 150;
 const GLint LEVELUP = 200;
 GLint score = 0;
 
+/*----DISPLAY FUNCTION-------------------------------------------------------------------------------*/
 void display(void) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -131,25 +136,26 @@ void display(void) {
 		glDisable(GL_LIGHTING);
 	}
 
+	//LOAD UP TEXTURES
 	if (!texturesLoaded) {
 		myImage = new Image();
 
 		char filename[] = "whiteline.bmp";
 		loadbmp(textures, filename, 0);
 
-		char filename1[] = "lines2.bmp";
+		char filename1[] = "greylines_left.bmp";
 		loadbmp(textures, filename1, 1);
 
-		char filename2[] = "whiteline1.bmp";
+		char filename2[] = "whiteline_left.bmp";
 		loadbmp(textures, filename2, 2);
 
-		char filename3[] = "lines.bmp";
+		char filename3[] = "greylines.bmp";
 		loadbmp(textures, filename3, 3);
 
-		char filename4[] = "Paddle.bmp";
+		char filename4[] = "Paddle_player.bmp";
 		loadbmp(textures, filename4, 4);
 
-		char filename5[] = "Paddle2.bmp";
+		char filename5[] = "Paddle_opponent.bmp";
 		loadbmp(textures, filename5, 5);
 
 		if (whiteBackground) {
@@ -268,6 +274,7 @@ void winReshapeFcn(GLint newWidth, GLint newHeight) {
 	winHeight = newHeight;
 }
 
+/*-----MOUSE FUNCTIONS-----------------------------------------------*/
 void mouseAction(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		if (game_over == true) {
@@ -354,24 +361,53 @@ void setCurve(GLint x1, GLint y1, GLint x2, GLint y2) {
 			curvey = -REGULAR;
 			score += REGSCORE;
 		} else if (diffy < -10) {
-			//super curve positive y
+			//super curve neg y
 			curvey = -SUPER;
 			score += SUPERSCORE;
 		}
 	} else if (diffy > 0) {
 		if (diffy >= 5 && diffy <= 10) {
-			//regular curve neg y
+			//regular curve positive y
 			curvey = REGULAR;
 			score += REGSCORE;
 		} else if (diffy > 10) {
-			//super curve neg y
+			//super curve positive y
 			curvey = SUPER;
 			score += SUPERSCORE;
 		}
 	}
 }
+/*----------------------------------------------------------------------------------------*/
 
-/*-------ANIMATION FUNCTION-------------------*/
+/*--KEYBOARD FUNCTIONS--------------------------------------------------------------------*/
+void keyPressed(unsigned char key, int x, int y) {
+	if (key == ' ') {
+		if (game_start == 1) {
+			game_start = 0;
+			glutIdleFunc(NULL);
+		} else {
+			if (moving != 0) {
+				game_start = 1;
+				glutIdleFunc(move);
+			}
+		}
+
+	} else if (key == 'w') {
+		backgroundColor(2);
+
+	} else if (key == 'b') {
+		backgroundColor(1);
+
+	} else if (key == 'i') {
+		backgroundColor(3);
+
+	} else if (key == 'o') {
+		backgroundColor(4);
+	}
+	glutPostRedisplay();
+}
+
+/*-------COLLISON-------------------------------------------------------------------------*/
 void check_collision_paddles(Cube* object, int paddle) {
 	GLfloat sphereP1[3];
 	GLfloat radius = 0.2;
@@ -397,7 +433,6 @@ void check_collision_paddles(Cube* object, int paddle) {
 				game_over = true;
 				glutIdleFunc(NULL);
 			}
-			printf("Player Lives: %d. \n", playerLives);
 
 		}
 		//check if colliding with z-axis of paddle
@@ -438,7 +473,6 @@ void check_collision_paddles(Cube* object, int paddle) {
 			glutPostRedisplay();
 			aiLives--;
 			score += TAKELIFE;
-			printf("AI Lives: %d... Level: %d. \n", aiLives, level);
 			if (aiLives == 0) {
 				level++;
 				score += LEVELUP;
@@ -471,7 +505,7 @@ void check_collision_paddles(Cube* object, int paddle) {
 					curvex = 0.0;
 					curvey = 0.0;
 					PlaySound((LPCSTR) "Blop.wav", NULL,
-							SND_FILENAME | SND_ASYNC);
+					SND_FILENAME | SND_ASYNC);
 				} else {
 					missed = 1;
 				}
@@ -480,7 +514,6 @@ void check_collision_paddles(Cube* object, int paddle) {
 	}
 }
 
-//This function doesn't work as planned. Will fix tomorrow
 void check_collision_wall(Cube* object) {
 	GLfloat sphereP1[3];
 	GLfloat radius = 0.2;
@@ -554,7 +587,9 @@ void check_collision() {
 		n++;
 	}
 }
+/*---COLLISION END----------------------------------------------------------------------------------*/
 
+/*---ANIMATION--------------------------------------------------------------------------------------*/
 void move(void) {
 	check_collision();
 
@@ -570,28 +605,9 @@ void move(void) {
 	glutPostRedisplay();
 
 }
-
-void Disable() {
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_LIGHTING);
-	glDisable( GL_NORMALIZE);
-	glDisable(GL_COLOR_MATERIAL);
-	glDisable(GL_LIGHT0);
-	glutIdleFunc(NULL);
-}
-
-void Enable() {
-	glEnable(GL_DEPTH_TEST); // enable OpenGL depth buffer algorithm for hidden surface removal
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_LIGHTING);
-	glEnable( GL_NORMALIZE);
-	glEnable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHT0);
-	glCullFace(GL_BACK);
-}
-
 /*-----------------------------------------------------------*/
+
+/*-------MISCELLANEOUS---------------------------------------*/
 void create_court() {
 	//Play paddle
 	myWorld.list[0]->scale_change(-0.75);
@@ -638,20 +654,6 @@ void create_court() {
 	myWorld.tracker->translate(0, 0, 0.0);
 }
 
-void init(void) {
-	glClearColor(0.0, 0.0, 0.0, 1.0);  // Set display-window color to black
-	glMatrixMode(GL_PROJECTION);
-	gluPerspective(myCam.vangle, 1.0, myCam.dnear, myCam.dfar);
-	glMatrixMode(GL_MODELVIEW);
-	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref,
-			myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
-	glEnable(GL_DEPTH_TEST);
-	programObject = InitShader("vshader.glsl", "fshader.glsl");
-	glUseProgram(0);
-
-	create_court();
-}
-
 void reset() {
 	myWorld.reset();
 	create_court();
@@ -676,35 +678,9 @@ void new_game() {
 	reset();
 }
 
-/*-------MENUS------------------------------------------------------------*/
+/*-------------------------------------------------------------------*/
 
-void keyPressed(unsigned char key, int x, int y) {
-	if (key == ' ') {
-		if (game_start == 1) {
-			game_start = 0;
-			glutIdleFunc(NULL);
-		} else {
-			if (moving != 0) {
-				game_start = 1;
-				glutIdleFunc(move);
-			}
-		}
-
-	} else if (key == 'w') {
-		backgroundColor(2);
-
-	} else if (key == 'b') {
-		backgroundColor(1);
-
-	} else if (key == 'i') {
-		backgroundColor(3);
-
-	} else if (key == 'o') {
-		backgroundColor(4);
-	}
-	glutPostRedisplay();
-}
-
+/*-------MENU FUNCTIONS----------------------------------------------*/
 void mainMenu(GLint option) {
 	switch (option) {
 	case 1: {
@@ -712,48 +688,6 @@ void mainMenu(GLint option) {
 	}
 	}
 
-}
-
-void colorSubMenu(GLint colorOption) {
-	switch (colorOption) {
-	case 1: { //White
-		red = 1.0;
-		green = 1.0;
-		blue = 1.0;
-		break;
-	}
-	case 2: { //Red
-		red = 1.0;
-		green = 0.0;
-		blue = 0.0;
-		break;
-	}
-	case 3: { //Green
-		red = 0.0;
-		green = 1.0;
-		blue = 0.0;
-		break;
-	}
-	case 4: { //Blue
-		red = 0.0;
-		green = 0.0;
-		blue = 1.0;
-		break;
-	}
-	}
-	glColor3f(red, green, blue);
-	glutPostRedisplay();
-}
-
-void printMenu(GLint x) {
-	switch (x) {
-	case 1:
-		printf(
-				"Dnear: %f Dfar: %f vAngle: %f xeye: %f, yeye: %f, zeye: %f, xref: %f, yref: %f, zref: %f\n",
-				myCam.dnear, myCam.dfar, myCam.vangle, myCam.xeye, myCam.yeye,
-				myCam.zeye, myCam.xref, myCam.yref, myCam.zref);
-		break;
-	}
 }
 
 void glslMenu(GLint x) {
@@ -819,7 +753,22 @@ void menu() {
 	glutAddMenuEntry(" Quit", 2);
 }
 
-/*-------MENUS END------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
+
+/*--INIT---------------------------------------------------------------------*/
+void init(void) {
+	glClearColor(0.0, 0.0, 0.0, 1.0);  // Set display-window color to black
+	glMatrixMode(GL_PROJECTION);
+	gluPerspective(myCam.vangle, 1.0, myCam.dnear, myCam.dfar);
+	glMatrixMode(GL_MODELVIEW);
+	gluLookAt(myCam.xeye, myCam.yeye, myCam.zeye, myCam.xref, myCam.yref,
+			myCam.zref, myCam.Vx, myCam.Vy, myCam.Vz);
+	glEnable(GL_DEPTH_TEST);
+	programObject = InitShader("vshader.glsl", "fshader.glsl");
+	glUseProgram(0);
+
+	create_court();
+}
 
 /*----MAIN---------------------------*/
 int main(int argc, char** argv) {
@@ -844,3 +793,4 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
+//END----------->

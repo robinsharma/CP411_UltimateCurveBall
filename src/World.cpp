@@ -2,9 +2,7 @@
  * 	World.cpp
  *	CP411 Final Project
  *	Gavin Kerr & Robin Sharma
- *	ID: 110142530
- *	Email: shar2530@mylaurier.ca
- *	Date: November 5, 2013
+ *	Date: November 28, 2013
  */
 
 #include "World.hpp"

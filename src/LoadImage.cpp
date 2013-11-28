@@ -1,8 +1,6 @@
 /*
  * LoadImage.cpp
  *
- *  Created on: Nov 16, 2013
- *      Author: Robin
  */
 
 #include "LoadImage.hpp"

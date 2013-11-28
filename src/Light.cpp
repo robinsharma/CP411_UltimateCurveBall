@@ -1,8 +1,6 @@
 /*
  * Light.cpp
  *
- *  Created on: Oct 24, 2013
- *      Author: Robin
  */
 
 #include "Light.hpp"

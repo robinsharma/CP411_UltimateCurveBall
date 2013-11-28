@@ -1,10 +1,5 @@
 /**
  * 	Cube.cpp
- *	CP411 Assignment 3
- *	Robin Sharma
- *	ID: 110142530
- *	Email: shar2530@mylaurier.ca
- *	Date: November 4, 2013
  */
 
 #include "Cube.hpp"
