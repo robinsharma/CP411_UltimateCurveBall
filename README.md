@@ -46,7 +46,8 @@ to the washroom.
 <b>W</b> - The W key changes the background color between White and
 Black.
 
-<b>E</b> - The E key changes the paddle between a solid wood texture and transparent wire object.
+<b>E</b> - The E key changes the paddle between a solid wood texture 
+and a transparent wire object.
 
 <b>I/O</b> - The I and O keys invert the background colors so that
 they are split half and half on the background, giving the
