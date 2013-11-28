@@ -544,7 +544,7 @@ void move(void) {
 	//}
 	myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
 	//move opponents paddle in relation to ball (NO Z TRANSLATION!)
-	myWorld.list[1]->translate(ball_x_trans/2, ball_y_trans/2, 0);
+	myWorld.list[1]->translate(ball_x_trans/(2-(level-0)*0.05), ball_y_trans/(2-(level-0)*0.05), 0);
 	myWorld.tracker->translate(0,0,ball_z_trans);
 	glutPostRedisplay();
 
@@ -659,6 +659,8 @@ void new_game(){
 	aiLives = AILIVES;
 	level = 1;
 	score = 0;
+	game_over = false;
+	printStart = true;
 	reset();
 }
 
@@ -800,15 +802,11 @@ void backgroundColor(GLint x) {
 }
 
 void menu() {
-	GLint Print_Menu, Background_Color, GLSL_Menu;
+	GLint Background_Color, GLSL_Menu;
 
 	GLSL_Menu = glutCreateMenu(glslMenu);
 	glutAddMenuEntry( " On ", 1);
 	glutAddMenuEntry( " Off ", 2);
-
-
-	Print_Menu = glutCreateMenu(printMenu);
-	glutAddMenuEntry(" Print View Variables ", 1);
 
 	Background_Color = glutCreateMenu(backgroundColor);
 	glutAddMenuEntry(" Black ", 1);
