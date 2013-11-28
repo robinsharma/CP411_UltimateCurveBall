@@ -46,6 +46,7 @@ const GLfloat SUPER = 0.0005;
 const GLfloat REGULAR = 0.0002;
 const GLint AILIVES = 3;
 const GLint PLAYERLIVES = 5;
+const GLfloat ZSPEEDINCREASE = 0.001;
 GLfloat curvex, curvey;
 GLint begin, end;
 GLint xCurve1, xCurve2, yCurve1, yCurve2;
@@ -396,6 +397,14 @@ void check_collision_paddles(Cube* object, int paddle) {
 				begin = glutGet(GLUT_ELAPSED_TIME);
 				xCurve1 = xBegin;
 				yCurve1 = yBegin;
+
+				if((abs(ball_z_trans) + ZSPEEDINCREASE*(level/2)) < 0.24){
+					if(ball_z_trans > 0){
+						ball_z_trans += ZSPEEDINCREASE*(level/2);
+					}
+					else ball_z_trans -= ZSPEEDINCREASE*(level/2);
+				}
+
 				ball_z_trans = ball_z_trans * -1;
 				curvex = 0.0;
 				curvey = 0.0;
@@ -431,6 +440,14 @@ void check_collision_paddles(Cube* object, int paddle) {
 				//check x and y axis to see if contact madle with paddle
 				if(((object->cube_face_center_wc[1][0] + 0.1) > sphereP1[0] && (object->cube_face_center_wc[3][0] - 0.1) < sphereP1[0]) &&
 					((object->cube_face_center_wc[5][1] - 0.11) < sphereP1[1] && (object->cube_face_center_wc[4][1]+ 0.1) > sphereP1[1])){
+
+					if((abs(ball_z_trans) + ZSPEEDINCREASE*(level/2)) < 0.24){
+						if(ball_z_trans > 0){
+							ball_z_trans += ZSPEEDINCREASE*(level/2);
+						}
+						else ball_z_trans -= ZSPEEDINCREASE*(level/2);
+					}
+
 					ball_z_trans = ball_z_trans * -1;
 					curvex = 0.0;
 					curvey = 0.0;
@@ -622,7 +639,7 @@ void reset(){
 	game_start = 0;
 	glutIdleFunc(NULL);
 	texturesLoaded = false;
-	ball_x_trans = 0.00, ball_y_trans = 0.00, ball_z_trans = 0.1;
+	ball_x_trans = 0.00, ball_y_trans = 0.00, ball_z_trans = 0.12;
 	curvex = 0.0, curvey = 0.0;
 	check_curve = false;
 	glutPostRedisplay();
