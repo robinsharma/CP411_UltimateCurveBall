@@ -521,22 +521,21 @@ void check_collision() {
 
 void move(void) {
 	check_collision();
-	Game_time += 1;
-	if (Game_time % speed == 0) {
-		//Move ball in the proper direction
 
-		//if(curving_s == true){
-			ball_x_trans += curvex;
-		//}
-		//else if(curving_r == true){
-			ball_y_trans += curvey;
-		//}
-		myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
-		//move opponents paddle in relation to ball (NO Z TRANSLATION!)
-		myWorld.list[1]->translate(ball_x_trans/2, ball_y_trans/2, 0);
-		myWorld.tracker->translate(0,0,ball_z_trans);
-		glutPostRedisplay();
-	}
+	//Move ball in the proper direction
+
+	//if(curving_s == true){
+	ball_x_trans += curvex;
+	//}
+	//else if(curving_r == true){
+	ball_y_trans += curvey;
+	//}
+	myWorld.ball->translate(ball_x_trans, ball_y_trans, ball_z_trans);
+	//move opponents paddle in relation to ball (NO Z TRANSLATION!)
+	myWorld.list[1]->translate(ball_x_trans/2, ball_y_trans/2, 0);
+	myWorld.tracker->translate(0,0,ball_z_trans);
+	glutPostRedisplay();
+
 }
 
 void Disable() {
@@ -647,6 +646,7 @@ void new_game(){
 	playerLives = PLAYERLIVES;
 	aiLives = AILIVES;
 	level = 1;
+	score = 0;
 	reset();
 }
 
