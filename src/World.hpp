@@ -26,6 +26,8 @@ public:
 	Cube leftWall, topWall, rightWall, bottomWall;
 	GLint length;
 
+	GLboolean drawWire;
+
 	World();
 
 	~World();

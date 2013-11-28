@@ -40,6 +40,8 @@ public:
 	void draw_face_texture(int);
 	void draw();
 	void updateCube();
+	void draw_wire();
+	void draw_face_wire(int);
 	GLfloat cube_face_center_wc[6][4]; // in WC, will be update from the cube_face_center_mc
 	GLfloat cube_face_norm_wc[6][4]; // normal of faces in WC in homogenous cordinates.
 	GLfloat cube_center_mc[4];

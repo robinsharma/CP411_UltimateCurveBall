@@ -30,6 +30,7 @@ void reset();
 void backgroundColor(GLint);
 void setCurve(GLint, GLint, GLint, GLint);
 void new_game();
+void paddleType(GLint);
 //----------------------------------------------------------------
 
 //OBJECTS
@@ -166,7 +167,7 @@ void display(void) {
 			backgroundColor(1);
 		}
 		myWorld.list[0]->textureID = 4; //player paddle
-		myWorld.list[1]->textureID = 5; //player paddle
+		myWorld.list[1]->textureID = 5; //opponent paddle
 		texturesLoaded = true; //only need to load up textures once
 	}
 	myWorld.draw_world(); // draw all objects in the world
@@ -393,17 +394,30 @@ void keyPressed(unsigned char key, int x, int y) {
 		}
 
 	} else if (key == 'w') {
-		backgroundColor(2);
-
-	} else if (key == 'b') {
-		backgroundColor(1);
+		if (whiteBackground) {
+			backgroundColor(1);
+		} else {
+			backgroundColor(2);
+		}
 
 	} else if (key == 'i') {
 		backgroundColor(3);
 
 	} else if (key == 'o') {
 		backgroundColor(4);
+
+
+	} else if (key == 'e') {
+		if (myWorld.drawWire) {
+			paddleType(1);
+		} else {
+			paddleType(2);
+		}
+
+	} else if (key == 'q') {
+		exit(0);
 	}
+
 	glutPostRedisplay();
 }
 
@@ -685,9 +699,28 @@ void mainMenu(GLint option) {
 	switch (option) {
 	case 1: {
 		new_game();
+		break;
+	}
+	case 2: {
+		exit(0);
+		break;
 	}
 	}
 
+}
+
+void paddleType(GLint x) {
+	switch(x) {
+	case 1: { //solid texture
+		myWorld.drawWire = false;
+		break;
+	}
+
+	case 2: {
+		myWorld.drawWire = true;
+		break;
+	}
+	}
 }
 
 void glslMenu(GLint x) {
@@ -733,11 +766,15 @@ void backgroundColor(GLint x) {
 }
 
 void menu() {
-	GLint Background_Color, GLSL_Menu;
+	GLint Background_Color, Paddle_Menu, GLSL_Menu;
 
 	GLSL_Menu = glutCreateMenu(glslMenu);
 	glutAddMenuEntry(" On ", 1);
 	glutAddMenuEntry(" Off ", 2);
+
+	Paddle_Menu = glutCreateMenu(paddleType);
+	glutAddMenuEntry( " Solid Texture ", 1);
+	glutAddMenuEntry( " Wire ", 2);
 
 	Background_Color = glutCreateMenu(backgroundColor);
 	glutAddMenuEntry(" Black ", 1);
@@ -749,6 +786,7 @@ void menu() {
 
 	glutAddMenuEntry(" New Game ", 1);
 	glutAddSubMenu(" Background ", Background_Color);
+	glutAddSubMenu( " Paddle Type ", Paddle_Menu);
 	glutAddSubMenu(" GLSL ", GLSL_Menu);
 	glutAddMenuEntry(" Quit", 2);
 }

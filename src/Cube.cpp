@@ -173,6 +173,34 @@ void Cube::draw() {
 	glPopMatrix();
 }
 
+/*-------DRAW FUNCTIONS FOR WIRE PADDLE--------------------------*/
+void Cube::draw_face_wire(int i)
+{
+	glColor3f(1.0,0.5,0.0);
+    glBegin(GL_LINE_LOOP);
+    glVertex3fv(&vertex[face[i][0]][0]);
+    glVertex3fv(&vertex[face[i][1]][0]);
+    glVertex3fv(&vertex[face[i][2]][0]);
+    glVertex3fv(&vertex[face[i][3]][0]);
+    glEnd();
+}
+
+void Cube::draw_wire()
+{
+	glDisable(GL_LIGHTING);
+    glPushMatrix();
+    this->ctm_multiply();
+	updateCube(); // update the backFaceTest, etc
+	glScalef(scale_x, scale_y, scale_z);
+    for (int i = 0; i < 6; i++) {
+        draw_face_wire(i);
+    }
+    glPopMatrix();
+	glEnable(GL_LIGHTING);
+
+}
+/*------------------------------------------------------------*/
+
 void Cube::setColor(GLfloat red, GLfloat green, GLfloat blue) {
 	r = red;
 	b = blue;
@@ -237,6 +265,8 @@ void Cube::updateCube() {
 	}
 
 }
+
+
 
 void Cube::backFace(GLint i) {
 	backFaceTest[i] = ((myCam.xref - myCam.xeye) * cube_face_norm_wc[i][0])

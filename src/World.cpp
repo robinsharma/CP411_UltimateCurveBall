@@ -21,6 +21,8 @@ World::World() {
 	tracker = new WireCube();
 
 	length = 6;
+
+	drawWire = false;
 }
 
 World::~World() {
@@ -44,7 +46,11 @@ void World::reset(){
 void World::draw_world() {
 	int i = 0;
 	for(i = 0; i < length; i++) {
-		list[i]->draw();
+		if (i == 0 && drawWire){
+			list[i]->draw_wire();
+		} else {
+			list[i]->draw();
+		}
 	}
 	ball->draw();
 	tracker->draw();
