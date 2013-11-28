@@ -337,7 +337,6 @@ void setCurve(GLint x1, GLint y1, GLint x2, GLint y2) {
 			curvey = SUPER;
 		}
 	}
-	printf("Curvex: %f Curvey: %f", curvex, curvey);
 }
 /*
 if ( diffx < -5 ) {
@@ -367,9 +366,13 @@ void check_collision_paddles(Cube* object, int paddle) {
 			glutPostRedisplay();
 			playerLives--;
 			if(playerLives > 0){
+				Sleep(1000);
 				reset();
 			}
-			Sleep(1000);
+			else{
+				moving = 0;
+
+			}
 			printf("Player Lives: %d. \n", playerLives);
 			//return;
 		}
