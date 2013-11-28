@@ -30,6 +30,7 @@ void move();
 void reset();
 void backgroundColor(GLint);
 void setCurve(GLint, GLint, GLint, GLint);
+void new_game();
 
 GLint winWidth = 800, winHeight = 800;
 /*  Set coordinate limits for the clipping window:  */
@@ -175,12 +176,8 @@ void display(void) {
 	glLoadIdentity();
 	glColor3f(1.0, 1.0, 1.0);
 	if (printStart) {
+			//Print Start
 			string start = "Start";
-			//ostringstream sstm;
-			//sstm << name;
-			//string result;
-			//result = sstm.str();
-			//const char* c;
 			glRasterPos2f(380, 390);
 			for (string::iterator i = start.begin(); i != start.end(); ++i) {
 				char c = *i;
@@ -189,6 +186,7 @@ void display(void) {
 
 		//renderBitmapString(winWidth/2, winHeight/4, GLUT_BITMAP_HELVETICA_18, result.c_str());
 	} else {
+
 		std::ostringstream l;
 		l << "Level: " << level;
 		string lv = l.str();
@@ -223,6 +221,16 @@ void display(void) {
 			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
 		}
 
+	}
+
+	if (game_over) {
+		string over = "Game Over";
+		glColor3f(1.0, 0.0, 0.0);
+		glRasterPos2f(355, 390);
+		for (string::iterator i = over.begin(); i != over.end(); ++i) {
+			char c = *i;
+			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+		}
 	}
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
@@ -260,6 +268,9 @@ void winReshapeFcn(GLint newWidth, GLint newHeight) {
 
 void mouseAction(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		if(game_over == true) {
+			new_game();
+		} else {
 		GLfloat width = winWidth * 0.2775;
 		GLfloat height  = winHeight * 0.2;
 		if ((x > (winWidth/2-width/2) && x < (winWidth/2+width/2)) && (y > (winHeight/2-height/2) && y < (winHeight/2+height/2))) {
@@ -270,6 +281,7 @@ void mouseAction(int button, int state, int x, int y) {
 			glutIdleFunc(move);
 			printStart = false;
 
+		}
 		}
 	}
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
