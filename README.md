@@ -1,14 +1,7 @@
 Ultimate Curveball 2.0
 =======================
 
-CP411 Final Project: A remake of the popular CurveBall game
-
 Check out this link for the original version of curveball: http://www.addictinggames.com/sports-games/curveball.jsp
-
-Ultimate Curveball 2.0
-===========================================================
-<i>By Robin Sharma and Gavin Kerr</i>
-
 
 -----------
 Description
