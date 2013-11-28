@@ -79,8 +79,6 @@ GLuint textures[6];
 Image* myImage;
 bool texturesLoaded;
 
-GLint Game_time = 0;
-GLint speed = 1;
 GLboolean printStart = true, game_over = false;
 
 const GLint REGSCORE = 50;
