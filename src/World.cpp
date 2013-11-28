@@ -22,7 +22,7 @@ World::World() {
 
 	length = 6;
 
-	drawWire = false;
+	drawWire = true;
 }
 
 World::~World() {
