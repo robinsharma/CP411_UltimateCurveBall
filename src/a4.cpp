@@ -82,6 +82,13 @@ GLint Game_time = 0;
 GLint speed = 1;
 GLboolean printStart = true, game_over = false;
 
+const GLint REGSCORE = 50;
+const GLint SUPERSCORE = 100;
+const GLint HIT = 25;
+const GLint TAKELIFE = 150;
+const GLint LEVELUP = 200;
+GLint score = 0;
+
 void display(void) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -207,16 +214,15 @@ void display(void) {
 			char c = *i;
 			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
 		}
-		/*
-		std::ostringstream lvl;
-		lvl << "Level: " << level;
-		string lv = lvl.str();
-		glRasterPos2f(20, 20);
-		for (string::iterator i = lv.begin(); i != lv.end(); ++i) {
+
+		std::ostringstream sc;
+		sc << "Score: " << score;
+		string score_player = sc.str();
+		glRasterPos2f(660, 10);
+		for (string::iterator i = score_player.begin(); i != score_player.end(); ++i) {
 			char c = *i;
 			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
 		}
-		*/
 
 	}
 	glMatrixMode(GL_MODELVIEW);
@@ -306,18 +312,22 @@ void setCurve(GLint x1, GLint y1, GLint x2, GLint y2) {
 			//Negative difference. Paddle moved from right to left. x curve positive
 			//regular
 			curvex = REGULAR;
+			score += REGSCORE;
 
 		} else if (diffx < -10) {
 			//super curve positive x
 			curvex = SUPER;
+			score += SUPERSCORE;
 		}
 	} else if (diffx > 0) {
 		if (diffx >= 5 && diffx <= 10) {
 			//regular curve neg x
 			curvex = -REGULAR;
+			score += REGSCORE;
 		} else if (diffx > 10) {
 			//super curve neg x
 			curvex = -SUPER;
+			score += SUPERSCORE;
 		}
 	}
 
@@ -326,28 +336,24 @@ void setCurve(GLint x1, GLint y1, GLint x2, GLint y2) {
 			//Negative difference. Paddle moved from bottom to top. y curve positive
 			//regular
 			curvey = -REGULAR;
+			score += REGSCORE;
 		} else if (diffy < -10) {
 			//super curve positive y
 			curvey = -SUPER;
+			score += SUPERSCORE;
 		}
 	} else if (diffy > 0) {
 		if (diffy >= 5 && diffy <= 10) {
 			//regular curve neg y
 			curvey = REGULAR;
+			score += REGSCORE;
 		} else if (diffy > 10) {
 			//super curve neg y
 			curvey = SUPER;
+			score += SUPERSCORE;
 		}
 	}
 }
-/*
-if ( diffx < -5 ) {
-	if (diffx > -10 ) {
-		//regular curve pos x
-	} else {
-		//super curve pos x
-	}
-*/
 
 /*-------ANIMATION FUNCTION-------------------*/
 GLfloat ball_x_trans = 0.00, ball_y_trans = 0.00, ball_z_trans = 0.12;
@@ -393,6 +399,7 @@ void check_collision_paddles(Cube* object, int paddle) {
 				ball_z_trans = ball_z_trans * -1;
 				curvex = 0.0;
 				curvey = 0.0;
+				score += HIT;
 				PlaySound((LPCSTR) "Blop.wav", NULL, SND_FILENAME | SND_ASYNC);
 
 			}
@@ -407,9 +414,11 @@ void check_collision_paddles(Cube* object, int paddle) {
 			ball_z_trans = 0;
 			glutPostRedisplay();
 			aiLives--;
+			score += TAKELIFE;
 			printf("AI Lives: %d... Level: %d. \n",aiLives, level);
 			if(aiLives == 0){
 				level++;
+				score += LEVELUP;
 				aiLives = AILIVES;
 			}
 			Sleep(1000);
@@ -514,34 +523,6 @@ void move(void) {
 		glutPostRedisplay();
 	}
 }
-
-/*
-int check = 2;
-void ColorChange(int x) {
-	if (check > 5) {
-		check = 1;
-		myWorld.list[2]->setColor(1.0, 1.0, 1.0);
-		myWorld.list[3]->setColor(1.0, 1.0, 1.0);
-		myWorld.list[4]->setColor(1.0, 1.0, 1.0);
-		myWorld.list[5]->setColor(1.0, 1.0, 1.0);
-	}
-
-	 myWorld.list[2]->setColor(1.0, 1.0, 1.0);
-	 myWorld.list[3]->setColor(1.0, 1.0, 1.0);
-	 myWorld.list[4]->setColor(1.0, 1.0, 1.0);
-	 myWorld.list[5]->setColor(1.0, 1.0, 1.0);
-
-	else {
-		myWorld.list[check]->setColor(1.0, 0.5, 0.0);
-	}
-	check++;
-	if (x == 1) {
-		glutTimerFunc(1000, ColorChange, 1);
-	}
-	glutPostRedisplay();
-
-}
-*/
 
 void Disable() {
 	glDisable(GL_DEPTH_TEST);
@@ -668,37 +649,6 @@ void keyPressed (unsigned char key, int x, int y) {
 			}
 		}
 
-	}
-	else if( key == '1') {
-		speed = 1;
-	}
-	else if( key == '2') {
-		speed = 2;
-	}
-	else if( key == '3') {
-		speed = 3;
-	}
-	else if( key == '4') {
-		speed = 4;
-	}
-	else if( key == '5') {
-		speed = 5;
-	}
-
-	else if( key == '6') {
-		speed = 6;
-	}
-
-	else if( key == '7') {
-		speed = 7;
-	}
-
-	else if( key == '8') {
-		speed = 8;
-	}
-
-	else if( key == '9') {
-		speed = 9;
 	} else if(key == 'w') {
 		backgroundColor(2);
 
@@ -725,16 +675,10 @@ void mainMenu(GLint option) {
 	}
 		break;
 	case 3: {
-		if (game_start == 0) {
-			game_start = 1;
-			//ColorChange(1);
-			PlaySound((LPCSTR) "Start.wav", NULL, SND_FILENAME | SND_ASYNC);
-			glutIdleFunc(move);
+		game_start = 1;
+		glutIdleFunc(move);
 
-		} else {
-			game_start = 0;
-
-		}
+		break;
 	}
 	case 4: {
 		new_game();
