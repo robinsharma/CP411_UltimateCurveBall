@@ -155,7 +155,8 @@ void display(void) {
 	}
 	myWorld.draw_world(); // draw all objects in the world
 	Spot.draw();
-	//check_collision();
+
+	//Print text to screen
 	glDisable(GL_LIGHTING);
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -165,22 +166,56 @@ void display(void) {
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3f(1.0, 1.0, 1.0);
-	glRasterPos2i(10, 10);
-	if(game_start == 0){
-		if (printStart) {
-			string name = "Start";
+	if (printStart) {
+			string start = "Start";
 			//ostringstream sstm;
 			//sstm << name;
 			//string result;
 			//result = sstm.str();
 			//const char* c;
 			glRasterPos2f(380, 390);
-			for (string::iterator i = name.begin(); i != name.end(); ++i) {
+			for (string::iterator i = start.begin(); i != start.end(); ++i) {
 				char c = *i;
 				glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
 			}
-		}
+
 		//renderBitmapString(winWidth/2, winHeight/4, GLUT_BITMAP_HELVETICA_18, result.c_str());
+	} else {
+		std::ostringstream l;
+		l << "Level: " << level;
+		string lv = l.str();
+		glRasterPos2f(20, 10);
+		for (string::iterator i = lv.begin(); i != lv.end(); ++i) {
+			char c = *i;
+			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+		}
+		std::ostringstream pl;
+		pl << "Player Lives: " << playerLives;
+		string player_lives = pl.str();
+		glRasterPos2f(20, 780);
+		for (string::iterator i = player_lives.begin(); i != player_lives.end(); ++i) {
+			char c = *i;
+			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+		}
+		std::ostringstream ol;
+		ol << "Opponent Lives: " << aiLives;
+		string ai_lives = ol.str();
+		glRasterPos2f(620, 780);
+		for (string::iterator i = ai_lives.begin(); i != ai_lives.end(); ++i) {
+			char c = *i;
+			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+		}
+		/*
+		std::ostringstream lvl;
+		lvl << "Level: " << level;
+		string lv = lvl.str();
+		glRasterPos2f(20, 20);
+		for (string::iterator i = lv.begin(); i != lv.end(); ++i) {
+			char c = *i;
+			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+		}
+		*/
+
 	}
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
