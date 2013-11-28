@@ -48,6 +48,8 @@ to the washroom.
 W - The W key changes the background color between White and
 Black.
 
+E - The E key changes the paddle between a solid wood texture and transparent wire object.
+
 I/O - The I and O keys invert the background colors so that
 they are split half and half on the background, giving the
 game a cool effect.
