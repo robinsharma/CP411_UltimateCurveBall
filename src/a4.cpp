@@ -44,10 +44,12 @@ GLboolean whiteBackground = false;
 GLboolean check_curve = false;
 const GLfloat SUPER = 0.0005;
 const GLfloat REGULAR = 0.0002;
+const GLint AILIVES = 3;
+const GLint PLAYERLIVES = 5;
 GLfloat curvex, curvey;
 GLint begin, end;
 GLint xCurve1, xCurve2, yCurve1, yCurve2;
-GLint playerLives = 5, aiLives = 3, level = 1;
+GLint playerLives = 5, aiLives = AILIVES, level = 1;
 
 //Declare a world containing all objects to draw.
 World myWorld;
@@ -78,7 +80,7 @@ bool texturesLoaded;
 
 GLint Game_time = 0;
 GLint speed = 1;
-GLboolean printStart = true;
+GLboolean printStart = true, game_over = false;
 
 void display(void) {
 
@@ -370,8 +372,11 @@ void check_collision_paddles(Cube* object, int paddle) {
 				reset();
 			}
 			else{
+				reset();
 				moving = 0;
-
+				game_start = 0;
+				game_over = true;
+				glutIdleFunc(NULL);
 			}
 			printf("Player Lives: %d. \n", playerLives);
 			//return;
@@ -405,7 +410,7 @@ void check_collision_paddles(Cube* object, int paddle) {
 			printf("AI Lives: %d... Level: %d. \n",aiLives, level);
 			if(aiLives == 0){
 				level++;
-				aiLives = 3;
+				aiLives = AILIVES;
 			}
 			Sleep(1000);
 			reset();
@@ -642,6 +647,13 @@ void reset(){
 	glutPostRedisplay();
 }
 
+void new_game(){
+	playerLives = PLAYERLIVES;
+	aiLives = AILIVES;
+	level = 1;
+	reset();
+}
+
 /*-------MENUS------------------------------------------------------------*/
 
 void keyPressed (unsigned char key, int x, int y) {
@@ -723,6 +735,9 @@ void mainMenu(GLint option) {
 			game_start = 0;
 
 		}
+	}
+	case 4: {
+		new_game();
 	}
 	}
 
@@ -832,7 +847,7 @@ void menu() {
 
 	glutCreateMenu(mainMenu);      // Create main pop-up menu.
 
-	glutAddSubMenu(" Print ", Print_Menu);
+	glutAddMenuEntry(" New Game ", 4);
 	glutAddSubMenu( " Background ", Background_Color);
 	glutAddMenuEntry(" Reset ", 1);
 	glutAddMenuEntry(" Game Start/Stop ", 3);
@@ -844,9 +859,6 @@ void menu() {
 
 /*----MAIN---------------------------*/
 int main(int argc, char** argv) {
-	PlaySound((LPCSTR) "Basshunter - Hello There.wav", NULL, SND_FILENAME | SND_ASYNC);
-	//Song by Basshunter
-	//Album can be purchased from iTunes
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
