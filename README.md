@@ -64,5 +64,5 @@ Robin & Gavin would like to thank you for playing our game.
 <b><i>Have fun!</i></b> 
 
 
-Check out this link for the original version of curveball: http://www.addictinggames.com/sports-games/curveball.jsp
+Check out this link for the original version of Curveball: http://www.addictinggames.com/sports-games/curveball.jsp
 

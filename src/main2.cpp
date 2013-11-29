@@ -439,7 +439,7 @@ void check_collision_paddles(Cube* object, int paddle) {
 			glutPostRedisplay();
 			playerLives--;
 			if (playerLives > 0) {
-				Sleep(1000);
+				Sleep(1000); //We want a slight pause before the next round begins
 				reset();
 			} else {
 				reset();
@@ -493,7 +493,7 @@ void check_collision_paddles(Cube* object, int paddle) {
 				score += LEVELUP;
 				aiLives = AILIVES;
 			}
-			Sleep(1000);
+			Sleep(1000); //slight pause before the next round begins
 			reset();
 		}
 		//check if colliding with z-axis of paddle
@@ -548,6 +548,7 @@ void check_collision_wall(Cube* object) {
 						+ ((0 - object->cube_center_wc[2])
 								* (object->cube_face_center_wc[i][2]
 										- object->cube_center_wc[2]));
+		//check for which face is the face on the 'inside' of the game
 		if (facing_in > 0) {
 			//y-direction collisions
 			if (i == 5
