@@ -2,6 +2,10 @@ Ultimate Curveball 2.0
 =======================
 <i>By: Robin Sharma and Gavin Kerr</i>
 
+Compile using MinGW.
+
+(Recommend using Eclipse C++ CDT with the MinGW Compiler)
+
 -----------
 Description
 -----------
@@ -62,7 +66,6 @@ Most importantly
 Robin & Gavin would like to thank you for playing our game. 
 
 <b><i>Have fun!</i></b> 
-
 
 Check out this link for the original version of Curveball: http://www.addictinggames.com/sports-games/curveball.jsp
 
